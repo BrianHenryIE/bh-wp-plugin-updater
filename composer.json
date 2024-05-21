@@ -1,0 +1,172 @@
+{
+    "name": "brianhenryie/bh-wp-slswc-client",
+    "description": "This is a short description of what plugin_title does.",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "BrianHenryIE",
+            "email": "BrianHenryIE@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "johnpbloch/wordpress-core-installer": true,
+            "phpstan/extension-installer": true,
+            "alleyinteractive/composer-wordpress-autoloader": true
+        },
+        "platform": {
+            "php": "8.0"
+        },
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "autoload": {
+        "classmap": [
+            "includes/"
+        ],
+        "files": [
+            "includes/functions.php"
+        ],
+        "wordpress": {
+            "BrianHenryIE\\WP_SLSWC_Client\\": "includes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BrianHenryIE\\WP_SLSWC_Client\\": ["tests/integration","tests/unit","tests/wpunit"]
+        }
+    },
+    "repositories": {
+        "brianhenryie/composer-phpstorm": {
+            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+            "type": "git"
+        },
+        "outlandish/wpackagist": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        },
+        "wordpress/wordpress": {
+            "url": "https://github.com/WordPress/wordpress-develop",
+            "type": "git"
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "10up/wp_mock": "*",
+        "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+        "antecedent/patchwork": "^2.1",
+        "brianhenryie/color-logger": "^1.0",
+        "brianhenryie/composer-phpstorm": "dev-master",
+        "cweagans/composer-patches": "*",
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "jaschilz/php-coverage-badger": "^2.0",
+        "johnpbloch/wordpress": "*",
+        "kporras07/composer-symlinks": "dev-master",
+        "lucatume/wp-browser": "^4.0",
+        "phpcompatibility/phpcompatibility-wp": "*",
+        "phpstan/extension-installer": "*",
+        "phpstan/phpstan-phpunit": "*",
+        "phpunit/phpcov": "*",
+        "squizlabs/php_codesniffer": "*",
+        "szepeviktor/phpstan-wordpress": "*",
+        "wordpress/wordpress": "*",
+        "wp-cli/wp-cli-bundle": "*",
+        "wp-coding-standards/wpcs": "*"
+    },
+    "extra": {
+        "patches": {
+            "jaschilz/php-coverage-badger": {
+                "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+            }
+        },
+        "symlinks": {
+            "wp-content": "wordpress/wp-content",
+            "./test-plugin": "wp-content/plugins/bh-wp-slswc-client"
+        },
+        "phpstorm": {
+            "exclude_folders": {
+                "folders": [
+                    "vendor/php-stubs/woocommerce-stubs",
+                    "vendor/wordpress/wordpress/src",
+                    "vendor/wordpress/wordpress/build",
+                    "wp-content/plugins/bh-wp-slswc-client",
+                    "wordpress/wp-content"
+                ],
+                "composer-symlinks": false
+            }
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@create-symlinks",
+            "@setup-wordpress",
+            "@configure-phpstorm"
+        ],
+        "post-update-cmd": [
+            "@create-symlinks",
+            "@setup-wordpress",
+            "@configure-phpstorm"
+        ],
+        "create-symlinks": [
+            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+        ],
+        "configure-phpstorm": [
+            "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
+            "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
+        ],
+        "setup-wordpress": [
+            "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
+            "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
+            "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw",
+            "wp user create bob bob@example.org --user_pass=password || true;"
+        ],
+        "create-databases": [
+            "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
+            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_SITE_DB_USER\"'@'%';\";",
+            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
+            "@restore-acceptance-database"
+        ],
+        "delete-databases": [
+            "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); if [[ \"$DB_DIR\" != \"$DB_DIR$TEST_SITE_DB_NAME\" ]]; then rm -rf $DB_DIR$TEST_SITE_DB_NAME; fi; if [[ \"$DB_DIR\" != \"$DB_DIR$TEST_DB_NAME\" ]]; then rm -rf $DB_DIR$TEST_DB_NAME; fi;"
+        ],
+        "save-acceptance-database": [
+            "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD  $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
+        ],
+        "restore-acceptance-database": [
+            "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
+        ],
+        "coverage-tests": [
+            "codecept run unit --coverage unit.cov",
+            "codecept run wpunit --coverage wpunit.cov",
+            "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
+            "open tests/_output/html/index.html"
+        ],
+        "cs-fix": [
+            "phpcbf || true",
+            "phpcs || true",
+            "phpstan analyse --memory-limit 1G"
+        ],
+        "cs-fix-changes": [
+            "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
+        ],
+        "php-compatibility": [
+            "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 7.4-"
+        ],
+        "create-plugin-archive": [
+            "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
+            "wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
+        ],
+        "github-actions":  [
+            "act -P ubuntu-latest=shivammathur/node:latest"
+        ]
+    }
+}
