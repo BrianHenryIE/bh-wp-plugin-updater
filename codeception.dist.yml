@@ -9,7 +9,19 @@ extensions:
     enabled:
         - Codeception\Extension\RunFailed
     commands:
-        - Codeception\Command\GenerateWPUnit
+        - "lucatume\\WPBrowser\\Command\\GenerateWPUnit"
+        - "lucatume\\WPBrowser\\Command\\GenerateWPRestApi"
+        - "lucatume\\WPBrowser\\Command\\GenerateWPRestController"
+        - "lucatume\\WPBrowser\\Command\\GenerateWPRestPostTypeController"
+        - "lucatume\\WPBrowser\\Command\\GenerateWPAjax"
+        - "lucatume\\WPBrowser\\Command\\GenerateWPCanonical"
+        - "lucatume\\WPBrowser\\Command\\GenerateWPXMLRPC"
+        - "lucatume\\WPBrowser\\Command\\RunOriginal"
+        - "lucatume\\WPBrowser\\Command\\RunAll"
+        - "lucatume\\WPBrowser\\Command\\DbExport"
+        - "lucatume\\WPBrowser\\Command\\DbImport"
+        - "lucatume\\WPBrowser\\Command\\MonkeyCachePath"
+        - "lucatume\\WPBrowser\\Command\\MonkeyCacheClear"
 params:
     - .env.testing
 coverage:

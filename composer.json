@@ -21,7 +21,7 @@
             "alleyinteractive/composer-wordpress-autoloader": true
         },
         "platform": {
-            "php": "8.0"
+            "php": "8.0.30"
         },
         "process-timeout": 0,
         "sort-packages": true
@@ -39,8 +39,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "BrianHenryIE\\WP_SLSWC_Client\\": ["tests/integration","tests/unit","tests/wpunit"]
-        }
+            "BrianHenryIE\\WP_SLSWC_Client\\": ["tests/unit","tests/wpunit"]
+        },
+        "classmap": [
+            "wordpress"
+        ]
     },
     "repositories": {
         "brianhenryie/composer-phpstorm": {
@@ -58,7 +61,8 @@
     },
     "require": {
         "php": ">=8.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "json-mapper/json-mapper": "*"
     },
     "require-dev": {
         "10up/wp_mock": "*",
@@ -80,7 +84,8 @@
         "szepeviktor/phpstan-wordpress": "*",
         "wordpress/wordpress": "*",
         "wp-cli/wp-cli-bundle": "*",
-        "wp-coding-standards/wpcs": "*"
+        "wp-coding-standards/wpcs": "*",
+        "wpackagist-theme/twentytwentyfour": "*"
     },
     "extra": {
         "patches": {
