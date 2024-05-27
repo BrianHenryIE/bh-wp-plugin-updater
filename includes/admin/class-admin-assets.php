@@ -10,7 +10,6 @@ namespace BrianHenryIE\WP_SLSWC_Client\Admin;
 class Admin_Assets {
 
 	public function register_script(): void {
-
 	}
 
 	public function enqueue_script(): void {
@@ -21,6 +20,6 @@ class Admin_Assets {
 	 */
 	public function enqueue_styles(): void {
 
-		wp_enqueue_style('wp-components');
+		wp_enqueue_style( 'wp-components' );
 	}
 }

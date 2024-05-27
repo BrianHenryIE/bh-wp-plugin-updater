@@ -77,8 +77,8 @@ class Plugins_Page {
 		);
 
 		// Remove the 'Enable auto-updates' link when the licence is invalid.
-		if( 'invalid' === $licence_status ) {
-			 $html = '';
+		if ( 'invalid' === $licence_status ) {
+			$html = '';
 		}
 
 		return empty( trim( wp_strip_all_tags( $html ) ) )
@@ -86,5 +86,12 @@ class Plugins_Page {
 			: "{$html} | {$licence_link}";
 	}
 
-	// TODO: display banner under plugin entry if licence is not active.
+
+	/**
+	 *
+	 * TODO: display banner under plugin entry if licence is not active.
+	 *
+	 * @see wp_plugin_update_row()
+	 * in_plugin_update_message-{$file}
+	 */
 }

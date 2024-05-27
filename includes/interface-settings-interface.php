@@ -15,6 +15,8 @@ interface Settings_Interface {
 
 	/**
 	 * HTTP hostname for software updates.
+	 *
+	 * Must include the https:// prefix.
 	 */
 	public function get_licence_server_host(): string;
 
