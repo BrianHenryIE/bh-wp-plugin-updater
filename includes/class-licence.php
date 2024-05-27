@@ -144,4 +144,14 @@ class Licence implements \Serializable, \JsonSerializable {
 		unset( $arr['settings'] );
 		return $arr;
 	}
+
+	public function is_active() {
+		return 'active' === $this->status;
+
+		// array(
+		// 'active',
+		// 'expiring',
+		// 'expired',
+		// );
+	}
 }
