@@ -6,6 +6,8 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use BrianHenryIE\WP_SLSWC_Client\Server\Product;
+
 interface API_Interface {
 
 	public function get_licence_details( ?bool $refresh = null ): Licence;
@@ -45,9 +47,11 @@ interface API_Interface {
 	 * 'thumbnail' => false,
 	 * ),
 	 */
-	public function get_product_information( ?bool $refresh = null ): ?object;
+	public function get_product_information( ?bool $refresh = null ): ?Product;
 
 	public function deactivate_licence();
 
 	public function activate_licence( string $licence_key ): Licence;
+
+	public function is_update_available( ?bool $refresh = null ): bool;
 }

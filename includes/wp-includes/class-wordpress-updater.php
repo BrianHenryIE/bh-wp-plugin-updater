@@ -6,6 +6,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Server\Product;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
 class WordPress_Updater {
@@ -23,14 +24,21 @@ class WordPress_Updater {
 	}
 
 	/**
-	 *
+	 * Add the plugin's update information to the transient. To be used later on plugins.php.
 	 *
 	 * This does not preform any HTTP requests.
+	 *
+	 * @see wp_plugin_update_row()
 	 *
 	 * @hooked pre_set_site_transient_update_plugins
 	 */
 	public function add_product_data_to_wordpress_plugin_information( $value, $transient ) {
 
+		if ( ! $this->api->is_update_available( false ) ) {
+			return $value;
+		}
+
+		/** @var Product $plugin_information */
 		$plugin_information = $this->api->get_product_information( false );
 
 		$plugin = new \stdClass();
@@ -39,7 +47,14 @@ class WordPress_Updater {
 		$plugin->slug   = $this->settings->get_plugin_slug();
 		$plugin->plugin = $this->settings->get_plugin_basename();
 
-		$plugin->package = $plugin_information->update_file_url;
+		/**
+		 * If `package` is empty, WordPress will display:
+		 * "Automatic update is unavailable for this plugin."
+		 */
+		$plugin->package     = $plugin_information->get_update_file_url();
+		$plugin->new_version = $plugin_information->get_version();
+
+		$plugin->url = $plugin_information->get_documentation_link();
 
 		// 'id' => 'w.org/plugins/woocommerce',
 		// 'slug' => 'woocommerce',

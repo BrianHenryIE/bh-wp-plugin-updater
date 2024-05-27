@@ -8,9 +8,17 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use BrianHenryIE\WP_SLSWC_Client\Server\License_Response;
+use BrianHenryIE\WP_SLSWC_Client\Server\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\Product_Response;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use DateTimeImmutable;
+use JsonMapper\Enums\TextNotation;
+use JsonMapper\Handler\FactoryRegistry;
+use JsonMapper\Handler\PropertyMapper;
+use JsonMapper\JsonMapperBuilder;
+use JsonMapper\Middleware\CaseConversion;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -30,14 +38,11 @@ class API implements API_Interface {
 	}
 
 	public function get_licence_details( ?bool $refresh = null ): Licence {
-		switch ( $refresh ) {
-			case true:
-				return $this->refresh_licence_details();
-			case false:
-				return $this->get_saved_licence_information() ?? new Licence( $this->settings );
-			default:
-				return $this->get_saved_licence_information() ?? $this->refresh_licence_details();
-		}
+		return match ( $refresh ) {
+			true => $this->refresh_licence_details(),
+			false => $this->get_saved_licence_information() ?? new Licence( $this->settings ),
+			default => $this->get_saved_licence_information() ?? $this->refresh_licence_details(),
+		};
 	}
 
 	protected function get_saved_licence_information(): ?Licence {
@@ -56,7 +61,17 @@ class API implements API_Interface {
 	 */
 	protected function refresh_licence_details(): Licence {
 
-		$response = $this->server_request( 'check_update' );
+		// TODO: This should never be called on a pageload.
+
+		try {
+			$response = $this->server_request( 'check_update' );
+		} catch ( \Exception $e ) {
+
+			// TODO: Do not continuously retry.
+
+			$this->logger->error( $e->getMessage() );
+			return $this->licence;
+		}
 
 		// stdClass Object
 		// (
@@ -101,7 +116,7 @@ class API implements API_Interface {
 		// )
 		// )
 
-		$this->licence->set_status( $response->status );
+		$this->licence->set_status( $response->get_status() );
 		$this->licence->set_last_updated( new DateTimeImmutable() );
 
 		// TODO: string -> DateTime
@@ -114,28 +129,34 @@ class API implements API_Interface {
 	 * Send a HTTP request to deactivate the licence from this site.
 	 *
 	 * Is this a good idea? Should it only be possible from the licence server?
+	 *
+	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
 	 */
 	public function deactivate_licence(): Licence {
 		$response = $this->server_request( 'deactivate' );
 
-		$this->licence->set_status( $response->status );
-		$this->licence->set_last_updated( new DateTimeImmutable() );
+		$this->licence->set_status( $response->get_status() );
+		$this->licence->set_expires( $response->get_expires() );
 
-		// TODO: string -> DateTime
-		// $this->licence->set_expires( $response_body->expires );
+		$this->licence->set_last_updated( new DateTimeImmutable() );
 
 		return $this->licence;
 	}
 
 	/**
 	 * Activate the licence on this site.
+	 *
+	 * https://bhwp.ie/wp-json/slswc/v1/activate?slug=a-plugin&license_key=ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a
 	 */
 	public function activate_licence( string $licence_key ): Licence {
+
+		// TODO: If there is already a licence, deactivate it.
+
 		$this->licence->set_licence_key( $licence_key );
 
 		$response = $this->server_request( 'activate' );
 
-		$this->licence->set_status( $response->status );
+		$this->licence->set_status( $response->get_status() );
 		$this->licence->set_last_updated( new DateTimeImmutable() );
 
 		// TODO: string -> DateTime
@@ -154,14 +175,11 @@ class API implements API_Interface {
 	 */
 	public function get_product_information( ?bool $refresh = null ): ?object {
 
-		switch ( $refresh ) {
-			case true:
-				return $this->get_remote_product_information();
-			case false:
-				return $this->get_cached_product_information();
-			default:
-				return $this->get_cached_product_information() ?? $this->get_remote_product_information();
-		}
+		return match ( $refresh ) {
+			true => $this->get_remote_product_information(),
+			false => $this->get_cached_product_information(),
+			default => $this->get_cached_product_information() ?? $this->get_remote_product_information(),
+		};
 	}
 
 	protected function get_cached_product_information(): ?object {
@@ -174,15 +192,16 @@ class API implements API_Interface {
 	/**
 	 * Returns null when it could not fetch the product information.
 	 */
-	protected function get_remote_product_information(): ?object {
+	protected function get_remote_product_information(): ?Product {
 
+		/** @var Product_Response $response */
 		$response = $this->server_request( 'product' );
 
-		if ( is_object( $response ) && 'ok' === $response->status ) {
+		if ( is_object( $response ) && 'ok' === $response->get_status() ) {
 
-			update_option( $this->settings->get_plugin_information_option_name(), $response->product );
+			update_option( $this->settings->get_plugin_information_option_name(), $response->get_product() );
 
-			return $response->product;
+			return $response->get_product();
 		}
 
 		return null;
@@ -199,8 +218,9 @@ class API implements API_Interface {
 	 * Send a request to the server.
 	 *
 	 * @param   string $action activate|deactivate|check_update.
+	 * @throws
 	 */
-	protected function server_request( string $action = 'check_update' ): ?object {
+	protected function server_request( string $action = 'check_update' ) {
 
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
@@ -223,8 +243,10 @@ class API implements API_Interface {
 		// Query the license server.
 		$endpoint_get_actions = apply_filters( 'slswc_client_get_actions', array( 'product', 'products' ) );
 		if ( in_array( $action, $endpoint_get_actions, true ) ) {
+			$type     = Product_Response::class;
 			$response = wp_safe_remote_get( $server_request_url, $request_options );
 		} else {
+			$type     = License_Response::class;
 			$response = wp_safe_remote_post( $server_request_url, $request_options );
 		}
 
@@ -233,15 +255,28 @@ class API implements API_Interface {
 		// @throws
 		$this->validate_response( $response );
 
-		return json_decode( wp_remote_retrieve_body( $response ) );
-
 		// $this->logger->error( 'There was an error executing this request, please check the errors below.', array( 'response' => $response ) );
 		//
 		// return null;
+
+		$factoryRegistry = new FactoryRegistry();
+		$mapper          = JsonMapperBuilder::new()
+									->withDocBlockAnnotationsMiddleware()
+									->withObjectConstructorMiddleware( $factoryRegistry )
+									->withPropertyMapper( new PropertyMapper( $factoryRegistry ) )
+									->withTypedPropertiesMiddleware()
+									->withNamespaceResolverMiddleware()
+									->build();
+
+		// $mapper->push(new CaseConversion(TextNotation::UNDERSCORE(), TextNotation::CAMEL_CASE()));
+
+		return $mapper->mapToClassFromString( wp_remote_retrieve_body( $response ), $type );
 	}
 
 	/**
 	 * Validate the license server response to ensure its valid response not what the response is.
+	 *
+	 * @param \WP_Error|array $response
 	 */
 	public function validate_response( $response ): void {
 
@@ -255,7 +290,7 @@ class API implements API_Interface {
 						__( 'HTTP Error: %s', 'bh-wp-slswc-client' ),
 						$response->get_error_message()
 					),
-					$response->get_error_code()
+					(int) $response->get_error_code()
 				);
 			}
 
@@ -319,5 +354,13 @@ class API implements API_Interface {
 				);
 			}
 		}
+	}
+
+	/**
+	 * TODO: semver compare.
+	 */
+	public function is_update_available( ?bool $refresh = null ): bool {
+		return $this->get_product_information( $refresh )->get_new_version()
+				!== get_plugins()[ $this->settings->get_plugin_basename() ]['Version'];
 	}
 }
