@@ -20,14 +20,6 @@
       "url": ".."
     }
   },
-  "autoload": {
-    "classmap": [
-      "includes/"
-    ],
-    "wordpress": {
-      "BrianHenryIE\\WP_SLSWC_Client_Test_Plugin\\": "includes/"
-    }
-  },
   "require": {
     "alleyinteractive/composer-wordpress-autoloader": "^1.0",
     "brianhenryie/bh-wp-slswc-client": "dev-master",
