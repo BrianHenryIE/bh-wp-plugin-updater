@@ -61,3 +61,7 @@ docker_tag
 
 vendor-prefixed
 dist-archive
+
+/test-plugin/vendor
+
+/tests/_support/_generated
