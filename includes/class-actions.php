@@ -99,6 +99,13 @@ class Actions {
 			$this->settings
 		);
 		add_filter( 'plugin_auto_update_setting_html', array( $plugins_page, 'plugin_auto_update_setting_html' ), 10, 2 );
+
+		add_action(
+			"in_plugin_update_message-{$this->settings->get_plugin_basename()}",
+			array( $plugins_page, 'append_licence_link_to_auto_update_unavailable_text' ),
+			10,
+			2
+		);
 	}
 
 	/**

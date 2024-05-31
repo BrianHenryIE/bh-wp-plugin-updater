@@ -45,20 +45,6 @@ class Plugins_Page {
 			return $html;
 		}
 
-		$licence_link_url = admin_url(
-			add_query_arg(
-				array(
-					'plugin'    => $this->settings->get_plugin_slug(),
-					'tab'       => 'plugin-information',
-					'section'   => 'licence',
-					'TB_iframe' => 'true',
-					'width'     => '772',
-					'height'    => '730',
-				),
-				'plugin-install.php'
-			)
-		);
-
 		$licence_status = $this->api->get_licence_details( false )->get_status();
 		$expires        = $this->api->get_licence_details( false )->get_expires();
 
@@ -71,7 +57,7 @@ class Plugins_Page {
 
 		$licence_link = sprintf(
 			'<a href="%s" class="thickbox open-plugin-details-modal" style="%s">%s</a>',
-			$licence_link_url,
+			$this->get_licence_link_url(),
 			'display: inline-block;',
 			esc_html( $licence_link_text )
 		);
@@ -86,12 +72,52 @@ class Plugins_Page {
 			: "{$html} | {$licence_link}";
 	}
 
+	/**
+	 * Get the URL which works to display the plugin View Details modal at the licence tab.
+	 */
+	protected function get_licence_link_url(): string {
+		$licence_link_url = admin_url(
+			add_query_arg(
+				array(
+					'plugin'    => $this->settings->get_plugin_slug(),
+					'tab'       => 'plugin-information',
+					'section'   => 'licence',
+					'TB_iframe' => 'true',
+					'width'     => '772',
+					'height'    => '730',
+				),
+				'plugin-install.php'
+			)
+		);
+
+		return $licence_link_url;
+	}
 
 	/**
-	 *
-	 * TODO: display banner under plugin entry if licence is not active.
+	 * Add link to open the plugin details modal to the licence tab after the text: "Automatic update is unavailable
+	 * for this plugin."
 	 *
 	 * @see wp_plugin_update_row()
 	 * in_plugin_update_message-{$file}
 	 */
+	public function append_licence_link_to_auto_update_unavailable_text( $plugin_data, $response ):void  {
+
+		$licence_link_text = 'View licence details';
+
+		$licence_link = sprintf(
+			'<a href="%s" class="thickbox open-plugin-details-modal">%s</a>',
+			$this->get_licence_link_url(),
+			esc_html( $licence_link_text )
+		);
+
+		echo wp_kses(
+			$licence_link,
+			array(
+				'a' => array(
+					'href'  => array(),
+					'class' => array(),
+				),
+			)
+		);
+	}
 }

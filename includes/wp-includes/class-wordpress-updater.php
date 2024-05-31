@@ -8,6 +8,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Server\Product;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use stdClass;
 
 class WordPress_Updater {
 
@@ -28,11 +29,19 @@ class WordPress_Updater {
 	 *
 	 * This does not preform any HTTP requests.
 	 *
+	 * @param false|stdClass{last_checked:int, no_update: array<stdClass>, response: array<stdClass>, translations: array} $value
+	 * @param string $transient Always 'update_plugins'.
+	 *
 	 * @see wp_plugin_update_row()
 	 *
 	 * @hooked pre_set_site_transient_update_plugins
+	 *
 	 */
-	public function add_product_data_to_wordpress_plugin_information( $value, $transient ) {
+	public function add_product_data_to_wordpress_plugin_information( $value, string $transient ) {
+
+		if( false === $value ) {
+			return $value;
+		}
 
 		if ( ! $this->api->is_update_available( false ) ) {
 			return $value;
@@ -41,7 +50,10 @@ class WordPress_Updater {
 		/** @var Product $plugin_information */
 		$plugin_information = $this->api->get_product_information( false );
 
-		$plugin = new \stdClass();
+		$plugin =
+			$value->response[ $this->settings->get_plugin_basename() ] ??
+			$value->no_update[ $this->settings->get_plugin_basename() ] ??
+			new stdClass();
 
 		$plugin->id     = $this->settings->get_plugin_basename();
 		$plugin->slug   = $this->settings->get_plugin_slug();

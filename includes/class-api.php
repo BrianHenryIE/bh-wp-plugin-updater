@@ -14,11 +14,9 @@ use BrianHenryIE\WP_SLSWC_Client\Server\Product_Response;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use DateTimeImmutable;
-use JsonMapper\Enums\TextNotation;
 use JsonMapper\Handler\FactoryRegistry;
 use JsonMapper\Handler\PropertyMapper;
 use JsonMapper\JsonMapperBuilder;
-use JsonMapper\Middleware\CaseConversion;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -217,10 +215,10 @@ class API implements API_Interface {
 	/**
 	 * Send a request to the server.
 	 *
-	 * @param   string $action activate|deactivate|check_update.
+	 * @param   string $action activate|deactivate|check_update|product.
 	 * @throws
 	 */
-	protected function server_request( string $action = 'check_update' ) {
+	protected function server_request( string $action ) {
 
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
@@ -255,10 +253,6 @@ class API implements API_Interface {
 		// @throws
 		$this->validate_response( $response );
 
-		// $this->logger->error( 'There was an error executing this request, please check the errors below.', array( 'response' => $response ) );
-		//
-		// return null;
-
 		$factoryRegistry = new FactoryRegistry();
 		$mapper          = JsonMapperBuilder::new()
 									->withDocBlockAnnotationsMiddleware()
@@ -267,8 +261,6 @@ class API implements API_Interface {
 									->withTypedPropertiesMiddleware()
 									->withNamespaceResolverMiddleware()
 									->build();
-
-		// $mapper->push(new CaseConversion(TextNotation::UNDERSCORE(), TextNotation::CAMEL_CASE()));
 
 		return $mapper->mapToClassFromString( wp_remote_retrieve_body( $response ), $type );
 	}
