@@ -21,7 +21,7 @@
             "alleyinteractive/composer-wordpress-autoloader": true
         },
         "platform": {
-            "php": "8.0.30"
+            "php": "8.0.5"
         },
         "process-timeout": 0,
         "sort-packages": true
@@ -39,7 +39,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "BrianHenryIE\\WP_SLSWC_Client\\": ["tests/unit","tests/wpunit"]
+            "BrianHenryIE\\WP_SLSWC_Client\\": [
+                "tests/unit",
+                "tests/wpunit"
+            ]
         },
         "classmap": [
             "wordpress"
@@ -83,8 +86,12 @@
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "*",
         "wordpress/wordpress": "*",
+        "wp-cli/dist-archive-command": "dev-main",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
+        "wpackagist-plugin/woocommerce": "*",
+        "wpackagist-plugin/wordpress-importer": "*",
+        "wpackagist-theme/storefront": "^4.6",
         "wpackagist-theme/twentytwentyfour": "*"
     },
     "extra": {
@@ -93,10 +100,7 @@
                 "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
             }
         },
-        "symlinks": {
-            "wp-content": "wordpress/wp-content",
-            "./test-plugin": "wp-content/plugins/bh-wp-slswc-client"
-        },
+        "symlinks": {},
         "phpstorm": {
             "exclude_folders": {
                 "folders": [
@@ -113,13 +117,13 @@
     "scripts": {
         "post-install-cmd": [
             "@create-symlinks",
-            "@setup-wordpress",
-            "@configure-phpstorm"
+            "@sync-composer-wpenv",
+            "rm -rf wordpress/wp-content"
         ],
         "post-update-cmd": [
             "@create-symlinks",
-            "@setup-wordpress",
-            "@configure-phpstorm"
+            "@sync-composer-wpenv",
+            "rm -rf wordpress/wp-content"
         ],
         "create-symlinks": [
             "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
@@ -127,27 +131,6 @@
         "configure-phpstorm": [
             "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
             "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
-        ],
-        "setup-wordpress": [
-            "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
-            "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
-            "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw",
-            "wp user create bob bob@example.org --user_pass=password || true;"
-        ],
-        "create-databases": [
-            "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
-            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_SITE_DB_USER\"'@'%';\";",
-            "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
-            "@restore-acceptance-database"
-        ],
-        "delete-databases": [
-            "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); if [[ \"$DB_DIR\" != \"$DB_DIR$TEST_SITE_DB_NAME\" ]]; then rm -rf $DB_DIR$TEST_SITE_DB_NAME; fi; if [[ \"$DB_DIR\" != \"$DB_DIR$TEST_DB_NAME\" ]]; then rm -rf $DB_DIR$TEST_DB_NAME; fi;"
-        ],
-        "save-acceptance-database": [
-            "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD  $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
-        ],
-        "restore-acceptance-database": [
-            "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
         ],
         "coverage-tests": [
             "codecept run unit --coverage unit.cov",
@@ -164,14 +147,18 @@
             "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
         ],
         "php-compatibility": [
-            "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 7.4-"
+            "phpcs -p includes templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
         ],
         "create-plugin-archive": [
             "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
             "wp dist-archive . ./dist-archive --plugin-dirname=$(basename \"$PWD\") --create-target-dir"
         ],
-        "github-actions":  [
+        "github-actions": [
             "act -P ubuntu-latest=shivammathur/node:latest"
+        ],
+        "sync-composer-wpenv": [
+            "find wp-content/plugins -type d -depth 1 ! -type l | sort -h | jq -Rn '[inputs]' | jq 'reduce .[] as $item ({}; . + {$item:$item})' | jq '.[] |= \"./\\(.)\"' | jq '. | {mappings: .}' | jq --sort-keys -s '.[] * $existing[]' --slurpfile existing .wp-env.json | sponge .wp-env.json ",
+            "for name in $(cat .wp-env.json | jq '.mappings | values[]' | sed -r 's/^\\\"|\\\"$//g'); do [ ! -d $name ] && [ ! -f $name ] && echo $name && jq 'del(.. | select(. ==\"'$name'\"))' .wp-env.json | sponge .wp-env.json; done; exit 0;"
         ]
     }
 }
