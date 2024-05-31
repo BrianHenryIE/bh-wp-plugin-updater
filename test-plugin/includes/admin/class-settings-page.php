@@ -8,9 +8,9 @@
  * @package    brianhenryie/bh-wp-slswc-client
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Admin;
+namespace BrianHenryIE\WP_SLSWC_Client_Test_Plugin\Admin;
 
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_SLSWC_Client_Test_Plugin\Settings_Interface;
 use Psr\Log\LogLevel;
 
 /**

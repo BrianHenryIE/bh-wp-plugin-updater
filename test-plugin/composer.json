@@ -1,0 +1,36 @@
+{
+  "name": "brianhenryie/bh-wp-slswc-client-test-plugin",
+  "description": "Development plugin.",
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "alleyinteractive/composer-wordpress-autoloader": true
+    },
+    "platform": {
+      "php": "8.0"
+    },
+    "process-timeout": 0,
+    "sort-packages": true
+  },
+  "repositories": {
+    "brianhenryie/bh-wp-slswc-client": {
+      "type": "path",
+      "url": ".."
+    }
+  },
+  "autoload": {
+    "classmap": [
+      "includes/"
+    ],
+    "wordpress": {
+      "BrianHenryIE\\WP_SLSWC_Client_Test_Plugin\\": "includes/"
+    }
+  },
+  "require": {
+    "alleyinteractive/composer-wordpress-autoloader": "^1.0",
+    "brianhenryie/bh-wp-slswc-client": "dev-master",
+    "php": ">=8.0"
+  }
+}
