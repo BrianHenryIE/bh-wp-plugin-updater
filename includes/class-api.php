@@ -171,7 +171,7 @@ class API implements API_Interface {
 	 *
 	 * @return  array
 	 */
-	public function get_product_information( ?bool $refresh = null ): ?object {
+	public function get_product_information( ?bool $refresh = null ): ?Product {
 
 		return match ( $refresh ) {
 			true => $this->get_remote_product_information(),

@@ -63,7 +63,11 @@ class Plugins_Page_View_Details {
 			}
 		}
 
-		$remote_plugin_information = $this->api->get_product_information();
+		$remote_plugin_information = $this->api->get_product_information( false );
+
+		if( is_null( $remote_plugin_information ) ) {
+			return $res;
+		}
 
 		// Required to cast as array due to how object is returned from api.
 		foreach ( $remote_plugin_information->sections as $name => $section ) {
