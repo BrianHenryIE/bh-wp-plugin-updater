@@ -11,7 +11,7 @@
   },
   "mappings": {
     "setup": "./tests/e2e-pw/setup",
-    "wp-content/plugins/test-plugin/vendor/brianhenryie/bh-wp-slswc-client": ".",
+    "wp-content/plugins/bh-wp-slswc-client": ".",
     "wp-content/plugins/woocommerce": "./wp-content/plugins/woocommerce",
     "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer"
   },
