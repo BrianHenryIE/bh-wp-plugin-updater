@@ -117,12 +117,10 @@
     "scripts": {
         "post-install-cmd": [
             "@create-symlinks",
-            "@sync-composer-wpenv",
             "rm -rf wordpress/wp-content"
         ],
         "post-update-cmd": [
             "@create-symlinks",
-            "@sync-composer-wpenv",
             "rm -rf wordpress/wp-content"
         ],
         "create-symlinks": [
