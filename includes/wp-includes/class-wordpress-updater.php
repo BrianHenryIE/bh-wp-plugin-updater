@@ -30,16 +30,15 @@ class WordPress_Updater {
 	 * This does not preform any HTTP requests.
 	 *
 	 * @param false|stdClass{last_checked:int, no_update: array<stdClass>, response: array<stdClass>, translations: array} $value
-	 * @param string $transient Always 'update_plugins'.
+	 * @param string                                                                                                       $transient Always 'update_plugins'.
 	 *
 	 * @see wp_plugin_update_row()
 	 *
 	 * @hooked pre_set_site_transient_update_plugins
-	 *
 	 */
 	public function add_product_data_to_wordpress_plugin_information( $value, string $transient ) {
 
-		if( false === $value ) {
+		if ( false === $value ) {
 			return $value;
 		}
 

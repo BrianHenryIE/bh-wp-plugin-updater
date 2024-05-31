@@ -65,7 +65,7 @@ class Plugins_Page_View_Details {
 
 		$remote_plugin_information = $this->api->get_product_information( false );
 
-		if( is_null( $remote_plugin_information ) ) {
+		if ( is_null( $remote_plugin_information ) ) {
 			return $res;
 		}
 

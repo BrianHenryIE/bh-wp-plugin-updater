@@ -100,7 +100,7 @@ class Plugins_Page {
 	 * @see wp_plugin_update_row()
 	 * in_plugin_update_message-{$file}
 	 */
-	public function append_licence_link_to_auto_update_unavailable_text( $plugin_data, $response ):void  {
+	public function append_licence_link_to_auto_update_unavailable_text( $plugin_data, $response ): void {
 
 		$licence_link_text = 'View licence details';
 

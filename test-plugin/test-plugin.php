@@ -55,9 +55,10 @@ function example_admin_enqueue_scripts() {
 
 	wp_enqueue_script(
 		$script_handle,
-//		plugins_url( 'vendor/brianhenryie/bh-wp-slswc-client/build/index.js', __FILE__ ), // 404 - correct path
+		// plugins_url( 'vendor/brianhenryie/bh-wp-slswc-client/build/index.js', __FILE__ ), // 404 - correct path
+		plugins_url( './build/index.js', __FILE__ ),
 		// plugins_url( '../build/index.js', __FILE__ ), // 500 - also a correct path
-		 plugins_url( './build/index.js', __FILE__ ),
+		// plugins_url( '../bh-wp-slswc-client/build/index.js', __FILE__ ),
 		$asset_file['dependencies'],
 		$asset_file['version'],
 		true
