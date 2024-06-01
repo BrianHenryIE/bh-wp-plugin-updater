@@ -12,3 +12,7 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 function str_underscore_to_dash( string $string ): string {
 	return str_replace( '_', '-', $string );
 }
+
+function str_dash_to_underscore( string $string ): string {
+	return str_replace( '-', '_', $string );
+}

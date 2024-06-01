@@ -44,7 +44,7 @@ class Settings implements Settings_Interface {
 	 * E.g. `bh-wp-autologin-urls` -> `bh_wp_autologin_urls_licence`
 	 */
 	public function get_licence_data_option_name(): string {
-		return str_replace( '-', '_', $this->get_plugin_slug() ) . '_licence';
+		return str_dash_to_underscore( $this->get_plugin_slug() ) . '_licence';
 	}
 
 	/**
@@ -55,15 +55,7 @@ class Settings implements Settings_Interface {
 	 * E.g. `bh-wp-autologin-urls` -> `bh_wp_autologin_urls_plugin_information`
 	 */
 	public function get_plugin_information_option_name(): string {
-		return str_replace(
-			'-',
-			'_',
-			sprintf(
-				'%s_%s',
-				$this->get_plugin_slug(),
-				'plugin_information'
-			)
-		);
+		return str_dash_to_underscore( "{$this->get_plugin_slug()}_plugin_information" );
 	}
 
 	public function get_cli_base(): ?string {
