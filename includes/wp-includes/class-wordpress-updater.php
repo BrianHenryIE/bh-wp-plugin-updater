@@ -46,8 +46,12 @@ class WordPress_Updater {
 			return $value;
 		}
 
-		/** @var Product $plugin_information */
+		/** @var ?Product $plugin_information */
 		$plugin_information = $this->api->get_product_information( false );
+
+		if(is_null($plugin_information)) {
+			return $value;
+		}
 
 		$plugin =
 			$value->response[ $this->settings->get_plugin_basename() ] ??
