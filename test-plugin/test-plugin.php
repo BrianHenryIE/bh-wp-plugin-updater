@@ -24,7 +24,7 @@ add_action(
 	function () {
 		$settings = new \BrianHenryIE\WP_SLSWC_Client\Settings(
 			plugin_basename( __FILE__ ),
-			'https://localhost:8889'
+			'updatestest.bhwp.ie'
 		);
 
 		SLSWC_Client::get_instance(
