@@ -49,9 +49,20 @@ interface API_Interface {
 	 */
 	public function get_product_information( ?bool $refresh = null ): ?Product;
 
+	/**
+	 * Deactivate the licence. Does not forget the licence key.
+	 */
 	public function deactivate_licence();
 
+	/**
+	 * Set the licence key. Or set it to blank.
+	 */
 	public function activate_licence( string $licence_key ): Licence;
 
+	/**
+	 * Is there a newer version of the plugin released?
+	 *
+	 * This does not indicate that the licence is valid.
+	 */
 	public function is_update_available( ?bool $refresh = null ): bool;
 }

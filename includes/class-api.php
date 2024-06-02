@@ -4,6 +4,8 @@
  * Should trigger when the wp transient is set and manually edit it afterwards/ set its own transient for same time
  *
  * @package brianhenryie/bh-wp-slswc-client
+ *
+ * Adapted from https://licenseserver.io/
  */
 
 namespace BrianHenryIE\WP_SLSWC_Client;
@@ -296,6 +298,10 @@ class API implements API_Interface {
 
 			// There is a validation error on the server side, output the problem.
 			if ( 404 === $response['response']['code'] ) {
+				// This could be because the server does not have the License Server plugin active.
+
+				// This could be because the plugin slug is not found on the server.
+
 				$this->logger->error( $response['body'] );
 				throw new \Exception(
 					__( 'There was a problem with the license server.', 'bh-wp-slswc-client' ),

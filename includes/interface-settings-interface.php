@@ -10,13 +10,14 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
+use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
 
 interface Settings_Interface {
 
 	/**
 	 * HTTP hostname for software updates.
 	 *
-	 * Must include the https:// prefix.
+	 * `https://` is assumed if scheme is omitted.
 	 */
 	public function get_licence_server_host(): string;
 
@@ -34,6 +35,13 @@ interface Settings_Interface {
 	 * The friendly display name of the licensed plugin.
 	 */
 	public function get_plugin_name(): string;
+
+	/**
+	 * REST API base
+	 *
+	 * @see Rest
+	 */
+	public function get_rest_base(): ?string;
 
 	/**
 	 * Optional base for CLI commands.

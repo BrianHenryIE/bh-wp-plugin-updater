@@ -4,7 +4,10 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 
 class Settings implements Settings_Interface {
 
-	private array $plugin_data = array();
+	/**
+	 * @var array{Name:string}
+	 */
+	protected array $plugin_data;
 
 	protected string $plugin_slug;
 
@@ -30,10 +33,18 @@ class Settings implements Settings_Interface {
 		return $this->license_server_host;
 	}
 
+	/**
+	 * The plugin slug, i.e. the plugin directory name.
+	 */
 	public function get_plugin_slug(): string {
 		return $this->plugin_slug;
 	}
 
+	/**
+	 * The plugin directory name and filename.
+	 *
+	 * E.g. `bh-wp-autologin-urls/bh-wp-autologin-urls.php`.
+	 */
 	public function get_plugin_basename(): string {
 		return $this->plugin_basename;
 	}
@@ -58,6 +69,13 @@ class Settings implements Settings_Interface {
 		return str_dash_to_underscore( "{$this->get_plugin_slug()}_plugin_information" );
 	}
 
+	/**
+	 * The WP CLI command base.
+	 *
+	 * E.g. `wp my-plugin licence get-status`.
+	 *
+	 * @see CLI
+	 */
 	public function get_cli_base(): ?string {
 		return $this->get_plugin_slug();
 	}

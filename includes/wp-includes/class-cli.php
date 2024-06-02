@@ -14,7 +14,7 @@ use BrianHenryIE\WP_SLSWC_Client\API_Interface;
 use WP_CLI;
 
 /**
- * `wp zelle licence get-status`
+ * `wp {$cli_base} licence get-status`
  */
 class CLI {
 
@@ -33,8 +33,8 @@ class CLI {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *   # Get the licence status for the Zelle plugin.
-	 *   $ wp zelle licence get-status
+	 *   # Get the licence status for the plugin.
+	 *   $ wp $cli_base licence get-status
 	 *   Success: active
 	 *
 	 * @see API_Interface::get_licence_details()
@@ -54,8 +54,8 @@ class CLI {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *   # Get the licence key the Zelle plugin has been configured with.
-	 *   $ wp zelle licence get-key
+	 *   # Get the licence key the plugin has been configured with.
+	 *   $ wp $cli_base licence get-key
 	 *   Success: 876235557140adb9b8c47b28488cda8481d98495
 	 *
 	 * @see API_Interface::get_licence_details()
@@ -82,12 +82,12 @@ class CLI {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *   # Set the licence key the Zelle plugin should use.
-	 *   $ wp zelle licence set-key 876235557140adb9b8c47b28488cda8481d98495
+	 *   # Set the licence key the plugin should use.
+	 *   $ wp $cli_base licence set-key 876235557140adb9b8c47b28488cda8481d98495
 	 *   Success: active
 	 *
 	 *   # Set an invalid licence key
-	 *   $ wp zelle licence set-key a1s2invalidp0o9
+	 *   $ wp $cli_base licence set-key a1s2invalidp0o9
 	 *   TODO
 	 *
 	 * @param string[]             $args The unlabelled command line arguments.
@@ -154,7 +154,7 @@ class CLI {
 	 * ## EXAMPLES
 	 *
 	 *   # Refresh the product information from the plugin update server.
-	 *   $ wp zelle product-information update
+	 *   $ wp $cli_base product-information update
 	 *   Success: {json} TODO: display as table
 	 *
 	 * @param string[]             $args The unlabelled command line arguments.
