@@ -11,9 +11,9 @@ use BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Assets;
 use BrianHenryIE\WP_SLSWC_Client\Admin\Licence_Management_Tab;
 use BrianHenryIE\WP_SLSWC_Client\Admin\Plugins_Page;
 use BrianHenryIE\WP_SLSWC_Client\Admin\Plugins_Page_View_Details;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\AJAX;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
+use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\WordPress_Updater;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -36,7 +36,7 @@ class Actions {
 		protected LoggerInterface $logger,
 	) {
 		$this->add_plugins_page_modal_hooks();
-		$this->add_ajax_hooks();
+		$this->add_rest_hooks();
 		$this->add_assets_hooks();
 		$this->add_cron_hooks();
 		$this->add_wordpress_updater_hooks();
@@ -121,16 +121,10 @@ class Actions {
 	/**
 	 * Add hooks for handling AJAX requests from the plugins.php licence management tab.
 	 */
-	protected function add_ajax_hooks(): void {
-		$ajax = new AJAX( $this->api );
+	protected function add_rest_hooks(): void {
+		$rest = new Rest( $this->api, $this->settings );
 
-		$plugin_slug = $this->settings->get_plugin_slug();
-
-		add_action( "wp_ajax_{$plugin_slug}_get_licence_details", array( $ajax, 'get_licence_details' ) );
-		add_action( "wp_ajax_{$plugin_slug}_set_licence_key", array( $ajax, 'set_licence_key' ) );
-		add_action( "wp_ajax_{$plugin_slug}_activate", array( $ajax, 'activate' ) );
-		add_action( "wp_ajax_{$plugin_slug}_deactivate", array( $ajax, 'deactivate' ) );
-		add_action( "wp_ajax_{$plugin_slug}_get_product_details", array( $ajax, 'get_product_details' ) );
+		add_action( 'rest_api_init', array( $rest, 'register_routes' ) );
 	}
 
 	/**
