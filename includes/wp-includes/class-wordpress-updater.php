@@ -49,7 +49,7 @@ class WordPress_Updater {
 		/** @var ?Product $plugin_information */
 		$plugin_information = $this->api->get_product_information( false );
 
-		if(is_null($plugin_information)) {
+		if ( is_null( $plugin_information ) ) {
 			return $value;
 		}
 
