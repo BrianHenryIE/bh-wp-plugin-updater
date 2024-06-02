@@ -20,4 +20,5 @@ modules:
             plugins: []
             activatePlugins: []
             WP_HTTP_BLOCK_EXTERNAL: false
+            WP_CONTENT_DIR: "%WP_CONTENT_DIR%"
 bootstrap: _bootstrap.php
