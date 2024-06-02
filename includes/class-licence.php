@@ -16,7 +16,7 @@ use DateTimeInterface;
 class Licence implements \Serializable, \JsonSerializable {
 	protected ?string $licence_key = null;
 
-	protected string $status = 'invalid';
+	protected string $status = 'invalid'; // 'empty'
 
 	protected ?DateTimeInterface $expires = null;
 
