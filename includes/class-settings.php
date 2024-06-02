@@ -2,6 +2,8 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
+
 class Settings implements Settings_Interface {
 
 	/**
@@ -16,9 +18,12 @@ class Settings implements Settings_Interface {
 		protected string $plugin_basename, // Path to the plugin file or directory, relative to the plugins directory.
 		protected string $license_server_host
 	) {
-		require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
 		$this->plugin_slug = explode( '/', $plugin_basename )[0];
-		$this->plugin_data = get_plugins( $this->get_plugin_slug() );
+		// This `get_plugins($slug)` call is adding blank space to the admin UI.
+		// $this->plugin_data = get_plugins( $this->get_plugin_slug() );
+		// this does not:
+		$this->plugin_data = get_plugins()[ $this->get_plugin_basename() ];
 	}
 
 	public function get_plugin_name(): string {
@@ -77,6 +82,13 @@ class Settings implements Settings_Interface {
 	 * @see CLI
 	 */
 	public function get_cli_base(): ?string {
+		return $this->get_plugin_slug();
+	}
+
+	/**
+	 * The Rest API base.
+	 */
+	public function get_rest_base(): ?string {
 		return $this->get_plugin_slug();
 	}
 }
