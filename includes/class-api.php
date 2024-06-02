@@ -212,10 +212,20 @@ class API implements API_Interface {
 	}
 
 	/**
+	 * Append the REST path and action to the server provided in the Settings.
+	 *
+	 * If the provided server URL does not have http/https, https is assumed.
+	 *
 	 * https://my-domain.com/wp-json/slswc/v1/product
 	 */
 	protected function get_base_url( string $action ): string {
-		return trailingslashit( $this->settings->get_licence_server_host() ) . self::REST_API_PATH . $action;
+		$licence_server_host = $this->settings->get_licence_server_host();
+
+		$scheme = parse_url( $licence_server_host, PHP_URL_SCHEME ) ?? 'https';
+		$host   = parse_url( $licence_server_host, PHP_URL_HOST );
+		$path   = parse_url( $licence_server_host, PHP_URL_PATH );
+
+		return trailingslashit( "{$scheme}://{$host}{$path}" ) . self::REST_API_PATH . $action;
 	}
 
 	/**
