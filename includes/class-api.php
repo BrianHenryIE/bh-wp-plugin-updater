@@ -165,15 +165,19 @@ class API implements API_Interface {
 		return $this->licence;
 	}
 
-
 	/**
 	 * Product information should be available regardless of licence status.
 	 *
 	 * Get the remote product information for the {@see get_plugins()} information array.
 	 *
-	 * @return  array
+	 * null when first run and no cached product information.
 	 */
 	public function get_product_information( ?bool $refresh = null ): ?Product {
+
+		if ( true !== $refresh ) {
+			// TODO: Add a background task to refresh the product information.
+			// TODO: Check the last time it was refreshed and rate limit the refreshing.
+		}
 
 		return match ( $refresh ) {
 			true => $this->get_remote_product_information(),
@@ -253,7 +257,13 @@ class API implements API_Interface {
 		// Validate that the response is valid not what the response is.
 		// Check if there is an error and display it if there is one, otherwise process the response.
 		// @throws
-		$this->validate_response( $response );
+		$this->validate_response(
+			array(
+				'server_request_url' => $server_request_url,
+				'request_options'    => $request_options,
+			),
+			$response
+		);
 
 		$factoryRegistry = new FactoryRegistry();
 		$mapper          = JsonMapperBuilder::new()
@@ -272,7 +282,7 @@ class API implements API_Interface {
 	 *
 	 * @param \WP_Error|array $response
 	 */
-	public function validate_response( $response ): void {
+	public function validate_response( array $request, $response ): void {
 
 		if ( ! empty( $response ) ) {
 
@@ -281,7 +291,7 @@ class API implements API_Interface {
 				throw new \Exception(
 					sprintf(
 					// translators: 1. Error message.
-						__( 'HTTP Error: %s', 'bh-wp-slswc-client' ),
+						__( 'HTTP Error: %s. ' . $request['server_request_url'], 'bh-wp-slswc-client' ),
 						$response->get_error_message()
 					),
 					(int) $response->get_error_code()
@@ -303,10 +313,12 @@ class API implements API_Interface {
 				// This could be because the plugin slug is not found on the server.
 
 				$this->logger->error( $response['body'] );
+
 				throw new \Exception(
-					__( 'There was a problem with the license server.', 'bh-wp-slswc-client' ),
+					__( '404 There was a problem with the license server. ' . $request['server_request_url'], 'bh-wp-slswc-client' ),
 				);
 			}
+
 			if ( 400 === $response['response']['code'] ) {
 
 				$body = json_decode( $response['body'] );
@@ -358,7 +370,7 @@ class API implements API_Interface {
 	 * TODO: semver compare.
 	 */
 	public function is_update_available( ?bool $refresh = null ): bool {
-		return $this->get_product_information( $refresh )->get_new_version()
+		return $this->get_product_information( $refresh )?->get_version()
 				!== get_plugins()[ $this->settings->get_plugin_basename() ]['Version'];
 	}
 }
