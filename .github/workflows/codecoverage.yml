@@ -32,23 +32,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Maybe setup GitHub Pages branch
-        run: |
-          if [ -z $(git branch -l gh-pages | sed -e 's/ *//g') ]; then 
-            git checkout --orphan gh-pages;
-            touch index.html;
-            git add index.html;
-            git commit -m 'Set up gh-pages branch' index.html;
-            git push origin gh-pages;
-            git checkout -;
-          fi
-
-      - name: Checkout GitHub Pages branch for code coverage report
-        uses: actions/checkout@v3
-        with:
-          ref: gh-pages
-          path: tests/_output/html
+#
+#      - name: Maybe setup GitHub Pages branch
+#        run: |
+#          if [ -z $(git branch -l gh-pages | sed -e 's/ *//g') ]; then
+#            git checkout --orphan gh-pages;
+#            touch index.html;
+#            git add index.html;
+#            git commit -m 'Set up gh-pages branch' index.html;
+#            git push origin gh-pages;
+#            git checkout -;
+#          fi
+#
+#      - name: Checkout GitHub Pages branch for code coverage report
+#        uses: actions/checkout@v3
+#        with:
+#          ref: gh-pages
+#          path: tests/_output/html
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -95,9 +95,7 @@ jobs:
 
       - name: Clear previous code coverage
         run: |
-          cd tests/_output/html
-          rm -rf *
-          cd ../../..
+          cd tests/_output/html && rm -rf * && cd ../../.. || true
 
       - name: Run unit tests
         run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage unit.cov --debug || true;
@@ -124,14 +122,20 @@ jobs:
           git checkout -- tests/integration.suite.yml
           git checkout -- tests/wpunit.suite.yml
 
-      - name: Commit code coverage to gh-pages
-        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+      - name: Publish on GitHub Pages
+        uses: ftnext/action-push-ghpages@v1.0.0
         with:
-          repository: tests/_output/html
-          branch: gh-pages
-          commit_message: "🤖 Commit code coverage to gh-pages"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          build_dir: tests/_output/html
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Commit code coverage to gh-pages
+#        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+#        with:
+#          repository: tests/_output/html
+#          branch: gh-pages
+#          commit_message: "🤖 Commit code coverage to gh-pages"
+#        env:
+#          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Update README badge
         run: vendor/bin/php-coverage-badger tests/_output/clover.xml .github/coverage.svg PHPUnit
