@@ -33,6 +33,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Maybe setup GitHub Pages branch
+        run: |
+          if [ -z $(git branch -l gh-pages | sed -e 's/ *//g') ]; then 
+            git checkout --orphan gh-pages;
+            touch index.html;
+            git add index.html;
+            git commit -m 'Set up gh-pages branch' index.html;
+            git push origin gh-pages;
+            git checkout -;
+          fi
+
       - name: Checkout GitHub Pages branch for code coverage report
         uses: actions/checkout@v3
         with:
