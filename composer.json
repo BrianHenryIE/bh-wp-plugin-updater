@@ -18,7 +18,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "johnpbloch/wordpress-core-installer": true,
             "phpstan/extension-installer": true,
-            "alleyinteractive/composer-wordpress-autoloader": true
+            "alleyinteractive/composer-wordpress-autoloader": true,
+            "brianhenryie/composer-fallback-to-git": true
         },
         "platform": {
             "php": "8.0.5"
@@ -72,6 +73,7 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "antecedent/patchwork": "^2.1",
         "brianhenryie/color-logger": "^1.0",
+        "brianhenryie/composer-fallback-to-git": "^0.6.0",
         "brianhenryie/composer-phpstorm": "dev-master",
         "cweagans/composer-patches": "*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
@@ -89,8 +91,10 @@
         "wp-cli/dist-archive-command": "dev-main",
         "wp-cli/wp-cli-bundle": "*",
         "wp-coding-standards/wpcs": "*",
+        "wpackagist-plugin/document-generator-for-openapi": "*",
         "wpackagist-plugin/woocommerce": "*",
         "wpackagist-plugin/wordpress-importer": "*",
+        "wpackagist-plugin/wp-rest-api-log": "^1.7",
         "wpackagist-theme/storefront": "^4.6",
         "wpackagist-theme/twentytwentyfour": "*"
     },
@@ -100,7 +104,6 @@
                 "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
             }
         },
-        "symlinks": {},
         "phpstorm": {
             "exclude_folders": {
                 "folders": [
@@ -112,7 +115,8 @@
                 ],
                 "composer-symlinks": false
             }
-        }
+        },
+        "symlinks": {}
     },
     "scripts": {
         "post-install-cmd": [
@@ -130,7 +134,11 @@
             "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
             "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
         ],
-        "coverage-tests": [
+        "test": [
+            "codecept run unit",
+            "codecept run wpunit"
+        ],
+        "test-coverage": [
             "codecept run unit --coverage unit.cov",
             "codecept run wpunit --coverage wpunit.cov",
             "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
