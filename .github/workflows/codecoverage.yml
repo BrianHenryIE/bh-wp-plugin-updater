@@ -122,8 +122,6 @@ jobs:
       - name: Discard environment changes before committing other changes
         run: |
           git checkout -- .env.testing
-          git checkout -- tests/_data/dump.sql
-          git checkout -- tests/integration.suite.yml
           git checkout -- tests/wpunit.suite.yml
 
       - name: Publish on GitHub Pages
