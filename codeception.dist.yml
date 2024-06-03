@@ -24,6 +24,7 @@ extensions:
         - "lucatume\\WPBrowser\\Command\\MonkeyCacheClear"
 params:
     - .env.testing
+    - .env.github
 coverage:
     enabled: true
     include:
