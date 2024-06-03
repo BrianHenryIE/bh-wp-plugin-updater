@@ -29,8 +29,8 @@ class Rest {
 			$route_namespace,
 			'/licence-product',
 			array(
-				'methods'  => 'GET',
-				'callback' => array( $this, 'get_product_information' ),
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_product_information' ),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -39,8 +39,8 @@ class Rest {
 			$route_namespace,
 			'/licence',
 			array(
-				'methods'  => 'GET',
-				'callback' => array( $this, 'get_licence_details' ),
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_licence_details' ),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -49,8 +49,8 @@ class Rest {
 			$route_namespace,
 			'/licence/set-key',
 			array(
-				'methods'  => 'POST',
-				'callback' => array( $this, 'set_licence_key' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'set_licence_key' ),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -59,8 +59,8 @@ class Rest {
 			$route_namespace,
 			'/licence/activate',
 			array(
-				'methods'  => 'POST',
-				'callback' => array( $this, 'activate_licence' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'activate_licence' ),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -69,8 +69,8 @@ class Rest {
 			$route_namespace,
 			'/licence/deactivate',
 			array(
-				'methods'  => 'POST',
-				'callback' => array( $this, 'deactivate_licence' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'deactivate_licence' ),
 				'permission_callback' => '__return_true',
 			)
 		);
