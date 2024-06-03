@@ -115,6 +115,7 @@ jobs:
           mv _css css; find . -depth -name '*.html' -exec sed -i "s/_css\//css\//" {} +
           mv _icons icons; find . -depth -name '*.html' -exec sed -i "s/_icons\//icons\//" {} +
           mv _js js; find . -depth -name '*.html' -exec sed -i "s/_js\//js\//" {} +
+          git init;
           git add *
           cd ../../..
 
