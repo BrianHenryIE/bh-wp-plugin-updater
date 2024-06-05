@@ -73,7 +73,7 @@
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "antecedent/patchwork": "^2.1",
         "brianhenryie/color-logger": "^1.0",
-        "brianhenryie/composer-fallback-to-git": "^0.6.0",
+        "brianhenryie/composer-fallback-to-git": "dev-main",
         "brianhenryie/composer-phpstorm": "dev-master",
         "cweagans/composer-patches": "*",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
