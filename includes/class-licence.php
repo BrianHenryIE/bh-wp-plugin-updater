@@ -11,6 +11,7 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 
 class Licence implements \Serializable, \JsonSerializable {
@@ -41,6 +42,10 @@ class Licence implements \Serializable, \JsonSerializable {
 	public function __construct(
 		protected Settings_Interface $settings,
 	) {
+		$saved_licence = get_option( $this->settings->get_licence_data_option_name() );
+		if ( ! empty( $saved_licence ) ) {
+			$this->unserialize( $saved_licence );
+		}
 	}
 
 	public function save(): void {
@@ -112,37 +117,58 @@ class Licence implements \Serializable, \JsonSerializable {
 		$this->save();
 	}
 
-
+	/**
+	 * Serialize the object to an array.
+	 *
+	 * @used-by serialize()
+	 */
 	public function __serialize(): array {
-		return array(
-			'licence_key'  => $this->licence_key,
-			'status'       => $this->status,
-			'expires'      => ! is_null( $this->get_expires() ) ? $this->get_expires()->format( \DateTimeInterface::ATOM ) : $this->get_expires(),
-			'last_updated' => ! is_null( $this->get_last_updated() ) ? $this->get_last_updated()->format( \DateTimeInterface::ATOM ) : $this->get_last_updated(),
-		);
+
+		$allowed_fields  = array( 'licence_key', 'status', 'expires', 'last_updated' );
+		$datetime_fields = array( 'expires', 'last_updated' );
+
+		$arr = get_object_vars( $this );
+		foreach ( $datetime_fields as $datetime_field ) {
+			if ( isset( $arr[ $datetime_field ] ) && $arr[ $datetime_field ] instanceof DateTimeInterface ) {
+				$arr[ $datetime_field ] = $arr[ $datetime_field ]->format( \DateTimeInterface::ATOM );
+			}
+		}
+
+		return array_intersect_key( $arr, array_flip( $allowed_fields ) );
 	}
 
+	/**
+	 * Given an array of the object's properties, set them.
+	 *
+	 * @used-by unserialize()
+	 */
 	public function __unserialize( array $data ): void {
 		$this->licence_key  = $data['licence_key'];
 		$this->status       = $data['status'] ?? $this->status;
-		$this->expires      = new \DateTimeImmutable( $data['expires'] );
-		$this->last_updated = new \DateTimeImmutable( $data['last_updated'] );
+		$this->expires      = new DateTimeImmutable( $data['expires'] );
+		$this->last_updated = new DateTimeImmutable( $data['last_updated'] );
 	}
 
+
+	/**
+	 * @see Serializable::serialize()
+	 */
 	public function serialize() {
-		return json_encode( $this->__serialize() );
+		return $this->jsonSerialize();
 	}
 
+	/**
+	 * @see Serializable::unserialize()
+	 */
 	public function unserialize( string $data ) {
 		$this->__unserialize( json_decode( $data, true ) );
 	}
 
+	/**
+	 * @see \JsonSerializable::jsonSerialize()
+	 */
 	public function jsonSerialize() {
-		$arr                 = get_object_vars( $this );
-		$arr['expires']      = $this->get_expires()?->format( \DateTimeInterface::ATOM );
-		$arr['last_updated'] = $this->get_last_updated()?->format( \DateTimeInterface::ATOM );
-		unset( $arr['settings'] );
-		return $arr;
+		return $this->__serialize();
 	}
 
 	public function is_active() {

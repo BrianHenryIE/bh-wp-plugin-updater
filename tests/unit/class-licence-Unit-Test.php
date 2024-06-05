@@ -7,46 +7,44 @@ namespace BrianHenryIE\WP_SLSWC_Client;
  */
 class Licence_Unit_Test extends \Codeception\Test\Unit {
 
+	protected function setUp(): void {
+		parent::setUp();
+		\WP_Mock::setUp();
+	}
+
+	public function tearDown(): void {
+		\WP_Mock::tearDown();
+		parent::tearDown();
+	}
+
+	public function test_construct() {
+		$serialized = json_encode(
+			array(
+				'licence_key'  => 'abc123',
+				'status'       => 'active',
+				'expires'      => ( new \DateTimeImmutable() )->format( \DateTimeInterface::ATOM ),
+				'last_updated' => ( new \DateTimeImmutable() )->format( \DateTimeInterface::ATOM ),
+			)
+		);
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'a_plugin_licence' )
+			->andReturn( $serialized );
+
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$sut = new Licence( $settings );
+
+		$this->assertEquals( 'abc123', $sut->get_licence_key() );
+	}
+
 	public function test_serialize(): void {
 
-		$settings = new class() implements \BrianHenryIE\WP_SLSWC_Client\Settings_Interface {
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-			public function get_plugin_name(): string {
-				return 'Test Plugin';
-			}
-
-			public function get_log_level(): string {
-				return 'debug';
-			}
-
-			public function get_licence_server_host(): string {
-				return 'https://example.com';
-			}
-
-			public function get_cli_base(): ?string {
-				return 'test-plugin';
-			}
-
-			public function get_licence_data_option_name(): string {
-				return 'test-plugin-licence';
-			}
-
-			public function get_plugin_information_option_name(): string {
-				return 'test-plugin-information';
-			}
-
-			public function get_plugin_version(): string {
-				return '1.2.3';
-			}
-
-			public function get_plugin_slug(): string {
-				return 'test-plugin';
-			}
-
-			public function get_plugin_basename(): string {
-				return 'test-plugin/test-plugin.php';
-			}
-		};
+		\WP_Mock::userFunction( 'get_option' )->once()->andReturnFalse();
 
 		\WP_Mock::userFunction(
 			'update_option',
@@ -74,45 +72,10 @@ class Licence_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	public function test_json_serialize(): void {
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$settings = new class() implements \BrianHenryIE\WP_SLSWC_Client\Settings_Interface {
-
-			public function get_plugin_name(): string {
-				return 'Test Plugin';
-			}
-
-			public function get_log_level(): string {
-				return 'debug';
-			}
-
-			public function get_licence_server_host(): string {
-				return 'https://example.com';
-			}
-
-			public function get_cli_base(): ?string {
-				return 'test-plugin';
-			}
-
-			public function get_licence_data_option_name(): string {
-				return 'test-plugin-licence';
-			}
-
-			public function get_plugin_information_option_name(): string {
-				return 'test-plugin-information';
-			}
-
-			public function get_plugin_version(): string {
-				return '1.2.3';
-			}
-
-			public function get_plugin_slug(): string {
-				return 'test-plugin';
-			}
-
-			public function get_plugin_basename(): string {
-				return 'test-plugin/test-plugin.php';
-			}
-		};
+		\WP_Mock::userFunction( 'get_option' )->once()->andReturnFalse();
 
 		\WP_Mock::userFunction(
 			'update_option',
