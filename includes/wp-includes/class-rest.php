@@ -62,25 +62,27 @@ class Rest {
 			)
 		);
 
-		// register_rest_route(
-		// $route_namespace,
-		// '/licence/activate',
-		// array(
-		// 'methods'             => 'POST',
-		// 'callback'            => array( $this, 'activate_licence' ),
-		// 'permission_callback' => '__return_true',
-		// )
-		// );
-		//
-		// register_rest_route(
-		// $route_namespace,
-		// '/licence/deactivate',
-		// array(
-		// 'methods'             => 'POST',
-		// 'callback'            => array( $this, 'deactivate_licence' ),
-		// 'permission_callback' => '__return_true',
-		// )
-		// );
+		register_rest_route(
+			$route_namespace,
+			'/licence/activate',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'activate_licence' ),
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
+			)
+		);
+
+		register_rest_route(
+			$route_namespace,
+			'/licence/deactivate',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'deactivate_licence' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 	}
 
 	public function get_licence_details( WP_REST_Request $request ): WP_REST_Response {
@@ -237,17 +239,47 @@ class Rest {
 	}
 
 	public function activate_licence( WP_REST_Request $request ): WP_REST_Response {
-		$licence_key = $request->get_param( 'licence_key' );
 
-		$result = $this->api->activate_licence( sanitize_key( wp_unslash( $licence_key ) ) );
+		try {
+			$licence = $this->api->activate_licence();
+		} catch ( \Exception $exception ) {
+			$result = array(
+				'success' => false,
+				'error'   => get_class( $exception ),
+				'message' => $exception->getMessage(),
+			);
+
+			return new WP_REST_Response( $result, $exception->get_http_status_code() );
+		}
+
+		$result = array(
+			'success' => true,
+			'message' => 'Licence activated.',
+			'data'    => $licence,
+		);
 
 		return new WP_REST_Response( $result );
 	}
 
 	public function deactivate_licence( WP_REST_Request $request ): WP_REST_Response {
-		$licence_key = $request->get_param( 'licence_key' );
 
-		$result = $this->api->deactivate_licence();
+		try {
+			$licence = $this->api->deactivate_licence();
+		} catch ( \Exception $exception ) {
+			$result = array(
+				'success' => false,
+				'error'   => get_class( $exception ),
+				'message' => $exception->getMessage(),
+			);
+
+			return new WP_REST_Response( $result, $exception->get_http_status_code() );
+		}
+
+		$result = array(
+			'success' => true,
+			'message' => 'Licence deactivated.',
+			'data'    => $licence,
+		);
 
 		return new WP_REST_Response( $result );
 	}

@@ -8,12 +8,22 @@ use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use lucatume\WPBrowser\TestCase\WPRestApiTestCase;
 use Mockery;
 
-class RestTest extends WPRestApiTestCase {
+/**
+ * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest
+ */
+class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 	/**
 	 * @var \WpunitTester
 	 */
 	protected $tester;
+
+	protected function tearDown(): void {
+		parent::tearDown();
+
+		global $wp_rest_server;
+		$wp_rest_server = null;
+	}
 
 	public function test_get_licence(): void {
 
@@ -82,6 +92,7 @@ class RestTest extends WPRestApiTestCase {
 
 		$this->assertSame( 'inactive', $result->data->status );
 	}
+
 	public function test_set_and_activate_licence(): void {
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
@@ -121,5 +132,71 @@ class RestTest extends WPRestApiTestCase {
 		// {success:bool, message:string, data:object}
 
 		$this->assertSame( 'active', $result->data->status );
+	}
+
+
+	public function test_activate_licence(): void {
+
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_rest_base' )->andReturn( 'a-plugin' );
+
+		$api  = Mockery::mock( API_Interface::class )->makePartial();
+		$rest = new Rest( $api, $settings );
+
+		add_action( 'rest_api_init', array( $rest, 'register_routes' ) );
+		do_action( 'rest_api_init' );
+
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$licence = new Licence( $settings );
+		$licence->set_licence_key( 'abc123' );
+
+		wp_set_current_user( 1 );
+
+		$api->shouldReceive( 'activate_licence' )->once()->andReturn( $licence );
+
+		$request = new \WP_REST_Request( 'POST', '/a-plugin/v1/licence/activate' );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		// We need to encode->decode to get the data as an array in tests rather than the original object.
+		$result = json_decode( wp_json_encode( $response->get_data() ) );
+
+		// {success:bool, message:string, data:object}
+
+		$this->assertSame( 'Licence activated.', $result->message );
+	}
+
+
+	public function test_deactivate_licence(): void {
+
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_rest_base' )->andReturn( 'a-plugin' );
+
+		$api  = Mockery::mock( API_Interface::class )->makePartial();
+		$rest = new Rest( $api, $settings );
+
+		add_action( 'rest_api_init', array( $rest, 'register_routes' ) );
+		do_action( 'rest_api_init' );
+
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$licence = new Licence( $settings );
+		$licence->set_licence_key( 'abc123' );
+
+		wp_set_current_user( 1 );
+
+		$api->shouldReceive( 'deactivate_licence' )->once()->andReturn( $licence );
+
+		$request = new \WP_REST_Request( 'POST', '/a-plugin/v1/licence/deactivate' );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		// We need to encode->decode to get the data as an array in tests rather than the original object.
+		$result = json_decode( wp_json_encode( $response->get_data() ) );
+
+		// {success:bool, message:string, data:object}
+
+		$this->assertSame( 'Licence deactivated.', $result->message );
 	}
 }
