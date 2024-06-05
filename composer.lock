@@ -1119,12 +1119,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BrianHenryIE/composer-fallback-to-git.git",
-                "reference": "95582bffca785a2faca5124a431220c6e4935b3a"
+                "reference": "11cf5a22f1ae6c7ef59ffef3e641c81a1c32f21d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BrianHenryIE/composer-fallback-to-git/zipball/95582bffca785a2faca5124a431220c6e4935b3a",
-                "reference": "95582bffca785a2faca5124a431220c6e4935b3a",
+                "url": "https://api.github.com/repos/BrianHenryIE/composer-fallback-to-git/zipball/11cf5a22f1ae6c7ef59ffef3e641c81a1c32f21d",
+                "reference": "11cf5a22f1ae6c7ef59ffef3e641c81a1c32f21d",
                 "shasum": ""
             },
             "require": {
@@ -1149,7 +1149,7 @@
                 "issues": "https://github.com/BrianHenryIE/composer-fallback-to-git/issues",
                 "source": "https://github.com/BrianHenryIE/composer-fallback-to-git/tree/main"
             },
-            "time": "2024-06-05T00:35:04+00:00"
+            "time": "2024-06-05T01:00:20+00:00"
         },
         {
             "name": "brianhenryie/composer-phpstorm",
