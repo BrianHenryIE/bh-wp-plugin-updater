@@ -37,6 +37,29 @@ class API implements API_Interface {
 		$this->licence = $this->get_licence_details( false );
 	}
 
+	/**
+	 * Set the licence key without activting it.
+	 *
+	 * Deactivates existing licence key if present.
+	 *
+	 * @param string $license_key
+	 */
+	public function set_license_key( string $license_key ): Licence {
+
+		$existing_key = $this->licence->get_licence_key();
+		if ( $existing_key === $license_key ) {
+			return $this->licence;
+		}
+		if ( ! empty( $existing_key ) ) {
+			$this->deactivate_licence();
+		}
+
+		$this->licence->set_licence_key( $license_key );
+		$this->licence->save();
+
+		return $this->licence;
+	}
+
 	public function get_licence_details( ?bool $refresh = null ): Licence {
 		return match ( $refresh ) {
 			true => $this->refresh_licence_details(),
@@ -148,11 +171,7 @@ class API implements API_Interface {
 	 *
 	 * https://bhwp.ie/wp-json/slswc/v1/activate?slug=a-plugin&license_key=ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a
 	 */
-	public function activate_licence( string $licence_key ): Licence {
-
-		// TODO: If there is already a licence, deactivate it.
-
-		$this->licence->set_licence_key( $licence_key );
+	public function activate_licence(): Licence {
 
 		$response = $this->server_request( 'activate' );
 

@@ -10,6 +10,8 @@ use BrianHenryIE\WP_SLSWC_Client\Server\Product;
 
 interface API_Interface {
 
+	public function set_license_key( string $license_key ): Licence;
+
 	public function get_licence_details( ?bool $refresh = null ): Licence;
 
 	/**
@@ -55,9 +57,9 @@ interface API_Interface {
 	public function deactivate_licence();
 
 	/**
-	 * Set the licence key. Or set it to blank.
+	 * Attempt to activate an already set licence key.
 	 */
-	public function activate_licence( string $licence_key ): Licence;
+	public function activate_licence(): Licence;
 
 	/**
 	 * Is there a newer version of the plugin released?
