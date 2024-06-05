@@ -301,8 +301,9 @@ class API implements API_Interface {
 				throw new \Exception(
 					sprintf(
 					// translators: 1. Error message.
-						__( 'HTTP Error: %s. ' . $request['server_request_url'], 'bh-wp-slswc-client' ),
-						$response->get_error_message()
+						__( 'HTTP Error: %1$s. %2$s', 'bh-wp-slswc-client' ),
+						$response->get_error_message(),
+						$request['server_request_url']
 					),
 					(int) $response->get_error_code()
 				);
