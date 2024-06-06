@@ -39,6 +39,16 @@
         <exclude-pattern>*/includes/*</exclude-pattern>
     </rule>
 
+    <!-- Every object property should be typed -->
+    <rule ref="Squiz.Commenting.VariableComment.MissingVar">
+        <exclude-pattern>*/includes/*</exclude-pattern>
+    </rule>
+    <!-- When typing ambiguous veriables in functions, we don't usually need a comment. -->
+    <rule ref="Generic.Commenting.DocComment.MissingShort">
+        <exclude-pattern>*/includes/*</exclude-pattern>
+    </rule>
+
+
     <!-- Enforce fewer rules on tests -->
     <rule ref="Generic.Commenting.DocComment.MissingShort">
         <exclude-pattern>*/tests/*</exclude-pattern>
