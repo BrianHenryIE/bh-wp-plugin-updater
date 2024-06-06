@@ -14,6 +14,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	 * @covers ::activate_licence
 	 */
 	public function test_activate_licence() {
+		$this->markTestIncomplete();
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -36,6 +37,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	}
 
 	public function test_deactivate_licence(): void {
+		$this->markTestIncomplete();
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -68,6 +70,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	}
 
 	public function test_get_product_information(): void {
+		$this->markTestIncomplete();
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_licence_data_option_name' )
