@@ -80,7 +80,7 @@ class Admin_Assets_Test extends \Codeception\Test\Unit {
 	 * Verifies enqueue_scripts() calls wp_enqueue_script() with appropriate parameters.
 	 * Verifies the .js file exists.
 	 *
-	 * @covers ::enqueue_scripts
+	 * @covers ::enqueue_script
 	 * @see wp_enqueue_script()
 	 */
 	public function test_enqueue_scripts(): void {
