@@ -97,4 +97,27 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$this->assertEquals( $is_update, $result );
 	}
 
+	/**
+	 * @covers ::get_licence_details
+	 */
+	public function test_get_licence_details() {
+		$licence = new Licence();
+		$licence->set_licence_key( 'abc123' );
+		$licence->set_status( 'active' );
+		$licence->set_last_updated( new \DateTimeImmutable() );
+		$licence->set_expires( new \DateTimeImmutable() );
+
+		\WP_Mock::userFunction( 'get_option' )
+		        ->with( 'a_plugin_licence', null )
+		        ->andReturn( $licence );
+
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$logger = new ColorLogger();
+		$sut    = new API( $settings, $logger );
+
+		$this->assertEquals( 'abc123', $sut->get_licence_details(false)->get_licence_key() );
+	}
+
 }

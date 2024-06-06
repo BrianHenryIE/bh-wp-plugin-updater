@@ -15,8 +15,15 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 class Licence implements \Serializable, \JsonSerializable {
+
+	/**
+	 * The licence key itself. Will be null until set.
+	 */
 	protected ?string $licence_key = null;
 
+	/**
+	 * The status. Enum TBD. TODO.
+	 */
 	protected string $status = 'invalid'; // 'empty'
 
 	protected ?DateTimeInterface $expires = null;
@@ -39,22 +46,6 @@ class Licence implements \Serializable, \JsonSerializable {
 		);
 	}
 
-	public function __construct(
-		protected Settings_Interface $settings,
-	) {
-		$saved_licence = get_option( $this->settings->get_licence_data_option_name() );
-		if ( ! empty( $saved_licence ) ) {
-			$this->unserialize( $saved_licence );
-		}
-	}
-
-	public function save(): void {
-		update_option(
-			$this->settings->get_licence_data_option_name(),
-			$this
-		);
-	}
-
 	/**
 	 * Get the licence key itself.
 	 */
@@ -69,7 +60,6 @@ class Licence implements \Serializable, \JsonSerializable {
 	 */
 	public function set_licence_key( string $licence_key ): void {
 		$this->licence_key = $licence_key;
-		$this->save();
 	}
 
 	/**
@@ -85,10 +75,7 @@ class Licence implements \Serializable, \JsonSerializable {
 	 * @param string $status licence status.
 	 */
 	public function set_status( string $status ): void {
-
 		$this->status = $status;
-
-		$this->save();
 	}
 
 	/**
@@ -105,7 +92,6 @@ class Licence implements \Serializable, \JsonSerializable {
 	 */
 	public function set_expires( DateTimeInterface $expires ): void {
 		$this->expires = $expires;
-		$this->save();
 	}
 
 	public function get_last_updated(): ?DateTimeInterface {
@@ -114,7 +100,6 @@ class Licence implements \Serializable, \JsonSerializable {
 
 	public function set_last_updated( ?DateTimeInterface $last_updated ): void {
 		$this->last_updated = $last_updated;
-		$this->save();
 	}
 
 	/**

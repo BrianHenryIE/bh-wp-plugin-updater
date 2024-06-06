@@ -55,25 +55,40 @@ class API implements API_Interface {
 		}
 
 		$this->licence->set_licence_key( $license_key );
-		$this->licence->save();
+		$this->save_licence_information( $this->licence );
 
 		return $this->licence;
 	}
 
+	/**
+	 * Get the licence information, maybe cached, maybe remote, maaybe an empty Licence object.
+	 *
+	 * @param bool|null $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
+	 */
 	public function get_licence_details( ?bool $refresh = null ): Licence {
 		return match ( $refresh ) {
 			true => $this->refresh_licence_details(),
-			false => $this->get_saved_licence_information() ?? new Licence( $this->settings ),
+			false => $this->get_saved_licence_information() ?? new Licence(),
 			default => $this->get_saved_licence_information() ?? $this->refresh_licence_details(),
 		};
 	}
 
+	/**
+	 * Get the licence information from the WordPress options database table. Verifies it is a Licence object.
+	 */
 	protected function get_saved_licence_information(): ?Licence {
 		$value = get_option(
 			$this->settings->get_licence_data_option_name(),
 			null
 		);
 		return $value instanceof Licence ? $value : null;
+	}
+
+	protected function save_licence_information( Licence $licence ): void {
+		update_option(
+			$this->settings->get_licence_data_option_name(),
+			$licence
+		);
 	}
 
 	/**
