@@ -6,10 +6,11 @@
     "setup": "./tests/e2e-pw/setup",
     "wp-cli.yml": "./wp-cli.wp-env.yml",
     "wp-content/bh-wp-slswc-client": ".",
-    "wp-content/plugins/document-generator-for-openapi": "./vendor/schneiderundschuetz/document-generator-for-openapi",
+    "wp-content/plugins/document-generator-for-openapi": "./wp-content/plugins/document-generator-for-openapi",
     "wp-content/plugins/test-plugin": "./test-plugin",
     "wp-content/plugins/woocommerce": "./wp-content/plugins/woocommerce",
-    "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer"
+    "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer",
+    "wp-content/plugins/wp-rest-api-log": "./wp-content/plugins/wp-rest-api-log"
   },
   "phpVersion": "8.0"
 }
