@@ -41,7 +41,6 @@ class CLI {
 	 */
 	public function register_commands(): void {
 
-
 		$cli_base = $this->settings->get_cli_base();
 
 		if ( is_null( $cli_base ) ) {

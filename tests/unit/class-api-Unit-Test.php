@@ -108,8 +108,8 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$licence->set_expires( new \DateTimeImmutable() );
 
 		\WP_Mock::userFunction( 'get_option' )
-		        ->with( 'a_plugin_licence', null )
-		        ->andReturn( $licence );
+				->with( 'a_plugin_licence', null )
+				->andReturn( $licence );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
@@ -117,7 +117,6 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$logger = new ColorLogger();
 		$sut    = new API( $settings, $logger );
 
-		$this->assertEquals( 'abc123', $sut->get_licence_details(false)->get_licence_key() );
+		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->get_licence_key() );
 	}
-
 }
