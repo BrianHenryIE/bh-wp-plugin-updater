@@ -48,12 +48,12 @@ class CLI {
 		}
 
 		try {
-			WP_CLI::add_command( "{$cli_base} licence get-status", array( $cli, 'get_licence_status' ) );
-			WP_CLI::add_command( "{$cli_base} licence get-key", array( $cli, 'get_licence_key' ) );
-			WP_CLI::add_command( "{$cli_base} licence set-key", array( $cli, 'set_licence_key' ) );
-			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $cli, 'deactivate' ) );
-			WP_CLI::add_command( "{$cli_base} licence activate", array( $cli, 'activate' ) );
-			WP_CLI::add_command( "{$cli_base} product-information update", array( $cli, 'get_product_details' ) );
+			WP_CLI::add_command( "{$cli_base} licence get-status", array( $this, 'get_licence_status' ) );
+			WP_CLI::add_command( "{$cli_base} licence get-key", array( $this, 'get_licence_key' ) );
+			WP_CLI::add_command( "{$cli_base} licence set-key", array( $this, 'set_licence_key' ) );
+			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $this, 'deactivate' ) );
+			WP_CLI::add_command( "{$cli_base} licence activate", array( $this, 'activate' ) );
+			WP_CLI::add_command( "{$cli_base} product-information update", array( $this, 'get_product_details' ) );
 		} catch ( Exception $e ) {
 			$this->logger->error(
 				'Failed to register WP CLI commands: ' . $e->getMessage(),
@@ -77,6 +77,13 @@ class CLI {
 	 * @param array<string,string> $assoc_args The labelled command line arguments.
 	 */
 	public function get_licence_status( array $args, array $assoc_args ): void {
+
+		$command = WP_CLI::get_root_command()->get_name();
+
+
+
+
+		$this->logger->debug( "Running WP CLI command. `{$command}`", array( 'args' => $args, 'assoc_args' => $assoc_args ));
 
 		$result = $this->api->get_licence_details();
 
