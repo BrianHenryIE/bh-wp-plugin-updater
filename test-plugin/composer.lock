@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2bf3f296209a394c7f08c47dc0653b3",
+    "content-hash": "a66e6e65eb831bb8effd9660b9eb8f5c",
     "packages": [
         {
             "name": "alleyinteractive/composer-wordpress-autoloader",
@@ -108,12 +108,375 @@
             "time": "2022-08-31T20:51:21+00:00"
         },
         {
+            "name": "brianhenryie/bh-wc-logger",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BrianHenryIE/bh-wc-logger.git",
+                "reference": "ebc95ecb6ee79dd26be2fd2c6026740027a1be0d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BrianHenryIE/bh-wc-logger/zipball/ebc95ecb6ee79dd26be2fd2c6026740027a1be0d",
+                "reference": "ebc95ecb6ee79dd26be2fd2c6026740027a1be0d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "php-stubs/woocommerce-stubs": "*",
+                "phpcompatibility/phpcompatibility-wp": "*",
+                "phpstan/extension-installer": "*",
+                "squizlabs/php_codesniffer": "*",
+                "szepeviktor/phpstan-wordpress": "*",
+                "wordpress/wordpress": "*",
+                "wp-cli/wp-cli-bundle": "*",
+                "wp-coding-standards/wpcs": "*",
+                "wpackagist-plugin/woocommerce": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Henry",
+                    "email": "BrianHenryIE@gmail.com"
+                }
+            ],
+            "description": "A PSR-3 wrapper for WooCommerce WC_Logger.",
+            "support": {
+                "issues": "https://github.com/BrianHenryIE/bh-wc-logger/issues",
+                "source": "https://github.com/BrianHenryIE/bh-wc-logger/tree/0.1.1"
+            },
+            "time": "2024-04-20T00:44:55+00:00"
+        },
+        {
+            "name": "brianhenryie/bh-wp-cli-logger",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BrianHenryIE/bh-wp-cli-logger.git",
+                "reference": "c06cb528a85505394066ced5194f4f465b4610b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BrianHenryIE/bh-wp-cli-logger/zipball/c06cb528a85505394066ced5194f4f465b4610b8",
+                "reference": "c06cb528a85505394066ced5194f4f465b4610b8",
+                "shasum": ""
+            },
+            "require": {
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "10up/wp_mock": "*",
+                "antecedent/patchwork": "^2.1",
+                "brianhenryie/color-logger": "^1.0",
+                "brianhenryie/composer-phpstorm": "dev-master",
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0.0",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "cweagans/composer-patches": "*",
+                "dealerdirect/phpcodesniffer-composer-installer": "*",
+                "jaschilz/php-coverage-badger": "^2.0",
+                "johnpbloch/wordpress": "*",
+                "kporras07/composer-symlinks": "dev-master",
+                "lucatume/wp-browser": "*",
+                "phpcompatibility/phpcompatibility-wp": "*",
+                "phpstan/extension-installer": "*",
+                "phpunit/phpcov": "*",
+                "squizlabs/php_codesniffer": "*",
+                "szepeviktor/phpstan-wordpress": "*",
+                "wordpress/wordpress": "*",
+                "wp-cli/dist-archive-command": "dev-main",
+                "wp-cli/i18n-command": "^2.4",
+                "wp-cli/wp-cli-bundle": "*",
+                "wp-coding-standards/wpcs": "*",
+                "wpackagist-theme/twentytwenty": "*"
+            },
+            "type": "library",
+            "extra": {
+                "patches": {
+                    "jaschilz/php-coverage-badger": {
+                        "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+                    }
+                },
+                "symlinks": {
+                    "wp-content": "wordpress/wp-content",
+                    "test-plugin": "wp-content/plugins/bh-wp-cli-logger-test-plugin"
+                },
+                "phpstorm": {
+                    "exclude_folders": {
+                        "folders": [
+                            "vendor/php-stubs/woocommerce-stubs",
+                            "vendor/wordpress/wordpress/src",
+                            "vendor/wordpress/wordpress/build",
+                            "wp-content/plugins/bh-wp-cli-logger-test-plugin",
+                            "wordpress/wp-content"
+                        ],
+                        "include_folders": [
+                            "vendor/wordpress/wordpress/"
+                        ],
+                        "composer-symlinks": false
+                    }
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "BrianHenryIE",
+                    "email": "BrianHenryIE@gmail.com"
+                }
+            ],
+            "description": "A PSR logger for WP CLI commands.",
+            "support": {
+                "issues": "https://github.com/BrianHenryIE/bh-wp-cli-logger/issues",
+                "source": "https://github.com/BrianHenryIE/bh-wp-cli-logger/tree/v1.0.0"
+            },
+            "time": "2023-09-27T16:41:31+00:00"
+        },
+        {
+            "name": "brianhenryie/bh-wp-logger",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BrianHenryIE/bh-wp-logger.git",
+                "reference": "e483d5e8c5e630990616548f609cd61dcbcf9b16"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BrianHenryIE/bh-wp-logger/zipball/e483d5e8c5e630990616548f609cd61dcbcf9b16",
+                "reference": "e483d5e8c5e630990616548f609cd61dcbcf9b16",
+                "shasum": ""
+            },
+            "require": {
+                "brianhenryie/bh-wc-logger": "^0.1.0",
+                "brianhenryie/bh-wp-cli-logger": "^1.0",
+                "brianhenryie/bh-wp-private-uploads": "^0.1.1",
+                "ext-json": "*",
+                "katzgrau/klogger": "dev-master",
+                "php": ">=7.4",
+                "psr/log": "^1.0",
+                "wptrt/admin-notices": "^1.0"
+            },
+            "require-dev": {
+                "10up/wp_mock": "^1.0",
+                "alleyinteractive/wordpress-autoloader": "^1.1",
+                "antecedent/patchwork": "^2.1",
+                "brianhenryie/color-logger": "^1.0",
+                "codeception/module-asserts": "*",
+                "codeception/module-cli": "*",
+                "codeception/module-db": "*",
+                "codeception/module-filesystem": "*",
+                "codeception/module-phpbrowser": "*",
+                "codeception/module-webdriver": "*",
+                "codeception/util-universalframework": "*",
+                "cweagans/composer-patches": "*",
+                "jaschilz/php-coverage-badger": "^2.0",
+                "kporras07/composer-symlinks": "dev-master",
+                "lucatume/wp-browser": "^3.0",
+                "php-stubs/woocommerce-stubs": "*",
+                "phpcompatibility/phpcompatibility-wp": "*",
+                "phpstan/extension-installer": "*",
+                "phpunit/phpcov": "*",
+                "squizlabs/php_codesniffer": "^3.7",
+                "szepeviktor/phpstan-wordpress": "^1.3",
+                "woocommerce/woocommerce-sniffs": "*",
+                "wordpress/wordpress": "*",
+                "wp-cli/wp-cli-bundle": "*",
+                "wp-coding-standards/wpcs": "^3.0",
+                "wpackagist-plugin/woocommerce": "*",
+                "wpackagist-theme/twentytwenty": "*"
+            },
+            "type": "library",
+            "extra": {
+                "patches": {
+                    "jaschilz/php-coverage-badger": {
+                        "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+                    }
+                },
+                "symlinks": {
+                    "wp-content": "wordpress/wp-content",
+                    "test-plugin": "wp-content/plugins/bh-wp-logger-test-plugin",
+                    "src": "test-plugin/vendor/brianhenryie/bh-wp-logger/src",
+                    "assets": "test-plugin/vendor/brianhenryie/bh-wp-logger/assets",
+                    "vendor/brianhenryie/bh-wp-private-uploads/src": "test-plugin/vendor/brianhenryie/bh-wp-private-uploads/src",
+                    "vendor/brianhenryie/bh-wc-logger/src": "test-plugin/vendor/brianhenryie/bh-wc-logger/src",
+                    "vendor/brianhenryie/bh-wp-cli-logger/src": "test-plugin/vendor/brianhenryie/bh-wp-cli-logger/src",
+                    "vendor/brianhenryie/bh-wp-private-uploads/assets": "test-plugin/vendor/brianhenryie/bh-wp-private-uploads/assets",
+                    "vendor/wptrt/admin-notices/src": "test-plugin/vendor/wptrt/admin-notices/src"
+                },
+                "phpstorm": {
+                    "exclude_folders": {
+                        "folders": [
+                            "vendor/php-stubs/woocommerce-stubs",
+                            "vendor/wordpress/wordpress/src",
+                            "vendor/wordpress/wordpress/build",
+                            "wp-content/plugins/bh-wp-logger-test-plugin",
+                            "wordpress/wp-content"
+                        ],
+                        "include_folders": [
+                            "vendor/wordpress/wordpress/"
+                        ],
+                        "composer-symlinks": false
+                    }
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/",
+                    "assets"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Henry",
+                    "email": "BrianHenryIE@gmail.com"
+                }
+            ],
+            "description": "A PSR logger for WordPress plugins, with a nice WP_List_Table UI.",
+            "support": {
+                "issues": "https://github.com/BrianHenryIE/bh-wp-logger/issues",
+                "source": "https://github.com/BrianHenryIE/bh-wp-logger/tree/0.1.1"
+            },
+            "time": "2024-05-08T02:24:32+00:00"
+        },
+        {
+            "name": "brianhenryie/bh-wp-private-uploads",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BrianHenryIE/bh-wp-private-uploads.git",
+                "reference": "d9f362b2ef7aa7818791e82aad4e0cf5c686ef82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BrianHenryIE/bh-wp-private-uploads/zipball/d9f362b2ef7aa7818791e82aad4e0cf5c686ef82",
+                "reference": "d9f362b2ef7aa7818791e82aad4e0cf5c686ef82",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": ">=7.4",
+                "psr/log": "^1.0.0",
+                "wptrt/admin-notices": "^1.0"
+            },
+            "require-dev": {
+                "10up/wp_mock": "^1.0",
+                "alleyinteractive/wordpress-autoloader": "^1.1",
+                "antecedent/patchwork": "^2.1",
+                "brianhenryie/bh-wp-logger": "dev-master",
+                "brianhenryie/color-logger": "^1.0",
+                "brianhenryie/composer-phpstorm": "dev-master",
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0.0",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "cweagans/composer-patches": "*",
+                "dealerdirect/phpcodesniffer-composer-installer": "*",
+                "ext-json": "*",
+                "jaschilz/php-coverage-badger": "^2.0",
+                "kporras07/composer-symlinks": "dev-master",
+                "lucatume/wp-browser": "^3.2",
+                "phpcompatibility/phpcompatibility-wp": "^2.1",
+                "phpstan/extension-installer": "^1.3",
+                "phpunit/phpcov": "*",
+                "squizlabs/php_codesniffer": "*",
+                "szepeviktor/phpstan-wordpress": "^1.3",
+                "wordpress/wordpress": "*",
+                "wp-cli/dist-archive-command": "dev-main",
+                "wp-cli/wp-cli-bundle": "*",
+                "wp-coding-standards/wpcs": "^3.0",
+                "wpackagist-plugin/woocommerce": "*",
+                "wpackagist-theme/twentytwenty": "*"
+            },
+            "type": "library",
+            "extra": {
+                "patches": {
+                    "jaschilz/php-coverage-badger": {
+                        "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+                    }
+                },
+                "symlinks": {
+                    "wp-content": "wordpress/wp-content",
+                    "test-plugin": "wp-content/plugins/bh-wp-private-uploads-test-plugin"
+                },
+                "phpstorm": {
+                    "exclude_folders": {
+                        "folders": [
+                            "vendor/wordpress/wordpress/src",
+                            "vendor/wordpress/wordpress/build",
+                            "wp-content/plugins/bh-wp-private-uploads-test-plugin",
+                            "wordpress/wp-content"
+                        ],
+                        "include_folders": [
+                            "vendor/wordpress/wordpress/"
+                        ],
+                        "composer-symlinks": false
+                    }
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/",
+                    "assets/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "BrianHenryIE",
+                    "email": "BrianHenryIE@gmail.com"
+                },
+                {
+                    "name": "Chris Dennis",
+                    "email": "cgdennis@btinternet.com"
+                }
+            ],
+            "description": "This is a short description of what plugin_title does.",
+            "support": {
+                "issues": "https://github.com/BrianHenryIE/bh-wp-private-uploads/issues",
+                "source": "https://github.com/BrianHenryIE/bh-wp-private-uploads/tree/0.1.1"
+            },
+            "time": "2024-05-08T02:19:22+00:00"
+        },
+        {
             "name": "brianhenryie/bh-wp-slswc-client",
             "version": "dev-master",
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "98838bd0183b70b8cccdb266defbddc36c6bd785"
+                "reference": "c063db5e44d55c9e7d9254febdc6d78567085170"
             },
             "require": {
                 "ext-json": "*",
@@ -125,6 +488,7 @@
                 "alleyinteractive/composer-wordpress-autoloader": "^1.0",
                 "antecedent/patchwork": "^2.1",
                 "brianhenryie/color-logger": "^1.0",
+                "brianhenryie/composer-fallback-to-git": "dev-main",
                 "brianhenryie/composer-phpstorm": "dev-master",
                 "cweagans/composer-patches": "*",
                 "dealerdirect/phpcodesniffer-composer-installer": "*",
@@ -139,8 +503,14 @@
                 "squizlabs/php_codesniffer": "*",
                 "szepeviktor/phpstan-wordpress": "*",
                 "wordpress/wordpress": "*",
+                "wp-cli/dist-archive-command": "dev-main",
                 "wp-cli/wp-cli-bundle": "*",
                 "wp-coding-standards/wpcs": "*",
+                "wpackagist-plugin/document-generator-for-openapi": "*",
+                "wpackagist-plugin/woocommerce": "*",
+                "wpackagist-plugin/wordpress-importer": "*",
+                "wpackagist-plugin/wp-rest-api-log": "^1.7",
+                "wpackagist-theme/storefront": "^4.6",
                 "wpackagist-theme/twentytwentyfour": "*"
             },
             "type": "library",
@@ -149,10 +519,6 @@
                     "jaschilz/php-coverage-badger": {
                         "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
                     }
-                },
-                "symlinks": {
-                    "wp-content": "wordpress/wp-content",
-                    "./test-plugin": "wp-content/plugins/bh-wp-slswc-client"
                 },
                 "phpstorm": {
                     "exclude_folders": {
@@ -165,7 +531,8 @@
                         ],
                         "composer-symlinks": false
                     }
-                }
+                },
+                "symlinks": []
             },
             "autoload": {
                 "classmap": [
@@ -192,13 +559,11 @@
             "scripts": {
                 "post-install-cmd": [
                     "@create-symlinks",
-                    "@setup-wordpress",
-                    "@configure-phpstorm"
+                    "rm -rf wordpress/wp-content"
                 ],
                 "post-update-cmd": [
                     "@create-symlinks",
-                    "@setup-wordpress",
-                    "@configure-phpstorm"
+                    "rm -rf wordpress/wp-content"
                 ],
                 "create-symlinks": [
                     "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
@@ -207,28 +572,11 @@
                     "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
                     "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
                 ],
-                "setup-wordpress": [
-                    "export $(grep -v '^#' .env.testing | xargs); wp config create --dbname=$TEST_SITE_DB_NAME --dbuser=$TEST_SITE_DB_USER --dbpass=$TEST_SITE_DB_PASSWORD --allow-root || true",
-                    "export $(grep -v '^#' .env.testing | xargs); wp core install --url=\"localhost:8080/$PLUGIN_SLUG\" --title=\"$PLUGIN_NAME\" --admin_user=admin --admin_password=password --admin_email=admin@example.org || true; wp plugin activate $PLUGIN_SLUG || true;",
-                    "wp config set WP_DEBUG true --raw; wp config set WP_DEBUG_LOG true --raw; wp config set SCRIPT_DEBUG true --raw",
-                    "wp user create bob bob@example.org --user_pass=password || true;"
+                "test": [
+                    "codecept run unit",
+                    "codecept run wpunit"
                 ],
-                "create-databases": [
-                    "export $(grep -v '^#' .env.testing | xargs); [[ $(mysqld --version) =~ .*MariaDB.* ]] && mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED BY '\"$TEST_DB_PASSWORD\"';\" || mysql -e \"CREATE USER IF NOT EXISTS '\"$TEST_DB_USER\"'@'%' IDENTIFIED WITH mysql_native_password BY '\"$TEST_DB_PASSWORD\"';\";",
-                    "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_SITE_DB_NAME\"; USE \"$TEST_SITE_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_SITE_DB_NAME\".* TO '\"$TEST_SITE_DB_USER\"'@'%';\";",
-                    "export $(grep -v '^#' .env.testing | xargs); mysql -e \"CREATE DATABASE IF NOT EXISTS \"$TEST_DB_NAME\"; USE \"$TEST_DB_NAME\"; GRANT ALL PRIVILEGES ON \"$TEST_DB_NAME\".* TO '\"$TEST_DB_USER\"'@'%';\";",
-                    "@restore-acceptance-database"
-                ],
-                "delete-databases": [
-                    "export $(grep -v '^#' .env.testing | xargs); DB_DIR=$(mysql -e \"select @@datadir\" -N -B); if [[ \"$DB_DIR\" != \"$DB_DIR$TEST_SITE_DB_NAME\" ]]; then rm -rf $DB_DIR$TEST_SITE_DB_NAME; fi; if [[ \"$DB_DIR\" != \"$DB_DIR$TEST_DB_NAME\" ]]; then rm -rf $DB_DIR$TEST_DB_NAME; fi;"
-                ],
-                "save-acceptance-database": [
-                    "export $(grep -v '^#' .env.testing | xargs); mysqldump -u $TEST_SITE_DB_USER -p$TEST_SITE_DB_PASSWORD  $TEST_SITE_DB_NAME > tests/_data/dump.sql;"
-                ],
-                "restore-acceptance-database": [
-                    "export $(grep -v '^#' .env.testing | xargs); mysql $TEST_SITE_DB_NAME < tests/_data/dump.sql"
-                ],
-                "coverage-tests": [
+                "test-coverage": [
                     "codecept run unit --coverage unit.cov",
                     "codecept run wpunit --coverage wpunit.cov",
                     "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
@@ -243,7 +591,7 @@
                     "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
                 ],
                 "php-compatibility": [
-                    "phpcs -p src templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 7.4-"
+                    "phpcs -p includes templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
                 ],
                 "create-plugin-archive": [
                     "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",
@@ -251,6 +599,10 @@
                 ],
                 "github-actions": [
                     "act -P ubuntu-latest=shivammathur/node:latest"
+                ],
+                "sync-composer-wpenv": [
+                    "find wp-content/plugins -type d -depth 1 ! -type l | sort -h | jq -Rn '[inputs]' | jq 'reduce .[] as $item ({}; . + {$item:$item})' | jq '.[] |= \"./\\(.)\"' | jq '. | {mappings: .}' | jq --sort-keys -s '.[] * $existing[]' --slurpfile existing .wp-env.json | sponge .wp-env.json ",
+                    "for name in $(cat .wp-env.json | jq '.mappings | values[]' | sed -r 's/^\\\"|\\\"$//g'); do [ ! -d $name ] && [ ! -f $name ] && echo $name && jq 'del(.. | select(. ==\"'$name'\"))' .wp-env.json | sponge .wp-env.json; done; exit 0;"
                 ]
             },
             "license": [
@@ -335,6 +687,61 @@
                 }
             ],
             "time": "2024-05-14T09:24:45+00:00"
+        },
+        {
+            "name": "katzgrau/klogger",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/katzgrau/KLogger.git",
+                "reference": "36481c69db9305169a2ceadead25c2acaabd567c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/katzgrau/KLogger/zipball/36481c69db9305169a2ceadead25c2acaabd567c",
+                "reference": "36481c69db9305169a2ceadead25c2acaabd567c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "psr/log": "^1.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Katzgrau\\KLogger\\": "src/"
+                },
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kenny Katzgrau",
+                    "email": "katzgrau@gmail.com"
+                },
+                {
+                    "name": "Dan Horrigan",
+                    "email": "dan@dhorrigan.com"
+                }
+            ],
+            "description": "A Simple Logging Class",
+            "keywords": [
+                "logging"
+            ],
+            "support": {
+                "issues": "https://github.com/katzgrau/KLogger/issues",
+                "source": "https://github.com/katzgrau/KLogger/tree/1.2.2"
+            },
+            "time": "2022-07-29T20:41:14+00:00"
         },
         {
             "name": "myclabs/php-enum",
@@ -556,30 +963,30 @@
         },
         {
             "name": "psr/log",
-            "version": "3.0.0",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001"
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe5ea303b0887d5caefd3d431c3e61ad47037001",
-                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.0"
+                "php": ">=5.3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Psr\\Log\\": "src"
+                    "Psr\\Log\\": "Psr/Log/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -600,9 +1007,9 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/3.0.0"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
-            "time": "2021-07-14T16:46:02+00:00"
+            "time": "2021-05-03T11:20:27+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -1209,6 +1616,58 @@
                 }
             ],
             "time": "2024-04-18T08:26:06+00:00"
+        },
+        {
+            "name": "wptrt/admin-notices",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WPTT/admin-notices.git",
+                "reference": "1df860950b4198cc93e867873b1b571b51f908b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WPTT/admin-notices/zipball/1df860950b4198cc93e867873b1b571b51f908b0",
+                "reference": "1df860950b4198cc93e867873b1b571b51f908b0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
+                "php": "~7.1",
+                "szepeviktor/phpstan-wordpress": "^0.6.0",
+                "wp-coding-standards/wpcs": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "WPTRT\\AdminNotices\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WordPress.org Theme Review Team",
+                    "email": "themes@wordpress.org",
+                    "homepage": "https://make.wordpress.org/themes",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A class to create admin-notices for the WordPress dashboard.",
+            "homepage": "https://github.com/WPTRT/admin-notices",
+            "keywords": [
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/WPTRT/admin-notices/issues",
+                "source": "https://github.com/WPTT/admin-notices/tree/v1.0.4"
+            },
+            "time": "2023-10-06T03:42:42+00:00"
         }
     ],
     "packages-dev": [],

@@ -13,6 +13,7 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client_Test_Plugin;
 
+use BrianHenryIE\WP_Logger\Logger;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use BrianHenryIE\WP_SLSWC_Client\SLSWC_Client;
 
@@ -31,9 +32,24 @@ class Init_Slswc_Client {
 	}
 
 	public function init_slswc() {
+
+		$logger_settings = new class() implements \BrianHenryIE\WP_Logger\Logger_Settings_Interface {
+			use \BrianHenryIE\WP_Logger\Logger_Settings_Trait;
+
+			public function get_plugin_basename(): string {
+				return plugin_basename( __FILE__ );
+			}
+
+			public function get_log_level(): string {
+				return 'debug';
+			}
+		};
+
+		$logger = Logger::instance( $logger_settings );
+
 		SLSWC_Client::get_instance(
 			$this->settings,
-			new \Psr\Log\NullLogger()
+			$logger
 		);
 	}
 
