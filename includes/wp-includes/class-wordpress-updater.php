@@ -1,6 +1,8 @@
 <?php
 /**
  * @see wp_update_plugins()
+ *
+ * @package brianhenryie/bh-wp-slswc-client
  */
 
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
@@ -27,7 +29,7 @@ class WordPress_Updater {
 	/**
 	 * Add the plugin's update information to the transient. To be used later on plugins.php.
 	 *
-	 * This does not preform any HTTP requests.
+	 * This never preforms any HTTP requests.
 	 *
 	 * @param false|stdClass{last_checked:int, no_update: array<stdClass>, response: array<stdClass>, translations: array} $value
 	 * @param string                                                                                                       $transient Always 'update_plugins'.
@@ -43,6 +45,7 @@ class WordPress_Updater {
 		}
 
 		if ( ! $this->api->is_update_available( false ) ) {
+			// TODO: Should thie more correctly be added to the `no_update` field?
 			return $value;
 		}
 

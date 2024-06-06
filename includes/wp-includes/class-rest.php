@@ -48,7 +48,7 @@ class Rest {
 				'methods'             => 'POST',
 				'args'                => array(
 					'licence_key' => array(
-						'required' => false,
+						'required' => false, // i.e. can be null to remove it.
 					),
 					'activate'    => array(
 						'required' => false,

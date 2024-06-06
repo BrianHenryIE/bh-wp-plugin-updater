@@ -111,49 +111,6 @@ class API implements API_Interface {
 			return $this->licence;
 		}
 
-		// stdClass Object
-		// (
-		// [status] => active
-		// [slug] => bh-wc-zelle-gateway
-		// [message] => License Valid
-		// [software_details] => stdClass Object
-		// (
-		// [name] => bh-wc-zelle-gateway
-		// [id] => 2
-		// [slug] => bh-wc-zelle-gateway
-		// [plugin] => bh-wc-zelle-gateway
-		// [version] => 1.1.0
-		// [last_updated] => 2023-11-15 00:00:00
-		// [homepage] => http://localhost:8080/bh-wp-autologin-urls/product/bh-wc-zelle-gateway/
-		// [requires] => 6.0
-		// [tested] => 6.4
-		// [new_version] => 1.1.0
-		// [author] => BH
-		// [sections] => stdClass Object
-		// (
-		// [description] => bh-wc-zelle-gateway
-		// [installation] =>
-		// [changelog] => 1.1.0 zelle
-		// )
-		// [banners] => stdClass Object
-		// (
-		// [low] =>
-		// [high] =>
-		// )
-		//
-		// [rating] => 0
-		// [ratings] => Array
-		// (
-		// )
-		//
-		// [num_ratings] => 0
-		// [active_installs] => 1
-		// [external] => 1
-		// [package] =>
-		// [download_link] =>
-		// )
-		// )
-
 		$this->licence->set_status( $response->get_status() );
 		$this->licence->set_last_updated( new DateTimeImmutable() );
 
@@ -255,9 +212,9 @@ class API implements API_Interface {
 	protected function get_base_url( string $action ): string {
 		$licence_server_host = $this->settings->get_licence_server_host();
 
-		$scheme = parse_url( $licence_server_host, PHP_URL_SCHEME ) ?? 'https';
-		$host   = parse_url( $licence_server_host, PHP_URL_HOST );
-		$path   = parse_url( $licence_server_host, PHP_URL_PATH );
+		$scheme = wp_parse_url( $licence_server_host, PHP_URL_SCHEME ) ?? 'https';
+		$host   = wp_parse_url( $licence_server_host, PHP_URL_HOST );
+		$path   = wp_parse_url( $licence_server_host, PHP_URL_PATH );
 
 		return trailingslashit( "{$scheme}://{$host}{$path}" ) . self::REST_API_PATH . $action;
 	}
