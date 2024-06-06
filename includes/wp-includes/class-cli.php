@@ -11,12 +11,17 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use Exception;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use WP_CLI;
 
 /**
  * `wp {$cli_base} licence get-status`
  */
 class CLI {
+	use LoggerAwareTrait;
 
 	/**
 	 * Constructor.
@@ -25,7 +30,37 @@ class CLI {
 	 */
 	public function __construct(
 		protected API_Interface $api,
+		protected Settings_Interface $settings,
+		LoggerInterface $logger
 	) {
+		$this->logger = $logger;
+	}
+
+	/**
+	 * Register the WP-CLI commands.
+	 */
+	public function register_commands(): void {
+
+
+		$cli_base = $this->settings->get_cli_base();
+
+		if ( is_null( $cli_base ) ) {
+			return;
+		}
+
+		try {
+			WP_CLI::add_command( "{$cli_base} licence get-status", array( $cli, 'get_licence_status' ) );
+			WP_CLI::add_command( "{$cli_base} licence get-key", array( $cli, 'get_licence_key' ) );
+			WP_CLI::add_command( "{$cli_base} licence set-key", array( $cli, 'set_licence_key' ) );
+			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $cli, 'deactivate' ) );
+			WP_CLI::add_command( "{$cli_base} licence activate", array( $cli, 'activate' ) );
+			WP_CLI::add_command( "{$cli_base} product-information update", array( $cli, 'get_product_details' ) );
+		} catch ( Exception $e ) {
+			$this->logger->error(
+				'Failed to register WP CLI commands: ' . $e->getMessage(),
+				array( 'exception' => $e )
+			);
+		}
 	}
 
 	/**
