@@ -25,7 +25,7 @@ use Psr\Log\LoggerInterface;
 class API implements API_Interface {
 	use LoggerAwareTrait;
 
-	const REST_API_PATH = 'wp-json/slswc/v1/';
+	const REMOTE_REST_API_BASE = 'wp-json/slswc/v1/';
 
 	protected Licence $licence;
 
@@ -216,7 +216,7 @@ class API implements API_Interface {
 		$host   = wp_parse_url( $licence_server_host, PHP_URL_HOST );
 		$path   = wp_parse_url( $licence_server_host, PHP_URL_PATH );
 
-		return trailingslashit( "{$scheme}://{$host}{$path}" ) . self::REST_API_PATH . $action;
+		return trailingslashit( "{$scheme}://{$host}{$path}" ) . self::REMOTE_REST_API_BASE . $action;
 	}
 
 	/**
@@ -249,10 +249,10 @@ class API implements API_Interface {
 		$endpoint_get_actions = apply_filters( 'slswc_client_get_actions', array( 'product', 'products' ) );
 		if ( in_array( $action, $endpoint_get_actions, true ) ) {
 			$type     = Product_Response::class;
-			$response = wp_safe_remote_get( $server_request_url, $request_options );
+			$response = wp_remote_get( $server_request_url, $request_options );
 		} else {
 			$type     = License_Response::class;
-			$response = wp_safe_remote_post( $server_request_url, $request_options );
+			$response = wp_remote_post( $server_request_url, $request_options );
 		}
 
 		// Validate that the response is valid not what the response is.
