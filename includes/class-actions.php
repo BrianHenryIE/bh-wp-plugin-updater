@@ -132,6 +132,6 @@ class Actions {
 
 		$cli = new CLI( $this->api, $this->settings, $this->logger );
 
-		add_action( 'cli_init', array( $cli, 'register_cli_commands' ) );
+		add_action( 'cli_init', array( $cli, 'register_commands' ) );
 	}
 }
