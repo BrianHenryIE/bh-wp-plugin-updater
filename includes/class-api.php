@@ -400,7 +400,10 @@ class API implements API_Interface {
 	 * TODO: semver compare.
 	 */
 	public function is_update_available( ?bool $refresh = null ): bool {
-		return $this->get_product_information( $refresh )?->get_version()
-				!== get_plugins()[ $this->settings->get_plugin_basename() ]['Version'];
+		return version_compare(
+			$this->get_product_information( $refresh )?->get_version(),
+			get_plugins()[ $this->settings->get_plugin_basename() ]['Version'],
+			'>'
+		);
 	}
 }
