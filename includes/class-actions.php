@@ -15,9 +15,7 @@ use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\WordPress_Updater;
-use Exception;
 use Psr\Log\LoggerInterface;
-use WP_CLI;
 
 /**
  * `add_action` and `add_filter` hooks.
@@ -132,30 +130,8 @@ class Actions {
 	 */
 	protected function add_cli_hooks(): void {
 
-		if ( ! class_exists( WP_CLI::class ) ) {
-			return;
-		}
+		$cli = new CLI( $this->api, $this->settings, $this->logger );
 
-		$cli_base = $this->settings->get_cli_base();
-
-		if ( is_null( $cli_base ) ) {
-			return;
-		}
-
-		$cli = new CLI( $this->api );
-
-		try {
-			WP_CLI::add_command( "{$cli_base} licence get-status", array( $cli, 'get_licence_status' ) );
-			WP_CLI::add_command( "{$cli_base} licence get-key", array( $cli, 'get_licence_key' ) );
-			WP_CLI::add_command( "{$cli_base} licence set-key", array( $cli, 'set_licence_key' ) );
-			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $cli, 'deactivate' ) );
-			WP_CLI::add_command( "{$cli_base} licence activate", array( $cli, 'activate' ) );
-			WP_CLI::add_command( "{$cli_base} product-information update", array( $cli, 'get_product_details' ) );
-		} catch ( Exception $e ) {
-			$this->logger->error(
-				'Failed to register WP CLI commands: ' . $e->getMessage(),
-				array( 'exception' => $e )
-			);
-		}
+		add_action( 'cli_init', array( $cli, 'register_cli_commands' ) );
 	}
 }

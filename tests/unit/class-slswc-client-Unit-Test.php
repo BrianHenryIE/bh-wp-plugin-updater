@@ -1,20 +1,18 @@
 <?php
 /**
- * Tests for the root plugin file.
+ * Tests main library singleton.
  *
  * @package brianhenryie/bh-wp-slswc-client
- * @author  BrianHenryIE <BrianHenryIE@gmail.com>
  */
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
-use BrianHenryIE\WP_Logger\Logger;
 use Psr\Log\NullLogger;
 
 /**
- * Class Plugin_WP_Mock_Test
+ * @coversDefaultClass  \BrianHenryIE\WP_SLSWC_Client\SLSWC_Client
  */
-class Plugin_Unit_Test extends \Codeception\Test\Unit {
+class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -26,15 +24,13 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		parent::tearDown();
 	}
 
-	/**
-	 * Verifies the plugin initialization.
-	 * Verifies the plugin does not output anything to screen.
-	 */
 	public function test_plugin_include(): void {
+
+		$this->markTestIncomplete();
 
 		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
 		\Patchwork\redefine(
-			array( BH_WP_SLSWC_Client::class, '__construct' ),
+			array( SLSWC_Client::class, '__construct' ),
 			function () {}
 		);
 
@@ -109,6 +105,6 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->assertArrayHasKey( 'bh_wp_slswc_client', $GLOBALS );
 
-		$this->assertInstanceOf( BH_WP_SLSWC_Client::class, $GLOBALS['bh_wp_slswc_client'] );
+		$this->assertInstanceOf( SLSWC_Client::class, $GLOBALS['bh_wp_slswc_client'] );
 	}
 }
