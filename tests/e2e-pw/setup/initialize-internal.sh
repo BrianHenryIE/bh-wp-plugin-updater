@@ -9,6 +9,7 @@ echo "Running " $(basename "$0") " for " $PLUGIN_SLUG;
 rm /var/www/html/wp-content/plugins/test-plugin/vendor/brianhenryie/bh-wp-slswc-client;
 ln -s /var/www/html/wp-content/bh-wp-slswc-client/ /var/www/html/wp-content/plugins/test-plugin/vendor/brianhenryie/bh-wp-slswc-client;
 
+
 echo "wp plugin activate --all"
 wp plugin activate --all
 

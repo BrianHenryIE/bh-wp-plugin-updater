@@ -10,6 +10,8 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Server\License_Response;
 use BrianHenryIE\WP_SLSWC_Client\Server\Product;
 use BrianHenryIE\WP_SLSWC_Client\Server\Product_Response;
@@ -96,20 +98,19 @@ class API implements API_Interface {
 	 *
 	 * @used-by Cron::handle_update_check_cron_job()
 	 * @used-by CLI
+	 * @throws SLSWC_Exception
 	 */
 	protected function refresh_licence_details(): Licence {
 
+		if( is_null( $this->licence->get_licence_key() )) {
+			throw new Licence_Key_Not_Set_Exception();
+		}
+
 		// TODO: This should never be called on a pageload.
 
-		try {
-			$response = $this->server_request( 'check_update' );
-		} catch ( \Exception $e ) {
+		// TODO: Do not continuously retry.
 
-			// TODO: Do not continuously retry.
-
-			$this->logger->error( $e->getMessage() );
-			return $this->licence;
-		}
+		$response = $this->server_request( 'check_update' );
 
 		$this->licence->set_status( $response->get_status() );
 		$this->licence->set_last_updated( new DateTimeImmutable() );
@@ -126,8 +127,15 @@ class API implements API_Interface {
 	 * Is this a good idea? Should it only be possible from the licence server?
 	 *
 	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
+	 *
+	 * @throws SLSWC_Exception
 	 */
 	public function deactivate_licence(): Licence {
+
+		if( is_null( $this->licence->get_licence_key() )) {
+			throw new Licence_Key_Not_Set_Exception();
+		}
+
 		$response = $this->server_request( 'deactivate' );
 
 		$this->licence->set_status( $response->get_status() );
@@ -142,8 +150,14 @@ class API implements API_Interface {
 	 * Activate the licence on this site.
 	 *
 	 * https://bhwp.ie/wp-json/slswc/v1/activate?slug=a-plugin&license_key=ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a
+	 *
+	 * @throws SLSWC_Exception
 	 */
 	public function activate_licence(): Licence {
+
+		if( is_null( $this->licence->get_licence_key() )) {
+			throw new Licence_Key_Not_Set_Exception();
+		}
 
 		$response = $this->server_request( 'activate' );
 
