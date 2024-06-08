@@ -5,7 +5,7 @@
 // "customer_id": null
 // }
 
-namespace BrianHenryIE\WP_SLSWC_Client\Server;
+namespace BrianHenryIE\WP_SLSWC_Client\Server\SLSWC;
 
 class Order {
 

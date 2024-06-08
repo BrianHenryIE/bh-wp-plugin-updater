@@ -8,7 +8,7 @@
 // "environment": "staging"
 // }
 
-namespace BrianHenryIE\WP_SLSWC_Client\Server;
+namespace BrianHenryIE\WP_SLSWC_Client\Server\SLSWC;
 
 class Domain {
 
