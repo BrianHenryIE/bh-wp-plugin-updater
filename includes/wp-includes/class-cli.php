@@ -206,7 +206,7 @@ class CLI {
 	 */
 	public function deactivate( array $args, array $assoc_args ): void {
 
-		try{
+		try {
 			$result = $this->api->deactivate_licence();
 		} catch ( Licence_Key_Not_Set_Exception $e ) {
 			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );

@@ -240,10 +240,10 @@ class API implements API_Interface {
 	protected function server_request( string $action ) {
 
 		$request_info = array(
-			 'slug'        => $this->settings->get_plugin_slug(),
-//			'slug'        => 'a-plugin',
-			 'license_key' => $this->licence->get_licence_key(),
-//			'license_key' => 'ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a',
+			'slug'            => $this->settings->get_plugin_slug(),
+			// 'slug'        => 'a-plugin',
+				'license_key' => $this->licence->get_licence_key(),
+		// 'license_key' => 'ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a',
 		);
 
 		/**
