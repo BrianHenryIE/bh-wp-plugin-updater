@@ -103,7 +103,7 @@ class API implements API_Interface {
 	 */
 	protected function refresh_licence_details(): Licence {
 
-		if( is_null( $this->licence->get_licence_key() )) {
+		if ( is_null( $this->licence->get_licence_key() ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -115,9 +115,6 @@ class API implements API_Interface {
 
 		$this->licence->set_status( $response->get_status() );
 		$this->licence->set_last_updated( new DateTimeImmutable() );
-
-		// TODO: string -> DateTime
-		// $this->licence->set_expires( $response_body->expires );
 
 		return $this->licence;
 	}
@@ -133,7 +130,7 @@ class API implements API_Interface {
 	 */
 	public function deactivate_licence(): Licence {
 
-		if( is_null( $this->licence->get_licence_key() )) {
+		if ( is_null( $this->licence->get_licence_key() ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -156,7 +153,7 @@ class API implements API_Interface {
 	 */
 	public function activate_licence(): Licence {
 
-		if( is_null( $this->licence->get_licence_key() )) {
+		if ( is_null( $this->licence->get_licence_key() ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -243,8 +240,10 @@ class API implements API_Interface {
 	protected function server_request( string $action ) {
 
 		$request_info = array(
-			'slug'        => $this->settings->get_plugin_slug(),
-			'license_key' => $this->licence->get_licence_key(),
+			 'slug'        => $this->settings->get_plugin_slug(),
+//			'slug'        => 'a-plugin',
+			 'license_key' => $this->licence->get_licence_key(),
+//			'license_key' => 'ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a',
 		);
 
 		/**
@@ -281,11 +280,11 @@ class API implements API_Interface {
 			$response
 		);
 
-		$factoryRegistry = new FactoryRegistry();
-		$mapper          = JsonMapperBuilder::new()
+		$factory_registry = new FactoryRegistry();
+		$mapper           = JsonMapperBuilder::new()
 									->withDocBlockAnnotationsMiddleware()
-									->withObjectConstructorMiddleware( $factoryRegistry )
-									->withPropertyMapper( new PropertyMapper( $factoryRegistry ) )
+									->withObjectConstructorMiddleware( $factory_registry )
+									->withPropertyMapper( new PropertyMapper( $factory_registry ) )
 									->withTypedPropertiesMiddleware()
 									->withNamespaceResolverMiddleware()
 									->build();
@@ -300,6 +299,16 @@ class API implements API_Interface {
 	 * @throws SLSWC_Exception
 	 */
 	public function validate_response( array $request, $response ): void {
+
+		$this->logger->debug(
+			'Validating response',
+			array(
+				'request'  => $request,
+				'response' => $response,
+			)
+		);
+
+		$this->logger->debug( $response['body'] );
 
 		if ( ! empty( $response ) ) {
 
@@ -340,6 +349,8 @@ class API implements API_Interface {
 			if ( 400 === $response['response']['code'] ) {
 
 				$body = json_decode( $response['body'] );
+
+				$this->logger->error( '`json:' . json_encode( $body ) . '`' );
 
 				foreach ( $body->data->params as $param => $message ) {
 					throw new \Exception(
