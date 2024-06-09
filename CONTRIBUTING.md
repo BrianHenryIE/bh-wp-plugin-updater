@@ -1,4 +1,27 @@
 
+
+
+`chmod +x tests/e2e-pw/setup/initialize-external.sh`
+`chmod +x tests/e2e-pw/setup/initialize-internal.sh`
+`chmod +x tests/e2e-pw/setup/initialize-internal-tests.sh`
+For the test plugin:
+`composer install --no-dev`
+
+
+```
+cd test-plugin;
+rm -rf vendor;
+composer update --no-dev;
+cd ..;
+npx wp-env start;
+```
+```
+echo "y" | npx wp-env destroy && npx wp-env start;
+```
+
+
+`wp test-plugin logger delete-all; wp test-plugin licence activate`
+
 `composer show --self`
 `composer show --direct`
 `composer show --outdated`
