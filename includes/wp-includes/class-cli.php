@@ -11,6 +11,8 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use Exception;
 use Psr\Log\LoggerAwareTrait;
@@ -49,10 +51,10 @@ class CLI {
 
 		try {
 			WP_CLI::add_command( "{$cli_base} licence get-status", array( $this, 'get_licence_status' ) );
-			WP_CLI::add_command( "{$cli_base} licence get-key", array( $this, 'get_licence_key' ) );
 			WP_CLI::add_command( "{$cli_base} licence set-key", array( $this, 'set_licence_key' ) );
-			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $this, 'deactivate' ) );
+			WP_CLI::add_command( "{$cli_base} licence get-key", array( $this, 'get_licence_key' ) );
 			WP_CLI::add_command( "{$cli_base} licence activate", array( $this, 'activate' ) );
+			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $this, 'deactivate' ) );
 			WP_CLI::add_command( "{$cli_base} product-information update", array( $this, 'get_product_details' ) );
 		} catch ( Exception $e ) {
 			$this->logger->error(
@@ -78,14 +80,13 @@ class CLI {
 	 */
 	public function get_licence_status( array $args, array $assoc_args ): void {
 
-		$command = WP_CLI::get_root_command()->get_name();
-
-
-
-
-		$this->logger->debug( "Running WP CLI command. `{$command}`", array( 'args' => $args, 'assoc_args' => $assoc_args ));
-
-		$result = $this->api->get_licence_details();
+		try {
+			$result = $this->api->get_licence_details();
+		} catch ( Licence_Key_Not_Set_Exception $e ) {
+			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
+		} catch ( SLSWC_Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
+		}
 
 		WP_CLI::success( $result->get_status() );
 	}
@@ -108,13 +109,17 @@ class CLI {
 
 		$result = $this->api->get_licence_details( false );
 
-		WP_CLI::success( $result->get_licence_key() ?? 'empty' );
+		WP_CLI::success( $result->get_licence_key() ?? 'No licence key set' );
 	}
 
 	/**
 	 * Set the licence key.
 	 *
-	 * Immediately activates the licence.
+	 * Sets the licence key the plugin should use. Conditionally activates it.
+	 *
+	 * A licence key cannot be validated until it is activated. I.e. an invalid licence key may be accepted.
+	 *
+	 * TODO: A licence key of an invalid format will be rejected.
 	 *
 	 * ## OPTIONS
 	 *
@@ -125,6 +130,10 @@ class CLI {
 	 *
 	 *   # Set the licence key the plugin should use.
 	 *   $ wp $cli_base licence set-key 876235557140adb9b8c47b28488cda8481d98495
+	 *   Success: active
+	 *
+	 *   # Set the licence key the plugin should use and activate it.
+	 *   $ wp $cli_base licence set-key 876235557140adb9b8c47b28488cda8481d98495 --activate
 	 *   Success: active
 	 *
 	 *   # Set an invalid licence key
@@ -138,11 +147,46 @@ class CLI {
 	 */
 	public function set_licence_key( array $args, array $assoc_args ): void {
 
-		$result = $this->api->activate_licence( $args[0] );
+		try {
+			$result = $this->api->set_license_key( $args[0] );
 
-		WP_CLI::success( $result->get_status() );
+			if ( \WP_CLI\Utils\get_flag_value( $assoc_args, 'activate', false ) ) {
+				$result = $this->api->activate_licence();
+			}
+		} catch ( SLSWC_Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
+		}
+
+		WP_CLI::success( "Licence key set to: {$result->get_licence_key()}" );
 	}
 
+	/**
+	 * Activate the already configured licence.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *   # Activate this domain to use the configured licence key for Zelle plugin updates.
+	 *   $ wp zelle licence activate
+	 *   TODO
+	 *
+	 * @param string[]             $args The unlabelled command line arguments.
+	 * @param array<string,string> $assoc_args The labelled command line arguments.
+	 *
+	 * @see API_Interface::activate_licence()
+	 */
+	public function activate( array $args, array $assoc_args ): void {
+
+		try {
+			$result = $this->api->activate_licence();
+		} catch ( Licence_Key_Not_Set_Exception $e ) {
+			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
+		} catch ( SLSWC_Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
+		}
+
+		// TODO:
+		WP_CLI::success( $result->get_status() );
+	}
 
 	/**
 	 * Deactivate the licence.
@@ -162,30 +206,15 @@ class CLI {
 	 */
 	public function deactivate( array $args, array $assoc_args ): void {
 
-		$result = $this->api->deactivate_licence();
+		try{
+			$result = $this->api->deactivate_licence();
+		} catch ( Licence_Key_Not_Set_Exception $e ) {
+			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
+		} catch ( SLSWC_Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
+		}
 
-		WP_CLI::success( $result->get_status() );
-	}
-
-	/**
-	 * Activate the already configured licence.
-	 *
-	 * ## EXAMPLES
-	 *
-	 *   # Activate this domain to use the configured licence key for Zelle plugin updates.
-	 *   $ wp zelle licence activate
-	 *   TODO
-	 *
-	 * @param string[]             $args The unlabelled command line arguments.
-	 * @param array<string,string> $assoc_args The labelled command line arguments.
-	 *
-	 * @see API_Interface::activate_licence()
-	 */
-	public function activate( array $args, array $assoc_args ): void {
-		$licence = $this->api->get_licence_details( false );
-
-		$result = $this->api->activate_licence( $licence->get_licence_key() );
-
+		// TODO:
 		WP_CLI::success( $result->get_status() );
 	}
 
