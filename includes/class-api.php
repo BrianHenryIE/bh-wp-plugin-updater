@@ -396,8 +396,8 @@ class API implements API_Interface {
 	 */
 	public function is_update_available( ?bool $refresh = null ): bool {
 		return version_compare(
-			$this->get_product_information( $refresh )?->get_version(),
-			get_plugins()[ $this->settings->get_plugin_basename() ]['Version'],
+			$this->get_product_information( $refresh )?->get_version() ?? '0.0.0',
+			get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? '0.0.0',
 			'>'
 		);
 	}
