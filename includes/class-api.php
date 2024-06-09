@@ -296,6 +296,7 @@ class API implements API_Interface {
 	 * Validate the license server response to ensure its valid response not what the response is.
 	 *
 	 * @param \WP_Error|array $response
+	 * @throws SLSWC_Exception
 	 */
 	public function validate_response( array $request, $response ): void {
 
@@ -378,6 +379,14 @@ class API implements API_Interface {
 				// 'slswc_no_response',
 					__( 'The server returned no response.', 'bh-wp-slswc-client' )
 				);
+			}
+
+			// Slug_Not_Found_On_Server_Exception
+			if ( 200 === $response['response']['code'] ) {
+				$body = json_decode( $response['body'] );
+				if ( $body->message === 'Invalid parameter(s): license_key, slug' ) {
+					throw new Slug_Not_Found_On_Server_Exception();
+				}
 			}
 		}
 	}
