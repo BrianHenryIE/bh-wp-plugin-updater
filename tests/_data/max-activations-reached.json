@@ -1,0 +1,17 @@
+{
+  "status": "active",
+  "slug": "a-plugin",
+  "message": "You have reached the maximum number of allowed activations on staging domain for this license. If you are having trouble deactivating please visit our website and deactivate <a href=\"https:\/\/updatestest.bhwp.ie\/my-account\/downloads\">here.<\/a>",
+  "expires": "2025-05-27 00:00:00",
+  "license": {
+    "valid_slug": true,
+    "exists": true,
+    "deleted": false,
+    "current_version": null,
+    "error_message": null,
+    "order": {
+      "refunds": null,
+      "customer_id": null
+    }
+  }
+}
