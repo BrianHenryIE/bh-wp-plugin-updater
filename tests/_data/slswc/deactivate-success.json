@@ -1,12 +1,12 @@
 {
   "status": "deactivated",
-  "slug": "a-plugin",
+  "slug": "test-plugin",
   "domain": {
-    "domain": "",
+    "domain": "https:\/\/bhwp.ie",
     "status": "deactivated"
   },
   "message": "The license has been successfully deactivated for this domain.",
-  "expires": "2025-05-27 00:00:00",
+  "expires": "2025-06-09 00:00:00",
   "license": {
     "valid_slug": true,
     "exists": true,
