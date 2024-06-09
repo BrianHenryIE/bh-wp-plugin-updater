@@ -31,7 +31,10 @@ class Init_Slswc_Client {
 	) {
 	}
 
-	public function init_slswc() {
+	/**
+	 * @hooked plugins_loaded
+	 */
+	public function init_slswc(): void {
 
 		$logger_settings = new class() implements \BrianHenryIE\WP_Logger\Logger_Settings_Interface {
 			use \BrianHenryIE\WP_Logger\Logger_Settings_Trait;
@@ -100,7 +103,7 @@ class Init_Slswc_Client {
 
 $init_slswc = new Init_Slswc_Client( $settings );
 
-add_action( 'plugins_loaded', array( $init_slswc, 'init_slswc' ) );
+add_action( 'plugins_loaded', array( $init_slswc, 'init_slswc' ), 0 );
 
 /**
  * @hooked admin_enqueue_scripts
