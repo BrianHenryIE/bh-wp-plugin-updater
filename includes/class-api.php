@@ -10,7 +10,9 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\License_Response;
@@ -160,6 +162,7 @@ class API implements API_Interface {
 		$response = $this->server_request( 'activate' );
 
 		$this->licence->set_status( $response->get_status() );
+		// TODO: Let's record "last successfully updated" as well as "last updated". (or use a rate limiter)
 		$this->licence->set_last_updated( new DateTimeImmutable() );
 
 		// TODO: string -> DateTime
@@ -240,11 +243,11 @@ class API implements API_Interface {
 	protected function server_request( string $action ) {
 
 		$request_info = array(
-			'slug'            => $this->settings->get_plugin_slug(),
-			// 'slug'        => 'a-plugin',
-				'license_key' => $this->licence->get_licence_key(),
-		// 'license_key' => 'ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a',
+			'slug'        => $this->settings->get_plugin_slug(),
+			'license_key' => $this->licence->get_licence_key(),
 		);
+
+		$request_info['domain'] = get_home_url();
 
 		/**
 		 * Build the server url api end point fix url build to support the WordPress API.
@@ -333,6 +336,18 @@ class API implements API_Interface {
 				);
 			}
 
+			// Slug_Not_Found_On_Server_Exception
+
+			if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
+				$body = json_decode( $response['body'] );
+				switch ( substr( $body->message, 0, 30 ) ) {
+					case substr( 'You have reached the maximum number of allowed activations on staging domain', 0, 30 ):
+						throw new Max_Activations_Exception();
+					default:
+						break;
+				}
+			}
+
 			// There is a validation error on the server side, output the problem.
 			if ( 404 === $response['response']['code'] ) {
 				// This could be because the server does not have the License Server plugin active.
@@ -351,6 +366,15 @@ class API implements API_Interface {
 				$body = json_decode( $response['body'] );
 
 				$this->logger->error( '`json:' . json_encode( $body ) . '`' );
+
+				switch ( substr( $body->message, 0, 30 ) ) {
+					case substr( 'Invalid parameter(s): license_key, slug', 0, 30 ):
+						throw new Licence_Does_Not_Exist_Exception();
+					case substr( 'Invalid parameter(s): slug', 0, 30 ):
+						throw new Slug_Not_Found_On_Server_Exception();
+					default:
+						break;
+				}
 
 				foreach ( $body->data->params as $param => $message ) {
 					throw new \Exception(
@@ -386,19 +410,12 @@ class API implements API_Interface {
 				);
 			}
 
+			// TODO: delete. When the json fails to parse, that will throw an error.
 			if ( empty( $response['body'] ) ) {
 				throw new \Exception(
 				// 'slswc_no_response',
 					__( 'The server returned no response.', 'bh-wp-slswc-client' )
 				);
-			}
-
-			// Slug_Not_Found_On_Server_Exception
-			if ( 200 === $response['response']['code'] ) {
-				$body = json_decode( $response['body'] );
-				if ( $body->message === 'Invalid parameter(s): license_key, slug' ) {
-					throw new Slug_Not_Found_On_Server_Exception();
-				}
 			}
 		}
 	}

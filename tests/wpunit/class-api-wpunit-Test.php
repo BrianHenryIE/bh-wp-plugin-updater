@@ -3,6 +3,8 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Server\Product;
 use DateTimeImmutable;
@@ -94,17 +96,28 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$result = $api->get_product_information();
 	}
 
-	public function test_validate_response_slug_not_found(): void {
+	// deactivating a licence twice results in the same success response from the server.
+
+
+	public function test_validate_response_licence_not_found(): void {
 		$this->expectExceptionForResponse(
-			codecept_root_dir( 'tests/_data/invalid-slug.json' ),
-			Slug_Not_Found_On_Server_Exception::class
+			codecept_root_dir( 'tests/_data/slswc/invalid-parameters-licence-key-slug.json' ),
+			Licence_Does_Not_Exist_Exception::class
+		);
+		// Slug_Not_Found_On_Server_Exception::class
+	}
+
+	public function test_validate_response_max_activations(): void {
+		$this->expectExceptionForResponse(
+			codecept_root_dir( 'tests/_data/slswc/max-activations-reached.json' ),
+			Max_Activations_Exception::class
 		);
 	}
 
-	public function expectExceptionForResponse( string $responseFile, $excpectedExceptionClass ): void {
-		$this->expectException( $excpectedExceptionClass );
+	public function expectExceptionForResponse( string $response_file, $expected_exception_class ): void {
+		$this->expectException( $expected_exception_class );
 
-		$body = file_get_contents( $responseFile );
+		$body = file_get_contents( $response_file );
 
 		add_filter(
 			'pre_http_request',
