@@ -1,4 +1,7 @@
 <?php
+/**
+ * @see $data = rest_get_server()->get_data_for_routes( $routes, 'help' );
+ */
 
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 

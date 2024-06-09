@@ -7,6 +7,8 @@
 For the test plugin:
 `composer install --no-dev`
 
+`PHP_IDE_CONFIG="serverName=localhost" wp test-plugin logger delete-all; PHP_IDE_CONFIG="serverName=localhost" wp test-plugin licence activate`
+
 
 ```
 cd test-plugin;
@@ -27,7 +29,13 @@ echo "y" | npx wp-env destroy && npx wp-env start;
 `composer show --outdated`
 `composer show --tree`
 
+`curl -s http://localhost:8888/wp-json/ | jq '.namespaces | sort'`
 
+
+`wp openapi-generator export-file test-plugin/v1 --destination=./setup/test-plugin-openapi.json`
+
+
+`wp package install wp-cli/restful`
 
 ## Contributing
 
