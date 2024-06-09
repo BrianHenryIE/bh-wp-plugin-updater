@@ -1,0 +1,21 @@
+{
+  "status": "active",
+  "slug": "test-plugin",
+  "message": "License already active for this domain",
+  "expires": "2025-06-09 00:00:00",
+  "license": {
+    "valid_slug": true,
+    "exists": true,
+    "deleted": false,
+    "current_version": null,
+    "error_message": null,
+    "order": {
+      "refunds": null,
+      "customer_id": null
+    }
+  },
+  "domain": {
+    "domain": "https:\/\/bhwp.ie",
+    "status": "active"
+  }
+}
