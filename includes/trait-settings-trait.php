@@ -1,4 +1,11 @@
 <?php
+/**
+ *
+ *
+ * Default function implementations for Settings_Interface.
+ *
+ * @package brianhenryie/bh-wp-slswc-client
+ */
 
 namespace BrianHenryIE\WP_SLSWC_Client\Includes;
 
