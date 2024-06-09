@@ -95,10 +95,16 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	}
 
 	public function test_validate_response_slug_not_found(): void {
+		$this->expectExceptionForResponse(
+			codecept_root_dir( 'tests/_data/invalid-slug.json' ),
+			Slug_Not_Found_On_Server_Exception::class
+		);
+	}
 
-		$this->expectException( Slug_Not_Found_On_Server_Exception::class );
+	public function expectExceptionForResponse( string $responseFile, $excpectedExceptionClass ): void {
+		$this->expectException( $excpectedExceptionClass );
 
-		$body = file_get_contents( codecept_root_dir( 'tests/_data/invalid-slug.json' ) );
+		$body = file_get_contents( $responseFile );
 
 		add_filter(
 			'pre_http_request',
@@ -119,6 +125,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		update_option( 'a_plugin_licence', $licence );
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
 				->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_licence_server_host' )
