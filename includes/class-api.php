@@ -12,9 +12,10 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Server\License_Response;
-use BrianHenryIE\WP_SLSWC_Client\Server\Product;
-use BrianHenryIE\WP_SLSWC_Client\Server\Product_Response;
+use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\License_Response;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product_Response;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use DateTimeImmutable;

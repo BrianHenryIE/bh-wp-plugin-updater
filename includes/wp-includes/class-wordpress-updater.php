@@ -8,7 +8,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Server\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use stdClass;
 

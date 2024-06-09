@@ -6,7 +6,7 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
-use BrianHenryIE\WP_SLSWC_Client\Server\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
 
 interface API_Interface {
 
