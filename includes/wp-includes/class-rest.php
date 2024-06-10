@@ -1,4 +1,11 @@
 <?php
+/**
+ * REST API for setting licence key, activating, deactivating and getting licence details and product information.
+ *
+ * {@see openapi/test-plugin-openapi.json} for the generated OpenAPI spec.
+ *
+ * @package brianhenryie/bh-wp-slswc-client
+ */
 
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 

@@ -23,7 +23,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	 */
 	public function test_activate_licence() {
 
-		$body = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
+		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
 		$response_code = 200;
 
 		add_filter(
@@ -47,9 +47,9 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
-		         ->andReturn( 'a_plugin_licence' );
+				->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_licence_server_host' )
-		         ->andReturn( 'https://whatever.127' );
+				->andReturn( 'https://whatever.127' );
 
 		$logger = new ColorLogger();
 
@@ -70,7 +70,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	 */
 	public function test_activate_licence_already_activated() {
 
-		$body = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
+		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
 		$response_code = 200;
 
 		add_filter(
@@ -94,9 +94,9 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
-		         ->andReturn( 'a_plugin_licence' );
+				->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_licence_server_host' )
-		         ->andReturn( 'https://whatever.127' );
+				->andReturn( 'https://whatever.127' );
 
 		$logger = new ColorLogger();
 
@@ -110,7 +110,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	public function test_deactivate_licence(): void {
 
-		$body = file_get_contents( codecept_root_dir( 'tests/_data/slswc/deactivate-success.json' ) );
+		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/deactivate-success.json' ) );
 		$response_code = 200;
 
 		add_filter(
@@ -134,9 +134,9 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
-		         ->andReturn( 'a_plugin_licence' );
+				->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_licence_server_host' )
-		         ->andReturn( 'https://whatever.127' );
+				->andReturn( 'https://whatever.127' );
 
 		$logger = new ColorLogger();
 
