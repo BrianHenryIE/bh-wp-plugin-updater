@@ -18,8 +18,8 @@ class Plugins_Page {
 	/**
 	 * Constructor.
 	 *
-	 * @param API_Interface      $api
-	 * @param Settings_Interface $settings
+	 * @param API_Interface      $api Used to get the licence details.
+	 * @param Settings_Interface $settings Used for the plugin basename and slug.
 	 */
 	public function __construct(
 		protected API_Interface $api,
@@ -38,7 +38,7 @@ class Plugins_Page {
 	 * @param string $html The existing HTML for the plugins.php Automatic Updates column.
 	 * @param string $file Plugin or theme file.
 	 */
-	public function plugin_auto_update_setting_html( $html, $file ): string {
+	public function plugin_auto_update_setting_html( string $html, string $file ): string {
 
 		if ( $this->settings->get_plugin_basename() !== $file ) {
 			return $html;
@@ -73,6 +73,8 @@ class Plugins_Page {
 
 	/**
 	 * Get the URL which works to display the plugin View Details modal at the licence tab.
+	 *
+	 * @see \WP_Plugins_List_Table::get_view_details_link()
 	 */
 	protected function get_licence_link_url(): string {
 		$licence_link_url = admin_url(
@@ -97,7 +99,10 @@ class Plugins_Page {
 	 * for this plugin."
 	 *
 	 * @see wp_plugin_update_row()
-	 * in_plugin_update_message-{$file}
+	 * @hooked in_plugin_update_message-{$plugin_basename}
+	 *
+	 * @param array     $plugin_data
+	 * @param \stdClass $response An object of metadata about the available plugin update.
 	 */
 	public function append_licence_link_to_auto_update_unavailable_text( $plugin_data, $response ): void {
 

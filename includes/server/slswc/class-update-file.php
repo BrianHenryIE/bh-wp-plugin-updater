@@ -17,14 +17,23 @@ class Update_File {
 	) {
 	}
 
+	/**
+	 * UUID
+	 */
 	public function get_id(): string {
 		return $this->id;
 	}
 
+	/**
+	 * Download URL in the woocommerce_uploads directory.
+	 */
 	public function get_file(): string {
 		return $this->file;
 	}
 
+	/**
+	 * Filename alone. I.e. the last part of the URL.
+	 */
 	public function get_name(): string {
 		return $this->name;
 	}

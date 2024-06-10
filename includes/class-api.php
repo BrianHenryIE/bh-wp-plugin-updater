@@ -117,7 +117,7 @@ class API implements API_Interface {
 
 		// TODO: Do not continuously retry.
 
-		$response = $this->server_request( 'check_update' );
+		$response = $this->server_request( 'check_update' ); // ?? "check update"? I think maybe this should be "activate".
 
 		$this->licence->set_status( $response->get_status() );
 		$this->licence->set_last_updated( new DateTimeImmutable() );

@@ -28,18 +28,22 @@ class CLI {
 	/**
 	 * Constructor.
 	 *
-	 * @param API_Interface $api The main API class where the functionality is implemented.
+	 * @param API_Interface      $api The main API class where the functionality is implemented.
+	 * @param Settings_Interface $settings The plugin settings.
+	 * @param LoggerInterface    $logger A PSR logger.
 	 */
 	public function __construct(
 		protected API_Interface $api,
 		protected Settings_Interface $settings,
 		LoggerInterface $logger
 	) {
-		$this->logger = $logger;
+		$this->setLogger( $logger );
 	}
 
 	/**
 	 * Register the WP-CLI commands.
+	 *
+	 * If the CLI base is not set in {@see Settings_Interface::get_cli_base()} no commands will be registered.
 	 */
 	public function register_commands(): void {
 

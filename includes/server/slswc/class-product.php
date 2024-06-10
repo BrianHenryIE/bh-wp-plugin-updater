@@ -57,7 +57,7 @@ class Product {
 		protected string $update_file_url,
 		protected string $update_file_name,
 		protected Update_File $update_file,
-		protected bool $thumbnail
+		protected bool $thumbnail // TODO: this looks wrong.
 	) {
 	}
 
