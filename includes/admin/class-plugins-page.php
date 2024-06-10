@@ -11,7 +11,6 @@
 namespace BrianHenryIE\WP_SLSWC_Client\Admin;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Settings;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
 class Plugins_Page {

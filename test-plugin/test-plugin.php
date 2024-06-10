@@ -19,10 +19,17 @@ use BrianHenryIE\WP_SLSWC_Client\SLSWC_Client;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$settings = new \BrianHenryIE\WP_SLSWC_Client\Settings(
-	plugin_basename( __FILE__ ),
-	'updatestest.bhwp.ie'
-);
+$settings = new class() implements \BrianHenryIE\WP_SLSWC_Client\Settings_Interface {
+	use \BrianHenryIE\WP_SLSWC_Client\Includes\Settings_Trait;
+
+	public function get_licence_server_host(): string {
+		return 'updatestest.bhwp.ie';
+	}
+
+	public function get_plugin_basename(): string {
+		return plugin_basename( __FILE__ );
+	}
+};
 
 class Init_Slswc_Client {
 

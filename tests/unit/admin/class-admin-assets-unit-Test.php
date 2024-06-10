@@ -10,7 +10,7 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client\Admin;
 
-use BrianHenryIE\WP_SLSWC_Client\Settings;
+use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
 /**
  * Class Admin_Test
@@ -62,7 +62,7 @@ class Admin_Assets_Test extends \Codeception\Test\Unit {
 		);
 
 		$settings = $this->make(
-			Settings::class,
+			Settings_Interface::class,
 			array(
 				'get_plugin_version'  => '1.0.0',
 				'get_plugin_basename' => 'bh-wp-slswc-client/bh-wp-slswc-client.php',
@@ -151,7 +151,7 @@ class Admin_Assets_Test extends \Codeception\Test\Unit {
 		);
 
 		$settings = $this->make(
-			Settings::class,
+			Settings_Interface::class,
 			array(
 				'get_plugin_version'  => '1.0.0',
 				'get_plugin_basename' => $plugin_basename,

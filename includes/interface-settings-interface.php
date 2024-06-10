@@ -15,6 +15,8 @@ use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
 interface Settings_Interface {
 
 	/**
+	 * The license server host.
+	 *
 	 * HTTP hostname for software updates.
 	 *
 	 * `https://` is assumed if scheme is omitted.
@@ -23,6 +25,11 @@ interface Settings_Interface {
 
 	/**
 	 * The basename of the licensed plugin.
+	 *
+	 * The plugin directory name and filename.
+	 * Path to the plugin file or directory, relative to the plugins directory.
+	 *
+	 * E.g. `bh-wp-autologin-urls/bh-wp-autologin-urls.php`.
 	 */
 	public function get_plugin_basename(): string;
 
