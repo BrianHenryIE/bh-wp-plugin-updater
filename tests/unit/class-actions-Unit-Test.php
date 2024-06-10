@@ -7,6 +7,7 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Assets;
+use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use Mockery;
 use WP_Mock;
@@ -68,6 +69,24 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 		WP_Mock::expectActionAdded(
 			'a_plugin_update_check',
 			array( new AnyInstance( Cron::class ), 'handle_update_check_cron_job' )
+		);
+
+		$logger = new ColorLogger();
+		new Actions( $api, $settings, $logger );
+	}
+
+	/**
+	 * @covers ::add_cli_hooks
+	 */
+	public function test_cli_hooks(): void {
+		$api      = Mockery::mock( API_Interface::class )->makePartial();
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_plugin_basename' )->andReturn( 'a-plugin/a-plugin.php' );
+		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
+
+		WP_Mock::expectActionAdded(
+			'cli_init',
+			array( new AnyInstance( CLI::class ), 'register_commands' )
 		);
 
 		$logger = new ColorLogger();
