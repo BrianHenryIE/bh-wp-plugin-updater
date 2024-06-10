@@ -340,11 +340,13 @@ class API implements API_Interface {
 
 			if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
 				$body = json_decode( $response['body'] );
-				switch ( substr( $body->message, 0, 30 ) ) {
-					case substr( 'You have reached the maximum number of allowed activations on staging domain', 0, 30 ):
-						throw new Max_Activations_Exception();
-					default:
-						break;
+				if(isset($body->message)) {
+					switch ( substr( $body->message, 0, 30 ) ) {
+						case substr( 'You have reached the maximum number of allowed activations on staging domain', 0, 30 ):
+							throw new Max_Activations_Exception();
+						default:
+							break;
+					}
 				}
 			}
 
