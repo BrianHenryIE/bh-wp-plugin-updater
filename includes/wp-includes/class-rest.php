@@ -97,7 +97,7 @@ class Rest {
 				'message' => $exception->getMessage(),
 			);
 
-			return new WP_REST_Response( $result, $exception->get_http_status_code() );
+			return new WP_REST_Response( $result, 500 );
 		}
 
 		$result = array(
@@ -224,7 +224,7 @@ class Rest {
 				'message' => $exception->getMessage(),
 			);
 
-			return new WP_REST_Response( $result, $exception->get_http_status_code() );
+			return new WP_REST_Response( $result, 500 );
 		}
 
 		// assert( $licence->get_licence_key() === $licence_key );
@@ -249,7 +249,7 @@ class Rest {
 				'message' => $exception->getMessage(),
 			);
 
-			return new WP_REST_Response( $result, $exception->get_http_status_code() );
+			return new WP_REST_Response( $result, 500 );
 		}
 
 		$result = array(
@@ -272,7 +272,7 @@ class Rest {
 				'message' => $exception->getMessage(),
 			);
 
-			return new WP_REST_Response( $result, $exception->get_http_status_code() );
+			return new WP_REST_Response( $result, 500 );
 		}
 
 		$result = array(
