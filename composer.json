@@ -107,6 +107,7 @@
         "phpstorm": {
             "exclude_folders": {
                 "folders": [
+                    "test-plugin/vendor",
                     "vendor/php-stubs/woocommerce-stubs",
                     "vendor/wordpress/wordpress/src",
                     "vendor/wordpress/wordpress/build",
