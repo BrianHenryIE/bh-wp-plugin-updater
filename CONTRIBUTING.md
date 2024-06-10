@@ -34,13 +34,23 @@ echo "y" | npx wp-env destroy && npx wp-env start;
 ### OpenAPI
 
 `wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json`
+TODO: maybe open an issue at https://github.com/schneiderundschuetz/document-generator-for-openapi
 jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+`cat test-plugin-openapi.json | jq '.jsonSchemaDialect="https://spec.openapis.org/oas/3.1/dialect/base"' | sponge test-plugin-openapi.json`
+
 
 (Maybe) Delete `.servers` since the URL changes for every WordPress install:
 `cat test-plugin-openapi.json | jq 'del(.servers)' | sponge test-plugin-openapi.json`
 
 Remove the root `/` path since we are only concerned with the endpoints we have defined:
 `cat test-plugin-openapi.json | jq 'del(.paths."/")' | sponge test-plugin-openapi.json`
+
+Regenerate:
+```
+wp-env run cli wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json --extract-common-types;
+cat ./openapi/test-plugin-openapi.json | jq 'del(.servers) | del(.paths."/") | .jsonSchemaDialect = "https://spec.openapis.org/oas/3.1/dialect/base"' | sponge ./openapi/test-plugin-openapi.json
+
+```
 
 
 ## Contributing

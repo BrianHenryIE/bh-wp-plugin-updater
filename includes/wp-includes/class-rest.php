@@ -49,10 +49,12 @@ class Rest {
 				'args'                => array(
 					'licence_key' => array(
 						'required' => false, // i.e. can be null to remove it.
+						'type'     => 'string',
 					),
 					'activate'    => array(
 						'required' => false,
 						// default false
+						'type'     => 'boolean',
 					),
 				),
 				'callback'            => array( $this, 'set_licence_key' ),
