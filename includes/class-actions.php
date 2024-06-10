@@ -50,6 +50,7 @@ class Actions {
 			$this->settings
 		);
 
+		// Is this enough? If it's deleted once, it will be deleted forever.
 		add_action(
 			"activate_{$this->settings->get_plugin_slug()}",
 			array( $cron, 'register_cron_job' )
