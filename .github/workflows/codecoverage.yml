@@ -84,7 +84,7 @@ jobs:
         run: |
           export $(grep -v '^#' .env.testing | xargs);
           sudo vendor/bin/wp config create --dbname=$TEST_DB_NAME --dbuser=$TEST_DB_USER --dbpass=$TEST_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
-          tail -n 1000 wordpress/wp-config.php
+          cat wordpress/wp-config.php
 
       - name: Run composer post-install-cmd
         continue-on-error: true
