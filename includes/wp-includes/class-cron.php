@@ -10,7 +10,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
-use function BrianHenryIE\WP_SLSWC_Client\str_underscore_to_dash;
+use function BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore;
 
 /**
  * Manage actions related to wp-cron scheduled and background tasks.
@@ -30,10 +30,14 @@ class Cron {
 	}
 
 	/**
+	 * Get the name of the cron job that will be scheduled.
+	 *
+	 * The WordPress convention, when searching for {@see wp_schedule_event()}, is to use cron job names with underscores.
+	 *
 	 * {plugin_slug}_update_check
 	 */
 	public function get_update_check_cron_job_name(): string {
-		return str_underscore_to_dash(
+		return str_dash_to_underscore(
 			sprintf(
 				'%s_%s',
 				$this->settings->get_plugin_slug(),
@@ -52,7 +56,12 @@ class Cron {
 		if ( wp_next_scheduled( $this->get_update_check_cron_job_name() ) ) {
 			return;
 		}
-		wp_schedule_event( time(), 'daily', $this->get_update_check_cron_job_name() );
+
+		wp_schedule_event(
+			time(),
+			'daily',
+			$this->get_update_check_cron_job_name()
+		);
 	}
 
 	/**
