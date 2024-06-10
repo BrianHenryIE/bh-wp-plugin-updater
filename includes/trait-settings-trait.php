@@ -17,8 +17,6 @@ use function BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore;
  */
 trait Settings_Trait {
 
-	protected string $plugin_name;
-
 	/**
 	 * The plugin slug, i.e. the plugin directory name.
 	 */
@@ -30,13 +28,11 @@ trait Settings_Trait {
 	 * Get the plugin friendly name from the plugin headers.
 	 */
 	public function get_plugin_name(): string {
-		if ( ! isset( $this->plugin_name ) ) {
-			// This is probably already loaded by the time this is called.
-			require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
-			$plugin_data       = get_plugins()[ $this->get_plugin_basename() ];
-			$this->plugin_name = $plugin_data['Name'];
-		}
-		return $this->plugin_name;
+		// This is probably already loaded by the time this is called.
+		require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
+		// `get_plugins()` is cached.
+		$plugin_data = get_plugins()[ $this->get_plugin_basename() ];
+		return $plugin_data['Name'];
 	}
 
 	/**
