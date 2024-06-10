@@ -1,0 +1,248 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "test-plugin/v1",
+    "summary": "Generated OpenAPI document of the namespace test-plugin/v1 on bh-wp-slswc-client.",
+    "version": "1"
+  },
+  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
+  "paths": {
+    "/licence": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/licence"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "root"
+        ],
+        "parameters": []
+      }
+    },
+    "/licence/set-key": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "root"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "title": "licence",
+                "properties": {
+                  "licence_key": {
+                    "type": "string"
+                  },
+                  "activate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/licence/activate": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "root"
+        ]
+      }
+    },
+    "/licence/deactivate": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "root"
+        ]
+      }
+    }
+  },
+  "security": [],
+  "components": {
+    "schemas": {
+      "WPError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "The error code",
+            "type": "string"
+          },
+          "message": {
+            "description": "The description of the error",
+            "type": "string"
+          },
+          "data": {
+            "description": "Data of the error",
+            "type": "any"
+          },
+          "additional_data": {
+            "description": "Additional data of the error",
+            "type": "any"
+          },
+          "additional_errors": {
+            "description": "More errors",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WPError"
+            }
+          }
+        }
+      },
+      "data": {
+        "type": "object",
+        "properties": {
+          "licence_key": {
+            "type": "string",
+            "description": "The licence key."
+          },
+          "status": {
+            "type": "string",
+            "description": "The licence status."
+          },
+          "last_updated": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "The last time the license server was successfully contacted."
+          },
+          "purchase_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "The date of original purchase."
+          },
+          "order_link": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "A link to the original order domain.com/my-account/orders/123."
+          },
+          "expiry_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "The expiry date."
+          },
+          "auto_renews": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Will the licence auto-renew?"
+          },
+          "renewal_link": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "A link to domain.com to renew the licence."
+          }
+        },
+        "description": "The licence data."
+      },
+      "licence": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Was the request successful?"
+          },
+          "message": {
+            "type": "string",
+            "description": "A friendly message."
+          },
+          "data": {
+            "$ref": "#/components/schemas/data"
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@
   },
   "mappings": {
     "setup": "./tests/e2e-pw/setup",
+    "openapi": "./openapi",
     "wp-cli.yml": "./wp-cli.wp-env.yml",
     "wp-content/bh-wp-slswc-client": ".",
     "wp-content/plugins/document-generator-for-openapi": "./wp-content/plugins/document-generator-for-openapi",

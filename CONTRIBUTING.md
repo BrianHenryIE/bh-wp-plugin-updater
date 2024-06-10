@@ -31,11 +31,17 @@ echo "y" | npx wp-env destroy && npx wp-env start;
 
 `curl -s http://localhost:8888/wp-json/ | jq '.namespaces | sort'`
 
+### OpenAPI
 
-`wp openapi-generator export-file test-plugin/v1 --destination=./setup/test-plugin-openapi.json`
+`wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json`
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
 
+(Maybe) Delete `.servers` since the URL changes for every WordPress install:
+`cat test-plugin-openapi.json | jq 'del(.servers)' | sponge test-plugin-openapi.json`
 
-`wp package install wp-cli/restful`
+Remove the root `/` path since we are only concerned with the endpoints we have defined:
+`cat test-plugin-openapi.json | jq 'del(.paths."/")' | sponge test-plugin-openapi.json`
+
 
 ## Contributing
 
