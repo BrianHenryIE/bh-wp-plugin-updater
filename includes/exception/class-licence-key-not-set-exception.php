@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\Exception;
 
 use Throwable;
 
-class Licence_Key_Not_Set_Exception extends SLSWC_Exception {
+class Licence_Key_Not_Set_Exception extends SLSWC_Exception_Abstract {
 
 	const MESSAGE = 'The licence key has not been set.';
 

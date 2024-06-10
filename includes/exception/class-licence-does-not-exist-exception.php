@@ -2,7 +2,9 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client\Exception;
 
-class Licence_Does_Not_Exist_Exception extends SLSWC_Exception {
+use Throwable;
+
+class Licence_Does_Not_Exist_Exception extends SLSWC_Exception_Abstract {
 
 	const MESSAGE = 'Licence does not exist. Please check your licence key.';
 

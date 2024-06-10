@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\Exception;
 
 use Throwable;
 
-class Max_Activations_Exception extends SLSWC_Exception {
+class Max_Activations_Exception extends SLSWC_Exception_Abstract {
 
 	// TODO: This should not reference staging.
 	const MESSAGE = 'You have reached the maximum number of allowed activations on staging domain for this license.';

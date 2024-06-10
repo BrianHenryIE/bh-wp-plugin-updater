@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\Exception;
 
 use Throwable;
 
-class Slug_Not_Found_On_Server_Exception extends SLSWC_Exception {
+class Slug_Not_Found_On_Server_Exception extends SLSWC_Exception_Abstract {
 
 	const MESSAGE = 'The plugin slug was not found on the server.';
 

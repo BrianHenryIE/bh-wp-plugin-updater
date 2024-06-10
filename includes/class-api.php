@@ -13,7 +13,7 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\License_Response;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
@@ -48,6 +48,8 @@ class API implements API_Interface {
 	 * Deactivates existing licence key if present.
 	 *
 	 * @param string $license_key
+	 *
+	 * @throws SLSWC_Exception_Abstract If failing to deactivate the existing licence.
 	 */
 	public function set_license_key( string $license_key ): Licence {
 
@@ -69,6 +71,8 @@ class API implements API_Interface {
 	 * Get the licence information, maybe cached, maybe remote, maaybe an empty Licence object.
 	 *
 	 * @param bool|null $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
+	 *
+	 * @throws SLSWC_Exception_Abstract
 	 */
 	public function get_licence_details( ?bool $refresh = null ): Licence {
 		return match ( $refresh ) {
@@ -101,7 +105,7 @@ class API implements API_Interface {
 	 *
 	 * @used-by Cron::handle_update_check_cron_job()
 	 * @used-by CLI
-	 * @throws SLSWC_Exception
+	 * @throws SLSWC_Exception_Abstract
 	 */
 	protected function refresh_licence_details(): Licence {
 
@@ -128,7 +132,7 @@ class API implements API_Interface {
 	 *
 	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
 	 *
-	 * @throws SLSWC_Exception
+	 * @throws SLSWC_Exception_Abstract
 	 */
 	public function deactivate_licence(): Licence {
 
@@ -151,7 +155,7 @@ class API implements API_Interface {
 	 *
 	 * https://bhwp.ie/wp-json/slswc/v1/activate?slug=a-plugin&license_key=ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a
 	 *
-	 * @throws SLSWC_Exception
+	 * @throws SLSWC_Exception_Abstract
 	 */
 	public function activate_licence(): Licence {
 
@@ -299,7 +303,8 @@ class API implements API_Interface {
 	 * Validate the license server response to ensure its valid response not what the response is.
 	 *
 	 * @param \WP_Error|array $response
-	 * @throws SLSWC_Exception
+	 *
+	 * @throws SLSWC_Exception_Abstract
 	 */
 	public function validate_response( array $request, $response ): void {
 
