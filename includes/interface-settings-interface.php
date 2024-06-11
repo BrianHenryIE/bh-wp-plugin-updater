@@ -68,4 +68,6 @@ interface Settings_Interface {
 	 * The wp_options name for caching the plugin information.
 	 */
 	public function get_plugin_information_option_name(): string;
+
+	public function get_check_update_option_name();
 }

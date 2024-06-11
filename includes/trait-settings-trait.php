@@ -55,6 +55,10 @@ trait Settings_Trait {
 		return str_dash_to_underscore( "{$this->get_plugin_slug()}_plugin_information" );
 	}
 
+	public function get_check_update_option_name(): string {
+		return str_dash_to_underscore( "{$this->get_plugin_slug()}_update" );
+	}
+
 	/**
 	 * The WP CLI command base.
 	 *

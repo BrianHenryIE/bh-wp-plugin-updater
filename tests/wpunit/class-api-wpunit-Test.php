@@ -7,6 +7,7 @@ use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
 use DateTimeImmutable;
 use Mockery;
 use Psr\Log\NullLogger;
@@ -167,6 +168,53 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		/** @var Product $result */
 		$result = $api->get_product_information();
+	/**
+	 * @covers ::get_check_update
+	 * @covers ::get_remote_check_update
+	 * @covers ::server_request
+	 * @covers ::validate_response
+	 */
+	public function test_check_update_success(): void {
+
+		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/check-update-success.json' ) );
+		$response_code = 200;
+
+		add_filter(
+			'pre_http_request',
+			function () use ( $body, $response_code ) {
+				return array(
+					'body'     => $body,
+					'response' => array( 'code' => $response_code ),
+				);
+			}
+		);
+
+		$licence = new Licence();
+		$licence->set_licence_key( 'abc123' );
+		$licence->set_status( 'active' );
+		$licence->set_last_updated( new DateTimeImmutable() );
+		$licence->set_expiry_date( new DateTimeImmutable() );
+
+		update_option( 'a_plugin_licence', $licence );
+
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->expects( 'get_licence_data_option_name' )
+				->andReturn( 'a_plugin_licence' );
+		$settings->expects( 'get_plugin_information_option_name' )
+				->andReturn( 'a_plugin_plugin_information' );
+		$settings->expects( 'get_licence_server_host' )
+				->andReturn( 'https://updatestest.bhwp.ie' );
+		$settings->expects( 'get_plugin_slug' )
+				->andReturn( 'test-plugin' );
+
+		$logger = new NullLogger();
+
+		$api = new API( $settings, $logger );
+
+		/** @var Software_Details $result */
+		$result = $api->get_check_update( true );
+
+		$this->assertEquals( '1.2.0', $result->get_version() );
 	}
 
 	// deactivating a licence twice results in the same success response from the server.

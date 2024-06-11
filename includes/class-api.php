@@ -15,9 +15,11 @@ use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Check_Updates_Response;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\License_Response;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product_Response;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use DateTimeImmutable;
@@ -216,9 +218,53 @@ class API implements API_Interface {
 			update_option( $this->settings->get_plugin_information_option_name(), $response->get_product() );
 
 			return $response->get_product();
+	/**
+	 * Update information should be available regardless of licence status... alas, it is not.
+	 *
+	 * Get the remote product information for the {@see get_plugins()} information array.
+	 *
+	 * null when first run and no cached information.
+	 */
+	public function get_check_update( ?bool $refresh = null ): ?Software_Details {
+
+		if ( true !== $refresh ) {
+			// TODO: Add a background task to refresh the product information.
+			// TODO: Check the last time it was refreshed and rate limit the refreshing.
 		}
 
+		return match ( $refresh ) {
+			true => $this->get_remote_check_update(),
+			false => $this->get_cached_check_update(),
+			default => $this->get_cached_check_update() ?? $this->get_remote_check_update(),
+		};
+	}
+
+	protected function get_cached_check_update(): ?Software_Details {
+		$cached_product_information = get_option(
+		// plugin_slug_update_information
+			$this->settings->get_check_update_option_name(),
+			null
+		);
+		if ( $cached_product_information instanceof Software_Details ) {
+			$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
+			return $cached_product_information;
+		}
+		$this->logger->debug( 'check_update Software_Details not found in cache: ' . $this->settings->get_plugin_slug() );
 		return null;
+	}
+
+	/**
+	 * Returns null when it could not fetch the product information.
+	 */
+	protected function get_remote_check_update(): ?Software_Details {
+
+		// I think maybe the difference between check_update and product is one expects a valid licence.
+		/** @var Check_Updates_Response $response */
+		$response = $this->server_request( 'check_update', Check_Updates_Response::class );
+
+		update_option( $this->settings->get_plugin_information_option_name(), $response->get_software_details() );
+
+		return $response->get_software_details();
 	}
 
 	/**
@@ -244,7 +290,7 @@ class API implements API_Interface {
 	 * @param   string $action activate|deactivate|check_update|product.
 	 * @throws
 	 */
-	protected function server_request( string $action ) {
+	protected function server_request( string $action, string $type = License_Response::class ) {
 
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
