@@ -198,11 +198,18 @@ class API implements API_Interface {
 		};
 	}
 
-	protected function get_cached_product_information(): ?object {
-		return get_option(
+	protected function get_cached_product_information(): ?Product {
+		$cached_product_information = get_option(
+			// plugin_slug_plugin_information
 			$this->settings->get_plugin_information_option_name(),
 			null
 		);
+		if ( $cached_product_information instanceof Product ) {
+			$this->logger->debug( 'returning cached product information for ' . $cached_product_information->get_software_slug() );
+			return $cached_product_information;
+		}
+		$this->logger->debug( 'product not found in cache: ' . $this->settings->get_plugin_slug() );
+		return null;
 	}
 
 	/**
