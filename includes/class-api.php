@@ -306,9 +306,8 @@ class API implements API_Interface {
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
 			'license_key' => $this->licence->get_licence_key(),
+			'domain'      => get_home_url(),
 		);
-
-		$request_info['domain'] = get_home_url();
 
 		/**
 		 * Build the server url api end point fix url build to support the WordPress API.
@@ -328,7 +327,6 @@ class API implements API_Interface {
 		if ( in_array( $action, $endpoint_get_actions, true ) ) {
 			$response = wp_remote_get( $server_request_url, $request_options );
 		} else {
-			$type     = License_Response::class;
 			$response = wp_remote_post( $server_request_url, $request_options );
 		}
 
