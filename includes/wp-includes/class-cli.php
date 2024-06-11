@@ -18,6 +18,7 @@ use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use WP_CLI;
+use WP_CLI\Formatter;
 
 /**
  * `wp {$cli_base} licence get-status`
@@ -54,6 +55,7 @@ class CLI {
 		}
 
 		try {
+			WP_CLI::add_command( "{$cli_base} licence get", array( $this, 'get_licence' ) );
 			WP_CLI::add_command( "{$cli_base} licence get-status", array( $this, 'get_licence_status' ) );
 			WP_CLI::add_command( "{$cli_base} licence set-key", array( $this, 'set_licence_key' ) );
 			WP_CLI::add_command( "{$cli_base} licence get-key", array( $this, 'get_licence_key' ) );
@@ -66,6 +68,57 @@ class CLI {
 				array( 'exception' => $e )
 			);
 		}
+	}
+
+	/**
+	 * Get the licence details
+	 *
+	 * [--format=<format>]
+	 * The serialization format for the value.
+	 * ---
+	 * default: table
+	 * options:
+	 * - table
+	 * - json
+	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *   # Get the licence status for the plugin.
+	 *   $ wp plugin-slug licence get
+	 *   +-------------+---------+---------------------------+---------------------------+
+	 *   | licence_key | status  | expires                   | last_updated              |
+	 *   +-------------+---------+---------------------------+---------------------------+
+	 *   | {my-key}    | invalid | 2024-06-11T00:22:31+00:00 | 2024-06-01T00:12:29+00:00 |
+	 *   +-------------+---------+---------------------------+---------------------------+
+	 *
+	 *   # Get the licence status for the plugin from the licence server.
+	 *   $ wp plugin-slug licence get --refresh
+	 *   +-------------+---------+---------------------------+---------------------------+
+	 *   | licence_key | status  | expires                   | last_updated              |
+	 *   +-------------+---------+---------------------------+---------------------------+
+	 *   | {my-key}    | invalid | 2024-06-11T00:22:31+00:00 | 2024-06-11T00:22:31+00:00 |
+	 *   +-------------+---------+---------------------------+---------------------------+
+	 *
+	 * @param string[]             $args The unlabelled command line arguments.
+	 * @param array<string,string> $assoc_args The labelled command line arguments.
+	 *
+	 * @see API_Interface::get_licence_details()
+	 */
+	public function get_licence( array $args, array $assoc_args ): void {
+
+		try {
+			$result = $this->api->get_licence_details(
+				\WP_CLI\Utils\get_flag_value( $assoc_args, 'refresh', false )
+			);
+		} catch ( Licence_Key_Not_Set_Exception $e ) {
+			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
+		} catch ( SLSWC_Exception_Abstract $e ) {
+			WP_CLI::error( $e->getMessage() );
+		}
+
+		$formatter = new Formatter( $assoc_args, array_keys( $result->__serialize() ) );
+		$formatter->display_items( array( $result->__serialize() ) );
 	}
 
 	/**
