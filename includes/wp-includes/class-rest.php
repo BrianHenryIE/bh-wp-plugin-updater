@@ -10,6 +10,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Licence;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -160,61 +161,14 @@ class Rest {
 				'data'    => array(
 					'description' => esc_html__( 'The licence data.', 'bh-wp-slswc-client' ),
 					'type'        => 'object',
-					'properties'  => $this->get_licence_object_schema_properties(),
+					'properties'  => Licence::get_licence_object_schema_properties(),
 				),
 			),
 		);
 
 		return $schema;
 	}
-	protected function get_licence_object_schema_properties(): array {
-		return array(
-			'licence_key'   => array(
-				'description' => esc_html__( 'The licence key.', 'bh-wp-slswc-client' ),
-				'type'        => 'string',
-		// 'minimum'          => 1, // TODO: Is there a set length the key will be?
-		// 'exclusiveMinimum' => true,
-		// 'maximum'          => 3,
-		// 'exclusiveMaximum' => true,
-			),
-			'status'        => array(
-				'description' => esc_html__( 'The licence status.', 'bh-wp-slswc-client' ),
-				'type'        => 'string',
-				// 'enum' => array(
-				// 'invalid',
-				// ),
-			),
-			'last_updated'  => array(
-				'description' => esc_html__( 'The last time the license server was successfully contacted.', 'bh-wp-slswc-client' ),
-				'type'        => array( 'string', 'null' ),
-				'format'      => 'date-time',
-			),
-			'purchase_date' => array(
-				'description' => esc_html__( 'The date of original purchase.', 'bh-wp-slswc-client' ),
-				'type'        => array( 'string', 'null' ),
-				'format'      => 'date-time',
-			),
-			'order_link'    => array(
-				'description' => esc_html__( 'A link to the original order domain.com/my-account/orders/123.', 'bh-wp-slswc-client' ),
-				'type'        => array( 'string', 'null' ),
-				'format'      => 'uri',
-			),
-			'expiry_date'   => array(
-				'description' => esc_html__( 'The expiry date.', 'bh-wp-slswc-client' ),
-				'type'        => array( 'string', 'null' ),
-				'format'      => 'date-time',
-			),
-			'auto_renews'   => array(
-				'description' => esc_html__( 'Will the licence auto-renew?', 'bh-wp-slswc-client' ),
-				'type'        => array( 'boolean', 'null' ),
-			),
-			'renewal_link'  => array(
-				'description' => esc_html__( 'A link to domain.com to renew the licence.', 'bh-wp-slswc-client' ),
-				'type'        => array( 'string', 'null' ),
-				'format'      => 'uri',
-			),
-		);
-	}
+
 
 
 	public function set_licence_key( WP_REST_Request $request ): WP_REST_Response {

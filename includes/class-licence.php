@@ -109,17 +109,23 @@ class Licence implements \Serializable, \JsonSerializable {
 	 */
 	public function __serialize(): array {
 
-		$allowed_fields  = array( 'licence_key', 'status', 'expires', 'last_updated' );
-		$datetime_fields = array( 'expires', 'last_updated' );
-
-		$arr = get_object_vars( $this );
-		foreach ( $datetime_fields as $datetime_field ) {
-			if ( isset( $arr[ $datetime_field ] ) && $arr[ $datetime_field ] instanceof DateTimeInterface ) {
-				$arr[ $datetime_field ] = $arr[ $datetime_field ]->format( \DateTimeInterface::ATOM );
+		$arr         = get_object_vars( $this );
+		$ordered_arr = array();
+		foreach ( self::get_licence_object_schema_properties() as $property_name => $property_schema ) {
+			if ( isset( $arr[ $property_name ] ) && $arr[ $property_name ] instanceof DateTimeInterface ) {
+				$ordered_arr[ $property_name ] = $arr[ $property_name ]->format( \DateTimeInterface::ATOM );
+				continue;
+			}
+			if ( isset( $arr[ $property_name ] ) ) {
+				$ordered_arr[ $property_name ] = $arr[ $property_name ];
+				continue;
+			}
+			if ( isset( $property_schema['type'] ) && is_array( $property_schema['type'] ) && in_array( 'null', $property_schema['type'], true ) ) {
+				$ordered_arr[ $property_name ] = null;
 			}
 		}
 
-		return array_intersect_key( $arr, array_flip( $allowed_fields ) );
+		return $ordered_arr;
 	}
 
 	/**
@@ -164,5 +170,57 @@ class Licence implements \Serializable, \JsonSerializable {
 		// 'expiring',
 		// 'expired',
 		// );
+	}
+
+	/**
+	 * @return array<string,array{description:string,type:string|array<string>,format:string}>
+	 */
+	public static function get_licence_object_schema_properties(): array {
+		return array(
+			'licence_key'   => array(
+				'description' => esc_html__( 'The licence key.', 'bh-wp-slswc-client' ),
+				'type'        => 'string',
+				// 'minimum'          => 1, // TODO: Is there a set length the key will be?
+				// 'exclusiveMinimum' => true,
+				// 'maximum'          => 3,
+				// 'exclusiveMaximum' => true,
+			),
+			'status'        => array(
+				'description' => esc_html__( 'The licence status.', 'bh-wp-slswc-client' ),
+				'type'        => 'string',
+				// 'enum' => array(
+				// 'invalid',
+				// ),
+			),
+			'last_updated'  => array(
+				'description' => esc_html__( 'The last time the license server was successfully contacted.', 'bh-wp-slswc-client' ),
+				'type'        => array( 'string', 'null' ),
+				'format'      => 'date-time',
+			),
+			'purchase_date' => array(
+				'description' => esc_html__( 'The date of original purchase.', 'bh-wp-slswc-client' ),
+				'type'        => array( 'string', 'null' ),
+				'format'      => 'date-time',
+			),
+			'order_link'    => array(
+				'description' => esc_html__( 'A link to the original order domain.com/my-account/orders/123.', 'bh-wp-slswc-client' ),
+				'type'        => array( 'string', 'null' ),
+				'format'      => 'uri',
+			),
+			'expiry_date'   => array(
+				'description' => esc_html__( 'The expiry date.', 'bh-wp-slswc-client' ),
+				'type'        => array( 'string', 'null' ),
+				'format'      => 'date-time',
+			),
+			'auto_renews'   => array(
+				'description' => esc_html__( 'Will the licence auto-renew?', 'bh-wp-slswc-client' ),
+				'type'        => array( 'boolean', 'null' ),
+			),
+			'renewal_link'  => array(
+				'description' => esc_html__( 'A link to domain.com to renew the licence.', 'bh-wp-slswc-client' ),
+				'type'        => array( 'string', 'null' ),
+				'format'      => 'uri',
+			),
+		);
 	}
 }
