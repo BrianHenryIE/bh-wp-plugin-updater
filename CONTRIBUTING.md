@@ -9,6 +9,11 @@ For the test plugin:
 
 `PHP_IDE_CONFIG="serverName=localhost" wp test-plugin logger delete-all; PHP_IDE_CONFIG="serverName=localhost" wp test-plugin licence activate`
 
+```
+wp transient delete update_plugins --network
+
+export XDEBUG_CONFIG="idekey=PHPSTORM remote_connect_back=1"
+```
 
 ```
 cd test-plugin;
@@ -49,7 +54,7 @@ Regenerate:
 ```
 wp-env run cli wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json --extract-common-types;
 cat ./openapi/test-plugin-openapi.json | jq 'del(.servers) | del(.paths."/") | .jsonSchemaDialect = "https://spec.openapis.org/oas/3.1/dialect/base"' | sponge ./openapi/test-plugin-openapi.json
-
+npm --prefix ./openapi install
 ```
 
 
