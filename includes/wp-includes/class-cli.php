@@ -5,6 +5,8 @@
  *
  * No need for a plugin update command, since updates should work as normal through `wp plugin update`.
  *
+ * `wp plugin list --fields=name,version,update_version,update_package`
+ *
  * @package brianhenryie/bh-wp-slswc-client
  */
 
@@ -61,7 +63,7 @@ class CLI {
 			WP_CLI::add_command( "{$cli_base} licence get-key", array( $this, 'get_licence_key' ) );
 			WP_CLI::add_command( "{$cli_base} licence activate", array( $this, 'activate' ) );
 			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $this, 'deactivate' ) );
-			WP_CLI::add_command( "{$cli_base} product-information update", array( $this, 'get_product_details' ) );
+			WP_CLI::add_command( "{$cli_base} product-information", array( $this, 'get_product_details' ) );
 		} catch ( Exception $e ) {
 			$this->logger->error(
 				'Failed to register WP CLI commands: ' . $e->getMessage(),
@@ -297,6 +299,6 @@ class CLI {
 			\WP_CLI\Utils\get_flag_value( $assoc_args, 'refresh', false )
 		);
 
-		WP_CLI::success( wp_json_encode( $result ) ?: '' );
+		WP_CLI::success( wp_json_encode( $result, JSON_PRETTY_PRINT ) ?: '' );
 	}
 }
