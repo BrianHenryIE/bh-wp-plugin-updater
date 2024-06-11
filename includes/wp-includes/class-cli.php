@@ -85,7 +85,9 @@ class CLI {
 	public function get_licence_status( array $args, array $assoc_args ): void {
 
 		try {
-			$result = $this->api->get_licence_details();
+			$result = $this->api->get_licence_details(
+				\WP_CLI\Utils\get_flag_value( $assoc_args, 'refresh', false )
+			);
 		} catch ( Licence_Key_Not_Set_Exception $e ) {
 			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
 		} catch ( SLSWC_Exception_Abstract $e ) {
@@ -238,7 +240,9 @@ class CLI {
 	 */
 	public function get_product_details( array $args, array $assoc_args ): void {
 
-		$result = $this->api->get_product_information( true );
+		$result = $this->api->get_product_information(
+			\WP_CLI\Utils\get_flag_value( $assoc_args, 'refresh', false )
+		);
 
 		WP_CLI::success( wp_json_encode( $result ) ?: '' );
 	}
