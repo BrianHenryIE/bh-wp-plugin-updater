@@ -7,6 +7,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
 
 interface API_Interface {
 
@@ -16,6 +17,8 @@ interface API_Interface {
 	 * @param ?bool|null $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
 	 */
 	public function get_product_information( ?bool $refresh = null ): ?Product;
+
+	public function get_check_update( ?bool $refresh = null ): ?Software_Details;
 
 	public function set_license_key( string $license_key ): Licence;
 

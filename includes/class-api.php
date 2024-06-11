@@ -273,7 +273,9 @@ class API implements API_Interface {
 		/** @var Check_Updates_Response $response */
 		$response = $this->server_request( 'check_update', Check_Updates_Response::class );
 
-		update_option( $this->settings->get_plugin_information_option_name(), $response->get_software_details() );
+		if ( update_option( $this->settings->get_check_update_option_name(), $response->get_software_details() ) ) {
+			$this->logger->debug( 'Updated check_update option with `Software_Details` object' );
+		}
 
 		return $response->get_software_details();
 	}
@@ -486,7 +488,7 @@ class API implements API_Interface {
 	 */
 	public function is_update_available( ?bool $refresh = null ): bool {
 		return version_compare(
-			$this->get_product_information( $refresh )?->get_version() ?? '0.0.0',
+			$this->get_check_update( $refresh )?->get_version() ?? '0.0.0',
 			get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? '0.0.0',
 			'>'
 		);

@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * This is necessary to get the View Details modal to work.
  *
  * @see install_plugin_information()
  *
@@ -10,6 +10,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client\Admin;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Sections;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
 class Plugins_Page_View_Details {
@@ -63,22 +64,19 @@ class Plugins_Page_View_Details {
 			}
 		}
 
-		$remote_plugin_information = $this->api->get_product_information( false );
+		$update_information = $this->api->get_check_update( false );
 
-		if ( is_null( $remote_plugin_information ) ) {
+		if ( is_null( $update_information ) ) {
 			return $res;
 		}
 
-		// Required to cast as array due to how object is returned from api.
-		foreach ( $remote_plugin_information->sections as $name => $section ) {
-			$res->sections[ $name ] = $section;
-		}
-		if ( isset( $remote_plugin_information->banners ) ) {
-			$res->banners = (array) $remote_plugin_information->banners;
-		}
-		if ( isset( $remote_plugin_information->ratings ) ) {
-			$res->ratings = (array) $remote_plugin_information->ratings;
-		}
+		$sections                      = $update_information->get_sections();
+		$res->sections['description']  = $sections->get_description();
+		$res->sections['installation'] = $sections->get_installation()();
+		$res->sections['changelog']    = $sections->get_changelog();
+
+		// $res->banners // $update_information->get_banners()
+		// $res->ratings // $update_information->get_ratings()
 
 		return $res;
 	}

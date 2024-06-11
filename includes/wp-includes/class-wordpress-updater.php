@@ -9,6 +9,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
+use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use stdClass;
 
@@ -27,7 +28,7 @@ class WordPress_Updater {
 	}
 
 	/**
-	 * Add the plugin's update information to the transient. To be used later on plugins.php.
+	 * Add the plugin's update information to the `update_plugins` transient. To be used later on plugins.php.
 	 *
 	 * This never performs any HTTP requests.
 	 *
@@ -49,8 +50,8 @@ class WordPress_Updater {
 			return $value;
 		}
 
-		/** @var ?Product $plugin_information */
-		$plugin_information = $this->api->get_product_information( false );
+		/** @var ?Software_Details $plugin_information */
+		$plugin_information = $this->api->get_check_update( false );
 
 		if ( is_null( $plugin_information ) ) {
 			return $value;
@@ -69,10 +70,10 @@ class WordPress_Updater {
 		 * If `package` is empty, WordPress will display:
 		 * "Automatic update is unavailable for this plugin."
 		 */
-		$plugin->package     = $plugin_information->get_update_file_url();
+		$plugin->package     = $plugin_information->get_download_link();
 		$plugin->new_version = $plugin_information->get_version();
 
-		$plugin->url = $plugin_information->get_documentation_link();
+		$plugin->url = $plugin_information->get_homepage();
 
 		// 'id' => 'w.org/plugins/woocommerce',
 		// 'slug' => 'woocommerce',
@@ -101,8 +102,15 @@ class WordPress_Updater {
 		// }
 		// }
 
+
+
 		// TODO: merge with $value.
-		$value->no_update[ $this->settings->get_plugin_basename() ] = $plugin;
+		if($this->api->is_update_available( false )){
+			$value->response[ $this->settings->get_plugin_basename() ] = $plugin;
+//			unset( $value->no_update[ $this->settings->get_plugin_basename() ] );
+		} else {
+			$value->no_update[ $this->settings->get_plugin_basename() ] = $plugin;
+		}
 
 		return $value;
 	}

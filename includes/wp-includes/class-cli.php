@@ -64,6 +64,7 @@ class CLI {
 			WP_CLI::add_command( "{$cli_base} licence activate", array( $this, 'activate' ) );
 			WP_CLI::add_command( "{$cli_base} licence deactivate", array( $this, 'deactivate' ) );
 			WP_CLI::add_command( "{$cli_base} product-information", array( $this, 'get_product_details' ) );
+			WP_CLI::add_command( "{$cli_base} check-updates", array( $this, 'get_check_updates' ) );
 		} catch ( Exception $e ) {
 			$this->logger->error(
 				'Failed to register WP CLI commands: ' . $e->getMessage(),
@@ -298,6 +299,13 @@ class CLI {
 		$result = $this->api->get_product_information(
 			\WP_CLI\Utils\get_flag_value( $assoc_args, 'refresh', false )
 		);
+
+		WP_CLI::success( wp_json_encode( $result, JSON_PRETTY_PRINT ) ?: '' );
+	}
+
+	public function get_check_updates( array $args, array $assoc_args ): void {
+
+		$result = $this->api->get_check_update(true);
 
 		WP_CLI::success( wp_json_encode( $result, JSON_PRETTY_PRINT ) ?: '' );
 	}
