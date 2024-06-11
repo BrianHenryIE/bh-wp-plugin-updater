@@ -60,7 +60,9 @@ class API implements API_Interface {
 			return $this->licence;
 		}
 		if ( ! empty( $existing_key ) ) {
-			$this->deactivate_licence();
+			if ( $this->licence->get_status() === 'active' ) {
+				$this->deactivate_licence();
+			}
 		}
 
 		$this->licence->set_licence_key( $license_key );
