@@ -74,7 +74,7 @@ class CLI {
 	 * ## EXAMPLES
 	 *
 	 *   # Get the licence status for the plugin.
-	 *   $ wp $cli_base licence get-status
+	 *   $ wp plugin-slug licence get-status
 	 *   Success: active
 	 *
 	 * @see API_Interface::get_licence_details()
@@ -103,7 +103,7 @@ class CLI {
 	 * ## EXAMPLES
 	 *
 	 *   # Get the licence key the plugin has been configured with.
-	 *   $ wp $cli_base licence get-key
+	 *   $ wp plugin-slug licence get-key
 	 *   Success: 876235557140adb9b8c47b28488cda8481d98495
 	 *
 	 * @see API_Interface::get_licence_details()
@@ -135,15 +135,15 @@ class CLI {
 	 * ## EXAMPLES
 	 *
 	 *   # Set the licence key the plugin should use.
-	 *   $ wp $cli_base licence set-key 876235557140adb9b8c47b28488cda8481d98495
+	 *   $ wp plugin-slug licence set-key 876235557140adb9b8c47b28488cda8481d98495
 	 *   Success: active
 	 *
 	 *   # Set the licence key the plugin should use and activate it.
-	 *   $ wp $cli_base licence set-key 876235557140adb9b8c47b28488cda8481d98495 --activate
+	 *   $ wp plugin-slug licence set-key 876235557140adb9b8c47b28488cda8481d98495 --activate
 	 *   Success: active
 	 *
 	 *   # Set an invalid licence key
-	 *   $ wp $cli_base licence set-key a1s2invalidp0o9
+	 *   $ wp plugin-slug licence set-key a1s2invalidp0o9
 	 *   TODO
 	 *
 	 * @param string[]             $args The unlabelled command line arguments.
@@ -230,7 +230,7 @@ class CLI {
 	 * ## EXAMPLES
 	 *
 	 *   # Refresh the product information from the plugin update server.
-	 *   $ wp $cli_base product-information update
+	 *   $ wp plugin-slug product-information --refresh
 	 *   Success: {json} TODO: display as table
 	 *
 	 * @param string[]             $args The unlabelled command line arguments.
