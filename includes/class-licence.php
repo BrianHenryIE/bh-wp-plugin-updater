@@ -26,7 +26,7 @@ class Licence implements \Serializable, \JsonSerializable {
 	 */
 	protected string $status = 'invalid'; // 'empty'
 
-	protected ?DateTimeInterface $expires = null;
+	protected ?DateTimeInterface $expiry_date = null;
 
 	protected ?DateTimeInterface $last_updated = null;
 
@@ -81,17 +81,17 @@ class Licence implements \Serializable, \JsonSerializable {
 	/**
 	 * Get the licence expiry date.
 	 */
-	public function get_expires(): ?DateTimeInterface {
-		return $this->expires;
+	public function get_expiry_date(): ?DateTimeInterface {
+		return $this->expiry_date;
 	}
 
 	/**
 	 * Set the licence expires date.
 	 *
-	 * @param DateTimeInterface $expires licence expiry date.
+	 * @param DateTimeInterface $expiry_date licence expiry date.
 	 */
-	public function set_expires( DateTimeInterface $expires ): void {
-		$this->expires = $expires;
+	public function set_expiry_date( DateTimeInterface $expiry_date ): void {
+		$this->expiry_date = $expiry_date;
 	}
 
 	public function get_last_updated(): ?DateTimeInterface {
@@ -130,7 +130,7 @@ class Licence implements \Serializable, \JsonSerializable {
 	public function __unserialize( array $data ): void {
 		$this->licence_key  = $data['licence_key'];
 		$this->status       = $data['status'] ?? $this->status;
-		$this->expires      = new DateTimeImmutable( $data['expires'] );
+		$this->expiry_date  = new DateTimeImmutable( $data['expires'] );
 		$this->last_updated = new DateTimeImmutable( $data['last_updated'] );
 	}
 

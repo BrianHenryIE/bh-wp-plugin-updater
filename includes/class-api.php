@@ -143,7 +143,7 @@ class API implements API_Interface {
 		$response = $this->server_request( 'deactivate' );
 
 		$this->licence->set_status( $response->get_status() );
-		$this->licence->set_expires( $response->get_expires() );
+		$this->licence->set_expiry_date( $response->get_expires() );
 
 		$this->licence->set_last_updated( new DateTimeImmutable() );
 

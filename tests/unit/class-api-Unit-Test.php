@@ -105,7 +105,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new \DateTimeImmutable() );
-		$licence->set_expires( new \DateTimeImmutable() );
+		$licence->set_expiry_date( new \DateTimeImmutable() );
 
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )

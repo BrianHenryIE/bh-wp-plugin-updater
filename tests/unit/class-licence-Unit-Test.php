@@ -22,7 +22,7 @@ class Licence_Unit_Test extends \Codeception\Test\Unit {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new \DateTimeImmutable() );
-		$licence->set_expires( new \DateTimeImmutable() );
+		$licence->set_expiry_date( new \DateTimeImmutable() );
 
 		$expected = substr(
 			serialize(
@@ -44,7 +44,7 @@ class Licence_Unit_Test extends \Codeception\Test\Unit {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new \DateTimeImmutable() );
-		$licence->set_expires( new \DateTimeImmutable() );
+		$licence->set_expiry_date( new \DateTimeImmutable() );
 
 		$expected = json_encode(
 			array(

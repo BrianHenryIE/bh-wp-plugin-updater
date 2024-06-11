@@ -40,7 +40,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expires( new DateTimeImmutable() );
+		$licence->set_expiry_date( new DateTimeImmutable() );
 
 		update_option( 'a_plugin_licence', $licence );
 
@@ -87,7 +87,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expires( new DateTimeImmutable() );
+		$licence->set_expiry_date( new DateTimeImmutable() );
 
 		update_option( 'a_plugin_licence', $licence );
 
@@ -127,7 +127,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expires( new DateTimeImmutable() );
+		$licence->set_expiry_date( new DateTimeImmutable() );
 
 		update_option( 'a_plugin_licence', $licence );
 
@@ -208,7 +208,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
 		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expires( new DateTimeImmutable() );
+		$licence->set_expiry_date( new DateTimeImmutable() );
 
 		update_option( 'a_plugin_licence', $licence );
 
