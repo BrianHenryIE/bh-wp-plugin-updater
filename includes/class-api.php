@@ -210,14 +210,16 @@ class API implements API_Interface {
 	 */
 	protected function get_remote_product_information(): ?Product {
 
+		// I think maybe the difference between check_update and product is one expects a valid licence
 		/** @var Product_Response $response */
-		$response = $this->server_request( 'product' );
+		$response = $this->server_request( 'product', Product_Response::class );
 
-		if ( is_object( $response ) && 'ok' === $response->get_status() ) {
+		update_option( $this->settings->get_plugin_information_option_name(), $response->get_product() );
 
-			update_option( $this->settings->get_plugin_information_option_name(), $response->get_product() );
+		return $response->get_product();
+	}
 
-			return $response->get_product();
+
 	/**
 	 * Update information should be available regardless of licence status... alas, it is not.
 	 *
@@ -315,7 +317,6 @@ class API implements API_Interface {
 		// Query the license server.
 		$endpoint_get_actions = apply_filters( 'slswc_client_get_actions', array( 'product', 'products' ) );
 		if ( in_array( $action, $endpoint_get_actions, true ) ) {
-			$type     = Product_Response::class;
 			$response = wp_remote_get( $server_request_url, $request_options );
 		} else {
 			$type     = License_Response::class;

@@ -149,8 +149,34 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$this->assertEquals( 'deactivated', $result->get_status() );
 	}
 
+	/**
+	 * @covers ::get_product_information
+	 * @covers ::get_remote_product_information
+	 * @covers ::server_request
+	 * @covers ::validate_response
+	 */
 	public function test_get_product_information(): void {
-		$this->markTestIncomplete();
+
+		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/get-product-information-success.json' ) );
+		$response_code = 200;
+
+		add_filter(
+			'pre_http_request',
+			function () use ( $body, $response_code ) {
+				return array(
+					'body'     => $body,
+					'response' => array( 'code' => $response_code ),
+				);
+			}
+		);
+
+		$licence = new Licence();
+		$licence->set_licence_key( '87486a5c45612f31ffdeb77506d20d4d3a157d37' );
+		$licence->set_status( 'active' );
+		$licence->set_last_updated( new DateTimeImmutable() );
+		$licence->set_expiry_date( new DateTimeImmutable() );
+
+		update_option( 'a_plugin_licence', $licence );
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -160,14 +186,18 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings->expects( 'get_licence_server_host' )
 				->andReturn( 'https://updatestest.bhwp.ie' );
 		$settings->expects( 'get_plugin_slug' )
-				->andReturn( 'a-plugin' );
+				->andReturn( 'test-plugin' );
 
 		$logger = new NullLogger();
 
 		$api = new API( $settings, $logger );
 
 		/** @var Product $result */
-		$result = $api->get_product_information();
+		$result = $api->get_product_information( true );
+
+		$this->assertEquals( 'a-plugin', $result->get_software_slug() );
+	}
+
 	/**
 	 * @covers ::get_check_update
 	 * @covers ::get_remote_check_update
