@@ -305,7 +305,7 @@ class CLI {
 
 	public function get_check_updates( array $args, array $assoc_args ): void {
 
-		$result = $this->api->get_check_update(true);
+		$result = $this->api->get_check_update( true );
 
 		WP_CLI::success( wp_json_encode( $result, JSON_PRETTY_PRINT ) ?: '' );
 	}
