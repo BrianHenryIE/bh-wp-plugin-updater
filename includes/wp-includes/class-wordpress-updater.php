@@ -102,12 +102,10 @@ class WordPress_Updater {
 		// }
 		// }
 
-
-
 		// TODO: merge with $value.
-		if($this->api->is_update_available( false )){
+		if ( $this->api->is_update_available( false ) ) {
 			$value->response[ $this->settings->get_plugin_basename() ] = $plugin;
-//			unset( $value->no_update[ $this->settings->get_plugin_basename() ] );
+			// unset( $value->no_update[ $this->settings->get_plugin_basename() ] );
 		} else {
 			$value->no_update[ $this->settings->get_plugin_basename() ] = $plugin;
 		}
