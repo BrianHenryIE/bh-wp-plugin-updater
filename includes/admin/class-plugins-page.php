@@ -109,7 +109,7 @@ class Plugins_Page {
 		$licence_link_text = 'View licence details';
 
 		$licence_link = sprintf(
-			'<a href="%s" class="thickbox open-plugin-details-modal">%s</a>',
+			' <a href="%s" class="thickbox open-plugin-details-modal">%s</a>',
 			$this->get_licence_link_url(),
 			esc_html( $licence_link_text )
 		);
