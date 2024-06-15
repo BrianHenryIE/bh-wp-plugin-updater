@@ -7,7 +7,7 @@
  * @package brianhenryie/bh-wp-slswc-client
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Includes;
+namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use function BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore;
