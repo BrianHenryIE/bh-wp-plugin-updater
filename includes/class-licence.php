@@ -24,7 +24,7 @@ class Licence implements \Serializable, \JsonSerializable {
 	/**
 	 * The status. Enum TBD. TODO.
 	 */
-	protected string $status = 'invalid'; // 'empty'
+	protected string $status = 'unknown'; // 'empty'
 
 	protected ?DateTimeInterface $expiry_date = null;
 

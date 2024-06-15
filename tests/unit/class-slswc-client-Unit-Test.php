@@ -52,6 +52,6 @@ class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $instance->get_licence_details( false );
 
-		$this->assertEquals( 'invalid', $result->get_status() );
+		$this->assertEquals( 'unknown', $result->get_status() );
 	}
 }
