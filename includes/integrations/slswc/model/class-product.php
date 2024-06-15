@@ -30,7 +30,7 @@
 // "thumbnail": false
 // }
 
-namespace BrianHenryIE\WP_SLSWC_Client\Server\SLSWC;
+namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
 
 class Product {
 

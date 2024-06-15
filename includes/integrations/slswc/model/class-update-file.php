@@ -6,7 +6,7 @@
 // "name": "bh-wp-autologin-urls.2.3.0-alozbb.zip"
 // },
 
-namespace BrianHenryIE\WP_SLSWC_Client\Server\SLSWC;
+namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
 
 class Update_File {
 

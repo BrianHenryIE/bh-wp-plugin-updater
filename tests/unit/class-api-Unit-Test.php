@@ -3,7 +3,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
 use Mockery;
 use WP_Mock;
 

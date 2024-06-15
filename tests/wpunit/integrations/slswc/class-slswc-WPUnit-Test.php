@@ -1,21 +1,23 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
+use BrianHenryIE\WP_SLSWC_Client\Licence;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Software_Details;
+use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use DateTimeImmutable;
 use Mockery;
 use Psr\Log\NullLogger;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\API
+ * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\SLSWC
  */
-class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
+class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	/**
 	 * @covers ::activate_licence
@@ -43,8 +45,6 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_last_updated( new DateTimeImmutable() );
 		$licence->set_expiry_date( new DateTimeImmutable() );
 
-		update_option( 'a_plugin_licence', $licence );
-
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -54,10 +54,10 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$logger = new ColorLogger();
 
-		$sut = new API( $settings, $logger );
+		$sut = new SLSWC( $settings, $logger );
 
 		/** @var Licence $result */
-		$result = $sut->activate_licence();
+		$result = $sut->activate_licence( $licence );
 
 		$this->assertEquals( 'active', $result->get_status() );
 	}
@@ -90,8 +90,6 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_last_updated( new DateTimeImmutable() );
 		$licence->set_expiry_date( new DateTimeImmutable() );
 
-		update_option( 'a_plugin_licence', $licence );
-
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -101,10 +99,10 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$logger = new ColorLogger();
 
-		$sut = new API( $settings, $logger );
+		$sut = new SLSWC( $settings, $logger );
 
 		/** @var Licence $result */
-		$result = $sut->activate_licence();
+		$result = $sut->activate_licence( $licence );
 
 		$this->assertEquals( 'active', $result->get_status() );
 	}
@@ -130,8 +128,6 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_last_updated( new DateTimeImmutable() );
 		$licence->set_expiry_date( new DateTimeImmutable() );
 
-		update_option( 'a_plugin_licence', $licence );
-
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -141,10 +137,10 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$logger = new ColorLogger();
 
-		$sut = new API( $settings, $logger );
+		$sut = new SLSWC( $settings, $logger );
 
 		/** @var Licence $result */
-		$result = $sut->deactivate_licence();
+		$result = $sut->deactivate_licence( $licence );
 
 		$this->assertEquals( 'deactivated', $result->get_status() );
 	}
@@ -190,10 +186,10 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$logger = new NullLogger();
 
-		$api = new API( $settings, $logger );
+		$sut = new SLSWC( $settings, $logger );
 
 		/** @var Product $result */
-		$result = $api->get_product_information( true );
+		$result = $sut->get_remote_product_information( $licence );
 
 		$this->assertEquals( 'a-plugin', $result->get_software_slug() );
 	}
@@ -225,8 +221,6 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$licence->set_last_updated( new DateTimeImmutable() );
 		$licence->set_expiry_date( new DateTimeImmutable() );
 
-		update_option( 'a_plugin_licence', $licence );
-
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_licence_data_option_name' )
 				->andReturn( 'a_plugin_licence' );
@@ -239,13 +233,15 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$logger = new NullLogger();
 
-		$api = new API( $settings, $logger );
+		$sut = new SLSWC( $settings, $logger );
 
 		/** @var Software_Details $result */
-		$result = $api->get_check_update( true );
+		$result = $sut->get_remote_check_update( $licence );
 
 		$this->assertEquals( '1.2.0', $result->get_version() );
 	}
+
+	// "Invalid parameter(s): slug" happens when the licence key is correct but does not match the plugin slug.
 
 	// deactivating a licence twice results in the same success response from the server.
 
@@ -299,8 +295,8 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$logger = new ColorLogger();
 
-		$sut = new API( $settings, $logger );
+		$sut = new SLSWC( $settings, $logger );
 
-		$sut->activate_licence();
+		$sut->activate_licence( $licence );
 	}
 }

@@ -6,8 +6,9 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Software_Details;
 
 interface API_Interface {
 
@@ -18,7 +19,7 @@ interface API_Interface {
 	 */
 	public function get_product_information( ?bool $refresh = null ): ?Product;
 
-	public function get_check_update( ?bool $refresh = null ): ?Software_Details;
+	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update;
 
 	public function set_license_key( string $license_key ): Licence;
 

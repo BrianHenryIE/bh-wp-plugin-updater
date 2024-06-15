@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BrianHenryIE\WP_SLSWC_Client\Server\SLSWC;
+namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
 
 class Software_Details {
 	public function __construct(
@@ -100,10 +100,16 @@ class Software_Details {
 		return $this->external;
 	}
 
+	/**
+	 * `package` and `download_link` in the JSON seem to be the same.
+	 */
 	public function get_package(): string {
 		return $this->package;
 	}
 
+	/**
+	 * `package` and `download_link` in the JSON seem to be the same.
+	 */
 	public function get_download_link(): string {
 		return $this->download_link;
 	}

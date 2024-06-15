@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BrianHenryIE\WP_SLSWC_Client\Server\SLSWC;
+namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
 
 class Banners {
 	public function __construct(
