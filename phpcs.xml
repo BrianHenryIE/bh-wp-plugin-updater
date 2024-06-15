@@ -34,7 +34,7 @@
     </rule>
     <!-- Short ternaries are useful -->
     <rule ref="Universal.Operators.DisallowShortTernary.Found">
-        <exclude-pattern>*/includes/*</exclude-pattern>
+        <exclude-pattern>/*</exclude-pattern>
     </rule>
     <!-- I need to think about this one -->
     <rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">

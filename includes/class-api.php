@@ -228,7 +228,6 @@ class API implements API_Interface {
 		return $response->get_product();
 	}
 
-
 	/**
 	 * Update information should be available regardless of licence status... alas, it is not.
 	 *
