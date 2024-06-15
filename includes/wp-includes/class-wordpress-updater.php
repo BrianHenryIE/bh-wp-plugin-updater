@@ -8,8 +8,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Product;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Software_Details;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use stdClass;
 
@@ -30,7 +29,14 @@ class WordPress_Updater {
 	/**
 	 * Add the plugin's update information to the `update_plugins` transient. To be used later on plugins.php.
 	 *
-	 * This never performs any HTTP requests.
+	 * When a site admin deleted the `update_plugins` transient, i.e. `wp transient delete update_plugins --network`,
+	 * that means they want to force a check for updates. In those cases, i.e. when this plugin does not already have
+	 * an entry in the stored value, a synchronous HTTP request will be performed.
+	 *
+	 * Where the plugin is already in the transient, the value will be updated with the saved information, which
+	 * itself is updated with the cron job.
+	 *
+	 * // TODO: maybe split the synchronous/asynchronous requests into a separate method. see "update_plugins_{$hostname}"
 	 *
 	 * @param false|stdClass{last_checked:int, no_update: array<stdClass>, response: array<stdClass>, translations: array} $value
 	 * @param string                                                                                                       $transient Always 'update_plugins'.
@@ -41,17 +47,17 @@ class WordPress_Updater {
 	 */
 	public function add_product_data_to_wordpress_plugin_information( $value, string $transient ) {
 
+		// Probably only on a fresh install of WordPress.
 		if ( false === $value ) {
 			return $value;
 		}
 
-		if ( ! $this->api->is_update_available( false ) ) {
-			// TODO: Should this more correctly be added to the `no_update` field?
-			return $value;
-		}
+		// Do a synchronous refresh if the plugin is not already in the `update_plugins` transient.
+		$should_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
+			&& ! isset( $value->no_update[ $this->settings->get_plugin_basename() ] );
 
-		/** @var ?Software_Details $plugin_information */
-		$plugin_information = $this->api->get_check_update( false );
+		/** @var ?Plugin_Update $plugin_information */
+		$plugin_information = $this->api->get_check_update( $should_refresh );
 
 		if ( is_null( $plugin_information ) ) {
 			return $value;
@@ -70,10 +76,10 @@ class WordPress_Updater {
 		 * If `package` is empty, WordPress will display:
 		 * "Automatic update is unavailable for this plugin."
 		 */
-		$plugin->package     = $plugin_information->get_download_link();
+		$plugin->package     = $plugin_information->get_package();
 		$plugin->new_version = $plugin_information->get_version();
 
-		$plugin->url = $plugin_information->get_homepage();
+		$plugin->url = $plugin_information->get_url();
 
 		// 'id' => 'w.org/plugins/woocommerce',
 		// 'slug' => 'woocommerce',

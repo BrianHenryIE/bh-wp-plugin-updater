@@ -7,8 +7,6 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Software_Details;
 
 interface API_Interface {
 

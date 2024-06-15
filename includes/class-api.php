@@ -13,10 +13,8 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\SLSWC;
 use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Software_Details;
 use DateTimeImmutable;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -223,17 +221,17 @@ class API implements API_Interface {
 		return $check_update;
 	}
 
-	protected function get_cached_check_update(): ?Software_Details {
+	protected function get_cached_check_update(): ?Plugin_Update {
 		$cached_product_information = get_option(
 		// plugin_slug_update_information
 			$this->settings->get_check_update_option_name(),
 			null
 		);
-		if ( $cached_product_information instanceof Software_Details ) {
+		if ( $cached_product_information instanceof Plugin_Update ) {
 			$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
 			return $cached_product_information;
 		}
-		$this->logger->debug( 'check_update Software_Details not found in cache: ' . $this->settings->get_plugin_slug() );
+		$this->logger->debug( 'check_update Plugin_Update not found in cache: ' . $this->settings->get_plugin_slug() );
 		return null;
 	}
 

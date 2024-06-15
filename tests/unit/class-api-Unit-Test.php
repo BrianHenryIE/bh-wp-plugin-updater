@@ -3,7 +3,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
 use Mockery;
 use WP_Mock;
 
@@ -67,18 +67,23 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$logger = new ColorLogger();
 		$sut    = new API( $settings, $logger );
 
-		$settings->shouldReceive( 'get_plugin_information_option_name' )
+		$settings->shouldReceive( 'get_check_update_option_name' )
 			->once()
-			->andReturn( 'plugin_slug_product_information' );
+			->andReturn( 'plugin_slug_check_update' );
 
-		$product = Mockery::mock( Product::class );
+		// Used in logging.
+		$settings->shouldReceive( 'get_plugin_slug' )
+			->zeroOrMoreTimes()
+			->andReturn( 'plugin-slug' );
+
+		$plugin_update = Mockery::mock( Plugin_Update::class );
 
 		WP_Mock::userFunction( 'get_option' )
 				->once()
-				->with( 'plugin_slug_product_information', null )
-				->andReturn( $product );
+				->with( 'plugin_slug_check_update', null )
+				->andReturn( $plugin_update );
 
-		$product->shouldReceive( 'get_version' )
+		$plugin_update->shouldReceive( 'get_version' )
 				->once()
 				->andReturn( $remote_version );
 
