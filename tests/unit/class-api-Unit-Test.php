@@ -3,6 +3,8 @@
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
 use Mockery;
 use WP_Mock;
@@ -20,6 +22,13 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 	public function tearDown(): void {
 		WP_Mock::tearDown();
 		parent::tearDown();
+	}
+
+	protected function get_mock_integration_factory( ?Integration_Interface $integration_mock = null ): Integration_Factory_Interface {
+		$mock_integration_factory = Mockery::mock( Integration_Factory_Interface::class )->makePartial();
+		$mock_integration_factory->shouldReceive( 'get_integration' )
+								->andReturn( $integration_mock ?? Mockery::mock( Integration_Interface::class ) );
+		return $mock_integration_factory;
 	}
 
 	/**
@@ -65,7 +74,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 				->andReturnFalse();
 
 		$logger = new ColorLogger();
-		$sut    = new API( $settings, $logger );
+		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
 
 		$settings->shouldReceive( 'get_check_update_option_name' )
 			->once()
@@ -114,14 +123,118 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )
-				->andReturn( $licence );
+				->andReturn( $licence->serialize() );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
 		$logger = new ColorLogger();
-		$sut    = new API( $settings, $logger );
+		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
 
 		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->get_licence_key() );
+	}
+
+	/**
+	 * @covers ::set_license_key
+	 */
+	public function test_set_licence_key(): void {
+		$licence = new Licence();
+		$licence->set_status( 'invalid' );
+
+		\WP_Mock::userFunction( 'get_option' )
+				->with( 'a_plugin_licence', null )
+				->andReturn( $licence->serialize() );
+
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$mock_integration = \Mockery::mock( Integration_Interface::class )->makePartial();
+		$mock_integration->shouldReceive( 'activate_licence' )->never();
+		$mock_integration->shouldReceive( 'deactivate_licence' )->never();
+
+		\WP_Mock::userFunction( 'update_option' )->once()
+				->withArgs(
+					function ( $option_name, $value ) {
+						return is_array( $value )
+						&& $value['licence_key'] === 'qwerty';
+					}
+				)
+				->andReturnTrue();
+
+		$logger = new ColorLogger();
+		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
+
+		$sut->set_license_key( 'qwerty' );
+	}
+
+	/**
+	 * @covers ::set_license_key
+	 */
+	public function test_set_licence_key_should_deactivate_existing_licence(): void {
+		$licence = new Licence();
+		$licence->set_licence_key( 'qwerty' );
+		$licence->set_status( 'active' );
+
+		\WP_Mock::userFunction( 'get_option' )
+				->with( 'a_plugin_licence', null )
+				->andReturn( $licence->serialize() );
+
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$mock_integration = \Mockery::mock( Integration_Interface::class )->makePartial();
+		$mock_integration->shouldReceive( 'activate_licence' )->never();
+		$mock_integration->shouldReceive( 'deactivate_licence' )->once()
+			->withArgs(
+				function ( Licence $licence ) {
+					return $licence->get_licence_key() === 'qwerty';
+				}
+			);
+
+		\WP_Mock::userFunction( 'update_option' )->once()
+				->withArgs(
+					function ( $option_name, $value ) {
+						return is_array( $value )
+							&& $value['licence_key'] === 'abc123';
+					}
+				)
+				->andReturnTrue();
+
+		$logger = new ColorLogger();
+		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
+
+		$sut->set_license_key( 'abc123' );
+	}
+	/**
+	 * @covers ::set_license_key
+	 */
+	public function test_set_licence_key_should_return_early_when_its_the_same_key(): void {
+		$licence = new Licence();
+		$licence->set_licence_key( 'abc123' );
+
+		/**
+		 * @see API::__construct
+		 */
+		\WP_Mock::userFunction( 'get_option' )
+				->with( 'a_plugin_licence', null )
+				->andReturn( $licence->serialize() );
+
+		/**
+		 * @see API::get_licence_details()
+		 * @see API::get_saved_licence_information()
+		 */
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
+
+		$mock_integration = \Mockery::mock( Integration_Interface::class )->makePartial();
+		$mock_integration->shouldReceive( 'activate_licence' )->never();
+		$mock_integration->shouldReceive( 'deactivate_licence' )->never();
+
+		\WP_Mock::userFunction( 'update_option' )->never();
+
+		$logger = new ColorLogger();
+		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
+
+		$sut->set_license_key( 'abc123' );
 	}
 }

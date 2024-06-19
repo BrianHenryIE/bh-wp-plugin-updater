@@ -3,15 +3,18 @@
  * Should only run in background
  * Should trigger when the wp transient is set and manually edit it afterwards/ set its own transient for same time
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * TODO: basically does error checking then calls the integration's similar functions and then caches
+ * TODO: rate limit
  *
- * Adapted from https://licenseserver.io/
+ * @package brianhenryie/bh-wp-slswc-client
  */
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory;
+use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\SLSWC;
 use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
@@ -29,15 +32,17 @@ class API implements API_Interface {
 	public function __construct(
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
+		?Integration_Factory_Interface $integration_factory = null
 	) {
 		$this->setLogger( $logger );
 		$this->licence = $this->get_licence_details( false );
 
-		$this->service = new SLSWC( $settings, $logger );
+		$this->service = ( $integration_factory ?? new Integration_Factory( $logger ) )
+							->get_integration( $settings );
 	}
 
 	/**
-	 * Set the licence key without activting it.
+	 * Set the licence key without activating it.
 	 *
 	 * Deactivates existing licence key if present.
 	 *
@@ -56,6 +61,8 @@ class API implements API_Interface {
 				$this->service->deactivate_licence( $this->licence );
 			}
 		}
+
+		// TODO: Set the status to unknown?
 
 		$this->licence->set_licence_key( $license_key );
 		$this->save_licence_information( $this->licence );
@@ -77,9 +84,9 @@ class API implements API_Interface {
 		// TODO: Do not continuously retry.
 
 		return match ( $refresh ) {
-			true => $this->service->refresh_licence_details(),
+			true => $this->service->refresh_licence_details( $this->licence ),
 			false => $this->get_saved_licence_information() ?? new Licence(),
-			default => $this->get_saved_licence_information() ?? $this->service->refresh_licence_details(),
+			default => $this->get_saved_licence_information() ?? $this->service->refresh_licence_details( $this->licence ),
 		};
 	}
 
@@ -93,14 +100,29 @@ class API implements API_Interface {
 			$this->settings->get_licence_data_option_name(),
 			null
 		);
-		return $value instanceof Licence ? $value : null;
+		try {
+			$licence = new Licence();
+			$licence->__unserialize( $value );
+			return $licence;
+		} catch ( \Throwable $e ) {
+			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
+			return null;
+		}
 	}
 
+	/**
+	 *
+	 *
+	 * @param Licence $licence
+	 *
+	 * @return void
+	 */
 	protected function save_licence_information( Licence $licence ): void {
-		// TODO: set last updated time.
+		$licence->set_last_updated( new DateTimeImmutable() );
+
 		update_option(
 			$this->settings->get_licence_data_option_name(),
-			$licence
+			$licence->__serialize()
 		);
 	}
 
@@ -138,11 +160,11 @@ class API implements API_Interface {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
-		$licence = $this->service->activate_licence();
+		$licence = $this->service->activate_licence( $this->licence );
 
 		// TODO: Let's record "last successfully updated" as well as "last updated". (or use a rate limiter)
-		// TODO: save it
-		$this->licence->set_last_updated( new DateTimeImmutable() );
+
+		$this->save_licence_information( $licence );
 
 		return $this->licence;
 	}
