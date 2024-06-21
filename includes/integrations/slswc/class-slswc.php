@@ -170,7 +170,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * https://my-domain.com/wp-json/slswc/v1/product
 	 */
-	protected function get_base_url( string $action ): string {
+	protected function get_rest_url( string $action ): string {
 		$licence_server_host = $this->settings->get_licence_server_host();
 
 		$scheme = wp_parse_url( $licence_server_host, PHP_URL_SCHEME ) ?? 'https';
@@ -201,7 +201,7 @@ class SLSWC implements Integration_Interface {
 		 */
 		$server_request_url = add_query_arg(
 			$request_info,
-			$this->get_base_url( $action )
+			$this->get_rest_url( $action )
 		);
 
 		// Options to parse the wp_safe_remote_get() call.
