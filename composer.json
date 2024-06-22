@@ -19,7 +19,8 @@
             "johnpbloch/wordpress-core-installer": true,
             "phpstan/extension-installer": true,
             "alleyinteractive/composer-wordpress-autoloader": true,
-            "brianhenryie/composer-fallback-to-git": true
+            "brianhenryie/composer-fallback-to-git": true,
+            "brianhenryie/composer-phpstorm": true
         },
         "platform": {
             "php": "8.0.5"
@@ -88,6 +89,7 @@
         "10up/wp_mock": "*",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "antecedent/patchwork": "^2.1",
+        "brianhenryie/bh-wp-logger": "dev-master",
         "brianhenryie/color-logger": "^1.0",
         "brianhenryie/composer-fallback-to-git": "dev-main",
         "brianhenryie/composer-phpstorm": "dev-master",
@@ -101,6 +103,7 @@
         "phpstan/extension-installer": "*",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpcov": "*",
+        "psr/simple-cache": "^2.0",
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "*",
         "wordpress/wordpress": "*",

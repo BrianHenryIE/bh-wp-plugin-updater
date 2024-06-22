@@ -89,7 +89,7 @@ class API implements API_Interface {
 
 		return match ( $refresh ) {
 			true => $this->service->refresh_licence_details( $this->licence ),
-			false => $this->get_saved_licence_information() ?? throw new Licence_Key_Not_Set_Exception(),
+			false => $this->get_saved_licence_information() ?? new Licence(), // throw new Licence_Key_Not_Set_Exception(),
 			default => $this->get_saved_licence_information() ?? $this->service->refresh_licence_details( $this->licence ),
 		};
 	}
