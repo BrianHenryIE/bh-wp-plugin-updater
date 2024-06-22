@@ -47,6 +47,9 @@
         },
         "classmap": [
             "wordpress"
+        ],
+        "files": [
+            "tests/features/FeatureContext.php"
         ]
     },
     "repositories": {

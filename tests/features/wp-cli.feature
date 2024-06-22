@@ -1,10 +1,11 @@
-Feature: Test that WP-CLI loads.
+Feature: Test the licence management WP-CLI commands.
 
-  Scenario: WP-CLI loads for your tests
+  Scenario: licence get
     Given a WP install
+    Given a plugin located at ./test-plugin
 
-    When I run `wp eval 'echo "Hello world.";'`
-    Then STDOUT should contain:
+    When I try `wp test-plugin licence get`
+    And STDERR should contain:
       """
-      Hello world.
+      Error: The licence key has not been set. Use `wp test-plugin licence set-key {my-key}`.
       """

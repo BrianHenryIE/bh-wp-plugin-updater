@@ -16,7 +16,6 @@ use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\SLSWC;
 use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
 use DateTimeImmutable;
 use Psr\Log\LoggerAwareTrait;
@@ -35,7 +34,12 @@ class API implements API_Interface {
 		?Integration_Factory_Interface $integration_factory = null
 	) {
 		$this->setLogger( $logger );
-		$this->licence = $this->get_licence_details( false );
+
+		try {
+			$this->licence = $this->get_licence_details( false );
+		} catch ( Licence_Key_Not_Set_Exception $e ) {
+			$this->licence = new Licence();
+		}
 
 		$this->service = ( $integration_factory ?? new Integration_Factory( $logger ) )
 							->get_integration( $settings );
@@ -75,7 +79,7 @@ class API implements API_Interface {
 	 *
 	 * @param bool|null $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
 	 *
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws Licence_Key_Not_Set_Exception
 	 */
 	public function get_licence_details( ?bool $refresh = null ): Licence {
 
@@ -85,7 +89,7 @@ class API implements API_Interface {
 
 		return match ( $refresh ) {
 			true => $this->service->refresh_licence_details( $this->licence ),
-			false => $this->get_saved_licence_information() ?? new Licence(),
+			false => $this->get_saved_licence_information() ?? throw new Licence_Key_Not_Set_Exception(),
 			default => $this->get_saved_licence_information() ?? $this->service->refresh_licence_details( $this->licence ),
 		};
 	}
@@ -100,6 +104,10 @@ class API implements API_Interface {
 			$this->settings->get_licence_data_option_name(),
 			null
 		);
+		if ( is_null( $value ) ) {
+			$this->logger->debug( 'No licence information found in wp-options.' );
+			return null;
+		}
 		try {
 			$licence = new Licence();
 			$licence->__unserialize( $value );
