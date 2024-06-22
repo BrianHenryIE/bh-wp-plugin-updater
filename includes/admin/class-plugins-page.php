@@ -3,7 +3,7 @@
  * Add info on plugins.php, add link to display licence modal
  *
  * Add the "Licence: invalid" text in the Automatic Updates column on `plugins.php`.
- * TODO: display banner under plugin entry if licence is not active.
+ * Add link to licence modal when newer plugin exists but update cannot be downloaded.
  *
  * @package brianhenryie/bh-wp-swlsc-client
  */
@@ -13,6 +13,11 @@ namespace BrianHenryIE\WP_SLSWC_Client\Admin;
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
+/**
+ * Add manage licence links to the plugins list table.
+ *
+ * @see \WP_Plugins_List_Table
+ */
 class Plugins_Page {
 
 	/**
@@ -106,6 +111,7 @@ class Plugins_Page {
 	 */
 	public function append_licence_link_to_auto_update_unavailable_text( $plugin_data, $response ): void {
 
+		// E.g. your licence has expired.
 		$licence_link_text = 'View licence details';
 
 		$licence_link = sprintf(

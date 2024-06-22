@@ -9,9 +9,6 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
-use function BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore;
-
 /**
  * @see Settings_Interface
  */

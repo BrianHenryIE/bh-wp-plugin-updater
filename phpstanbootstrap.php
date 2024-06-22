@@ -7,4 +7,3 @@
  * @package brianhenryie/bh-wp-slswc-client
  */
 
-define( 'WP_CONTENT_DIR', __DIR__ . '/wp-content' );

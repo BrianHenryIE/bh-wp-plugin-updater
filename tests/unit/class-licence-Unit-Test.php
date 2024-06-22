@@ -18,7 +18,7 @@ class Licence_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	public function test_serialize(): void {
-		$this->markTestIncomplete('incomplete until we settle on what properties licence should have');
+		$this->markTestIncomplete( 'incomplete until we settle on what properties licence should have' );
 
 		$licence = new Licence();
 		$licence->set_licence_key( 'abc123' );

@@ -14,7 +14,7 @@ interface Integration_Factory_Interface {
 	/**
 	 * Get an integration that provides licence management and updates.
 	 *
-	 * @param Settings_Interface $integration_settings The plugin's licence server settings.
+	 * @param Settings_Interface $settings The plugin's licence server settings.
 	 */
 	public function get_integration( Settings_Interface $settings ): Integration_Interface;
 }

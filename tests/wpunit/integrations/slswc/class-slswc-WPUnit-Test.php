@@ -146,7 +146,6 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers ::get_product_information
 	 * @covers ::get_remote_product_information
 	 * @covers ::server_request
 	 * @covers ::validate_response
@@ -195,7 +194,6 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @covers ::get_check_update
 	 * @covers ::get_remote_check_update
 	 * @covers ::server_request
 	 * @covers ::validate_response

@@ -78,6 +78,8 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
 	 *
+	 * @param Licence $licence The licence to deactivate.
+	 *
 	 * @throws SLSWC_Exception_Abstract
 	 */
 	public function deactivate_licence( Licence $licence ): Licence {
@@ -99,6 +101,8 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * https://bhwp.ie/wp-json/slswc/v1/activate?slug=a-plugin&license_key=ffa19a46c4202cf1dac17b8b556deff3f2a3cc9a
 	 *
+	 * @param Licence $licence The licence to activate.
+	 *
 	 * @throws SLSWC_Exception_Abstract
 	 */
 	public function activate_licence( Licence $licence ): Licence {
@@ -119,6 +123,8 @@ class SLSWC implements Integration_Interface {
 
 	/**
 	 * Returns null when it could not fetch the product information.
+	 *
+	 * @param Licence $licence
 	 */
 	public function get_remote_product_information( Licence $licence ): ?Product {
 
@@ -131,6 +137,8 @@ class SLSWC implements Integration_Interface {
 
 	/**
 	 * Returns null when it could not fetch the product information.
+	 *
+	 * @param Licence $licence
 	 */
 	public function get_remote_check_update( Licence $licence ): ?Plugin_Update {
 
@@ -145,6 +153,11 @@ class SLSWC implements Integration_Interface {
 		return $this->software_details_to_plugin_update( $response->get_software_details() );
 	}
 
+	/**
+	 * Convert a Software_Details object to a Plugin_Update object.
+	 *
+	 * @param Software_Details $software_details
+	 */
 	protected function software_details_to_plugin_update( Software_Details $software_details ): Plugin_Update {
 
 		return new Plugin_Update(
@@ -183,7 +196,9 @@ class SLSWC implements Integration_Interface {
 	/**
 	 * Send a request to the server.
 	 *
+	 * @param Licence $licence
 	 * @param   string $action activate|deactivate|check_update|product.
+	 * @param   string $type The class to map the response to.
 	 * @throws
 	 */
 	protected function server_request( Licence $licence, string $action, string $type = License_Response::class ) {
@@ -191,7 +206,7 @@ class SLSWC implements Integration_Interface {
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
 			'license_key' => $licence->get_licence_key(),
-			'domain'      => get_home_url(),
+			'domain'      => get_home_url(), // Ideally, the server would use the HTTP user agent header, which contains the URL.
 		);
 
 		/**
@@ -241,6 +256,7 @@ class SLSWC implements Integration_Interface {
 	/**
 	 * Validate the license server response to ensure its valid response not what the response is.
 	 *
+	 * @param array $request
 	 * @param \WP_Error|array $response
 	 *
 	 * @throws SLSWC_Exception_Abstract

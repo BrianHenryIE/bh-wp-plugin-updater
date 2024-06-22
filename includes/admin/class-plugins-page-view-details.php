@@ -10,7 +10,6 @@
 namespace BrianHenryIE\WP_SLSWC_Client\Admin;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Server\SLSWC\Sections;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 
 class Plugins_Page_View_Details {
@@ -35,6 +34,12 @@ class Plugins_Page_View_Details {
 
 	/**
 	 * @hooked plugins_api
+	 * @see plugins_api()
+	 *
+	 * @see https://github.com/WordPress/wordpress.org/blob/trunk/wordpress.org/public_html/wp-content/plugins/plugin-directory/api/routes/class-plugin.php
+	 *
+	 * The `plugins_api` filter will always pass `false` as its value and any non-false return value short-circuits
+	 * the normal API request process. The `plugins_api_result` is used for filtering the API response.
 	 *
 	 * $api->sections as $section_name => $content
 	 *

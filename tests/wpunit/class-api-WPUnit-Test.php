@@ -20,7 +20,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 	}
 
 	/**
-	 * I want to serialize a licence as an array, not as the typed class, which is lible to cause crashes if the data
+	 * I want to serialize a licence as an array, not as the typed class, which is liable to cause crashes if the data
 	 * shape changes in the future.
 	 *
 	 * @covers ::save_licence_information
