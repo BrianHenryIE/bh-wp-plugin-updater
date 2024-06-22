@@ -52,6 +52,9 @@ class FeatureContext extends \WP_CLI\Tests\Context\FeatureContext {
 		$project_dir = realpath( self::get_vendor_dir() . '/../' );
 
 		switch ( true ) {
+			case is_file( $remote_request_response_file ):
+				$response_file = realpath( $remote_request_response_file );
+				break;
 			case is_file( ltrim( $remote_request_response_file, './' ) ):
 				$response_file = realpath( ltrim( $remote_request_response_file, './' ) );
 				break;
@@ -62,44 +65,41 @@ class FeatureContext extends \WP_CLI\Tests\Context\FeatureContext {
 				WP_CLI::error( "Path not found: {$remote_request_response_file}" );
 		}
 
+		// todo regex not substring
 
-		// array(
-		// 'headers'  => array(),
-		// 'body'     => '',
-		// 'response' => array(
-		// 'code'    => false,
-		// 'message' => false,
-		// ),
-		// 'cookies'  => array(),
-		// 'http_response' => null,
-		// )
+
 		$mu_plugin_name = basename( $remote_request_response_file );
 
-		// TODO: filter by URL substring.
-
-
-		$mu_php = <<<MU_PHP
+		$mu_php         = <<<MU_PHP
 <?php
-
 /**
+ * Plugin Name: $mu_plugin_name
+ * Description: Mock a response for a remote request.
+ *
+ * @hooked pre_http_request
  * @see \WP_Http::request()
  * 
  * @param false|array \$pre
  * @param array \$parsed_args
  * @param string \$url
+ * 
+ * @return false|array
  */
-add_filter( 'pre_http_request', function( \$pre, \$parsed_args, \$url ): array { 
+add_filter( 'pre_http_request', function( \$pre, \$parsed_args, \$url ) { 
 	\$url_substring = '$url_substring';
 	if ( false === strpos( \$url, \$url_substring ) ) {
 		return \$pre;
 	}
+
 	/**
 	 * @var array{headers:array,body:string,response:array{code:int|false,message:bool|string},cookies:array,http_response:null|array}
 	 */
 	\$contents = include '$response_file';
+
 	return \$contents;
 }, 10, 3 );
 MU_PHP;
+
 		$mu_plugins_dir = $this->variables['RUN_DIR'] . '/wp-content/mu-plugins/';
 
 		file_put_contents( $mu_plugins_dir . $mu_plugin_name, $mu_php );
