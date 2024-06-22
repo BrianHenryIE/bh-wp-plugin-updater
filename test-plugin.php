@@ -14,6 +14,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client_Test_Plugin;
 
 use BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\WP_SLSWC_Client\Licence;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use BrianHenryIE\WP_SLSWC_Client\SLSWC_Client;
 
@@ -77,7 +78,7 @@ class Init_Slswc_Client {
 			return;
 		}
 
-		$asset_file = include plugin_dir_path( __FILE__ ) . 'vendor/brianhenryie/bh-wp-slswc-client/build/index.asset.php';
+		$asset_file = include plugin_dir_path( __FILE__ ) . '/build/index.asset.php';
 
 		wp_enqueue_script(
 			$script_handle,
@@ -88,12 +89,18 @@ class Init_Slswc_Client {
 		);
 
 		$api = SLSWC_Client::get_instance();
+try {
+	$licence_details = $api->get_licence_details();
+}catch(\Exception $e) {
+	$licence_details = new Licence();
+}
 
 		$data = wp_json_encode(
 			array(
 				'restUrl'         => rest_url( "{$this->settings->get_rest_base()}/v1" ),
 				'nonce'           => wp_create_nonce( \BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest::class ),
-				'licence_details' => $api->get_licence_details(),
+				'licence_details' => $licence_details,
+//				'licence_details' => $api->get_licence_details(),
 			)
 		);
 
