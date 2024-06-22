@@ -9,10 +9,14 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 
 // PRIVATE – API WILL CHANGE WITHOUT NOTICE.
 
-function str_underscore_to_dash( string $string ): string {
-	return str_replace( '_', '-', $string );
+if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_underscore_to_dash' ) ) {
+	function str_underscore_to_dash( string $string ): string {
+		return str_replace( '_', '-', $string );
+	}
 }
 
-function str_dash_to_underscore( string $string ): string {
-	return str_replace( '-', '_', $string );
+if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore' ) ) {
+	function str_dash_to_underscore( string $string ): string {
+		return str_replace( '-', '_', $string );
+	}
 }
