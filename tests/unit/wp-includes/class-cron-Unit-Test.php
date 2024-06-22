@@ -125,6 +125,9 @@ class Cron_Unit_Test extends \Codeception\Test\Unit {
 		$api->shouldReceive( 'get_product_information' )
 				->once()
 				->with( true );
+		$api->shouldReceive( 'get_check_update' )
+				->once()
+				->with( true );
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 
