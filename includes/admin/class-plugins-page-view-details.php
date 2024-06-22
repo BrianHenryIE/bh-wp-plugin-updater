@@ -76,18 +76,18 @@ class Plugins_Page_View_Details {
 		}
 
 		// Check sections have content before adding any.
-		$sections = $update_information->get_sections();
-		if ( ! empty( $sections->get_description() ) ) {
-			$res->sections['description'] = $sections->get_description();
-		}
-		if ( ! empty( $sections->get_installation() ) ) {
-			$res->sections['installation'] = $sections->get_installation();
-		}
-		if ( ! empty( $sections->get_changelog() ) ) {
-			$res->sections['changelog'] = $sections->get_changelog();
-		} else {
-			$res->sections['changelog'] = 'No changelog available.';
-		}
+//		$sections = $update_information->get_sections();
+//		if ( ! empty( $sections->get_description() ) ) {
+//			$res->sections['description'] = $sections->get_description();
+//		}
+//		if ( ! empty( $sections->get_installation() ) ) {
+//			$res->sections['installation'] = $sections->get_installation();
+//		}
+//		if ( ! empty( $sections->get_changelog() ) ) {
+//			$res->sections['changelog'] = $sections->get_changelog();
+//		} else {
+//			$res->sections['changelog'] = 'No changelog available.';
+//		}
 
 		// $res->banners // $update_information->get_banners()
 		// $res->ratings // $update_information->get_ratings()
