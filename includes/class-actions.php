@@ -69,7 +69,8 @@ class Actions {
 
 		$plugin_update = new WordPress_Updater(
 			$this->api,
-			$this->settings
+			$this->settings,
+			$this->logger,
 		);
 
 		add_filter(

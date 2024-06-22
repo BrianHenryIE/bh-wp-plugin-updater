@@ -8,22 +8,29 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use stdClass;
 
 class WordPress_Updater {
+	use LoggerAwareTrait;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param API_Interface      $api
 	 * @param Settings_Interface $settings
+	 * @param LoggerInterface    $logger A PSR-3 logger.
 	 */
 	public function __construct(
 		protected API_Interface $api,
 		protected Settings_Interface $settings,
+		LoggerInterface $logger,
 	) {
+		$this->setLogger( $logger );
 	}
 
 	/**
@@ -56,8 +63,13 @@ class WordPress_Updater {
 		$should_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
 			&& ! isset( $value->no_update[ $this->settings->get_plugin_basename() ] );
 
-		/** @var ?Plugin_Update $plugin_information */
-		$plugin_information = $this->api->get_check_update( $should_refresh );
+		try {
+			/** @var ?Plugin_Update $plugin_information */
+			$plugin_information = $this->api->get_check_update( $should_refresh );
+		} catch ( \BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception $exception ) {
+			$this->logger->debug( 'Licence key not set, not updating plugin information.' );
+			return $value;
+		}
 
 		if ( is_null( $plugin_information ) ) {
 			return $value;
