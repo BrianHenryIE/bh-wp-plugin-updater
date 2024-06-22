@@ -47,7 +47,7 @@ class FeatureContext extends \WP_CLI\Tests\Context\FeatureContext {
 	/**
 	 * @Given /^a request to (.*?) responds? with (.*)$/
 	 */
-	public function given_a_request_to_a_url_respond_with_file( $url_substring, $remote_request_response_file ) {
+	public function given_a_request_to_a_url_respond_with_file( $url_substring_pattern, $remote_request_response_file ) {
 
 		$project_dir = realpath( self::get_vendor_dir() . '/../' );
 
@@ -58,50 +58,50 @@ class FeatureContext extends \WP_CLI\Tests\Context\FeatureContext {
 			case is_file( ltrim( $remote_request_response_file, './' ) ):
 				$response_file = realpath( ltrim( $remote_request_response_file, './' ) );
 				break;
-			case is_file( $project_dir . '/' . ltrim( $remote_request_response_file, './' ) ):
-				$response_file = $project_dir . '/' . ltrim( $remote_request_response_file, './' );
+			case is_file( $project_dir . '/' . $remote_request_response_file ):
+				$response_file = $project_dir . '/' . $remote_request_response_file;
 				break;
 			default:
-				WP_CLI::error( "Path not found: {$remote_request_response_file}" );
+				WP_CLI::error( "File not found: {$remote_request_response_file}" );
 		}
 
-		// todo regex not substring
-
+		if ( substr( $url_substring_pattern, 0, 1 ) !== substr( $url_substring_pattern, -1 ) ) {
+			$url_substring_pattern = '/' . preg_quote( $url_substring_pattern, '/' ) . '/';
+		}
 
 		$mu_plugin_name = basename( $remote_request_response_file );
 
-		$mu_php         = <<<MU_PHP
+		$mu_php = <<<MU_PHP
 <?php
 /**
  * Plugin Name: $mu_plugin_name
- * Description: Mock a response for a remote request.
+ * Description: Mock a response for a remote request matching `$url_substring_pattern`.
+ */
+ 
+/**
+ * Filter the HTTP request to return a mock response.
  *
  * @hooked pre_http_request
  * @see \WP_Http::request()
  * 
  * @param false|array \$pre
  * @param array \$parsed_args
- * @param string \$url
+ * @param string \$url The request URL.
  * 
- * @return false|array
+ * @return false|array{headers:array,body:string,response:array{code:int|false,message:bool|string},cookies:array,http_response:null|array}
  */
 add_filter( 'pre_http_request', function( \$pre, \$parsed_args, \$url ) { 
-	\$url_substring = '$url_substring';
-	if ( false === strpos( \$url, \$url_substring ) ) {
+	if ( 1 !== preg_match( '$url_substring_pattern', \$url ) ) {
 		return \$pre;
 	}
 
-	/**
-	 * @var array{headers:array,body:string,response:array{code:int|false,message:bool|string},cookies:array,http_response:null|array}
-	 */
-	\$contents = include '$response_file';
-
-	return \$contents;
+	return include '$response_file';
 }, 10, 3 );
 MU_PHP;
 
-		$mu_plugins_dir = $this->variables['RUN_DIR'] . '/wp-content/mu-plugins/';
-
-		file_put_contents( $mu_plugins_dir . $mu_plugin_name, $mu_php );
+		file_put_contents(
+			$this->variables['RUN_DIR'] . '/wp-content/mu-plugins/' . $mu_plugin_name,
+			$mu_php
+		);
 	}
 }
