@@ -47,10 +47,8 @@
             ]
         },
         "classmap": [
+            "tests/_support",
             "wordpress"
-        ],
-        "files": [
-            "tests/features/FeatureContext.php"
         ]
     },
     "repositories": {
