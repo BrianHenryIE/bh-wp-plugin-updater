@@ -136,7 +136,7 @@ class Licence implements \Serializable, \JsonSerializable {
 	public function __unserialize( array $data ): void {
 		$this->licence_key  = $data['licence_key'];
 		$this->status       = $data['status'] ?? $this->status;
-		$this->expiry_date  = new DateTimeImmutable( $data['expires'] );
+		$this->expiry_date  = new DateTimeImmutable( $data['expiry_date'] );
 		$this->last_updated = new DateTimeImmutable( $data['last_updated'] );
 	}
 
