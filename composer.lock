@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d6dde81f0da18301ea0ddeee7393ddd",
+    "content-hash": "2045605c4d57424c6e00a7f5318c6021",
     "packages": [
         {
             "name": "json-mapper/json-mapper",
@@ -8937,6 +8937,16 @@
                 "issues": "https://core.trac.wordpress.org/"
             },
             "time": "2024-05-07T15:50:09+00:00"
+        },
+        {
+            "name": "wordpress/wordpress-meta",
+            "version": "trunk",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress/wordpress.org.git",
+                "reference": "trunk"
+            },
+            "type": "library"
         },
         {
             "name": "wp-cli/cache-command",
