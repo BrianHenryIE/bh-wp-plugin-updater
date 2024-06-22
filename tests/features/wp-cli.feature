@@ -52,3 +52,16 @@ Feature: Test the licence management WP-CLI commands.
       """
       Success: active
       """
+
+  Scenario: licence set with activate flag
+    Given a WP install
+    Given a plugin located at ./test-plugin
+
+    Given a request to wp-json/slswc/v1/activate? responds with tests/_data/features/activate-success.php
+
+    When I run `wp test-plugin licence set-key abcdefghijklmnopqrstuvwxyzn --activate`
+    Then STDERR should be empty
+    And STDOUT should contain:
+      """
+      Success: active
+      """
