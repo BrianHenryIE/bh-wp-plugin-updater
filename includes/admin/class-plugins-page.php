@@ -111,6 +111,11 @@ class Plugins_Page {
 	 */
 	public function append_licence_link_to_auto_update_unavailable_text( $plugin_data, $response ): void {
 
+		// Only print this text when there is no download link.
+		if ( ! empty( $response->package ) ) {
+			return;
+		}
+
 		// E.g. your licence has expired.
 		$licence_link_text = 'View licence details';
 
