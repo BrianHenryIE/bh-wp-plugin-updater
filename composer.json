@@ -104,6 +104,7 @@
         "wordpress/wordpress-meta": "trunk",
         "wp-cli/dist-archive-command": "dev-main",
         "wp-cli/wp-cli-bundle": "*",
+        "wp-cli/wp-cli-tests": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/document-generator-for-openapi": "*",
         "wpackagist-plugin/woocommerce": "*",
