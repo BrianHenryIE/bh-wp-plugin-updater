@@ -26,7 +26,7 @@ class Integration_Factory implements Integration_Factory_Interface {
 	 * @param LoggerInterface $logger A PSR logger.
 	 */
 	public function __construct(
-		LoggerInterface $logger = null
+		LoggerInterface $logger
 	) {
 		$this->setLogger( $logger );
 	}
