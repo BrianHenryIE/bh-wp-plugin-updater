@@ -23,6 +23,7 @@ class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 	public function tearDown(): void {
 		WP_Mock::tearDown();
 		parent::tearDown();
+		\Patchwork\restoreAll();
 	}
 
 	/**
@@ -47,6 +48,12 @@ class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'plugin-slug' );
 
 		WP_Mock::userFunction( 'get_option' );
+
+		// Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
+		\Patchwork\redefine(
+			array( Actions::class, '__construct' ),
+			function ( $api, $settings, $logger ) {}
+		);
 
 		$instance = SLSWC_Client::get_instance( $settings );
 
