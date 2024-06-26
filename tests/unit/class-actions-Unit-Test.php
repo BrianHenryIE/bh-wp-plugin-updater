@@ -10,6 +10,7 @@ use BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Assets;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
 use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
+use BrianHenryIE\WP_SLSWC_Client\WP_Includes\WordPress_Updater;
 use Mockery;
 use WP_Mock;
 use WP_Mock\Matcher\AnyInstance;
@@ -22,11 +23,29 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 	protected function setUp(): void {
 		parent::setUp();
 		WP_Mock::setUp();
+
+		WP_Mock::passthruFunction( 'wp_unslash' );
+		WP_Mock::passthruFunction( 'sanitize_key' );
 	}
 
 	protected function tearDown(): void {
 		parent::tearDown();
 		WP_Mock::tearDown();
+
+		global $pagenow;
+		unset( $pagenow );
+		unset( $_GET['plugin'] );
+	}
+
+	protected function add_actions(): void {
+		$api      = Mockery::mock( API_Interface::class )->makePartial();
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_plugin_basename' )->andReturn( 'a-plugin/a-plugin.php' );
+		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
+		$settings->shouldReceive( 'get_licence_server_host' )->andReturn( 'https://bhwp.ie' );
+
+		$logger = new ColorLogger();
+		new Actions( $api, $settings, $logger );
 	}
 
 	/**
@@ -34,6 +53,9 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 	 * @covers ::__construct
 	 */
 	public function test_admin_hooks(): void {
+		global $pagenow;
+		$pagenow        = 'plugin-install.php';
+		$_GET['plugin'] = 'a-plugin';
 
 		WP_Mock::expectActionAdded(
 			'admin_enqueue_scripts',
@@ -45,23 +67,13 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Admin_Assets::class ), 'enqueue_script' )
 		);
 
-		$api      = Mockery::mock( API_Interface::class )->makePartial();
-		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
-		$settings->shouldReceive( 'get_plugin_basename' )->andReturn( 'a-plugin/a-plugin.php' );
-		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
-		$logger = new ColorLogger();
-		new Actions( $api, $settings, $logger );
+		$this->add_actions();
 	}
 
 	/**
 	 * @covers ::add_cron_hooks
 	 */
 	public function test_cron_hooks(): void {
-		$api      = Mockery::mock( API_Interface::class )->makePartial();
-		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
-		$settings->shouldReceive( 'get_plugin_basename' )->andReturn( 'a-plugin/a-plugin.php' );
-		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
-
 		WP_Mock::expectActionAdded(
 			'activate_a-plugin',
 			array( new AnyInstance( Cron::class ), 'register_cron_job' )
@@ -72,43 +84,51 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 			array( new AnyInstance( Cron::class ), 'handle_update_check_cron_job' )
 		);
 
-		$logger = new ColorLogger();
-		new Actions( $api, $settings, $logger );
+		$this->add_actions();
 	}
 
 	/**
 	 * @covers ::add_rest_hooks
 	 */
 	public function test_rest_hooks(): void {
-		$api      = Mockery::mock( API_Interface::class )->makePartial();
-		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
-		$settings->shouldReceive( 'get_plugin_basename' )->andReturn( 'a-plugin/a-plugin.php' );
-		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
-
 		WP_Mock::expectActionAdded(
 			'rest_api_init',
 			array( new AnyInstance( Rest::class ), 'register_routes' )
 		);
 
-		$logger = new ColorLogger();
-		new Actions( $api, $settings, $logger );
+		$this->add_actions();
 	}
 
 	/**
 	 * @covers ::add_cli_hooks
 	 */
 	public function test_cli_hooks(): void {
-		$api      = Mockery::mock( API_Interface::class )->makePartial();
-		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
-		$settings->shouldReceive( 'get_plugin_basename' )->andReturn( 'a-plugin/a-plugin.php' );
-		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
-
 		WP_Mock::expectActionAdded(
 			'cli_init',
 			array( new AnyInstance( CLI::class ), 'register_commands' )
 		);
 
-		$logger = new ColorLogger();
-		new Actions( $api, $settings, $logger );
+		$this->add_actions();
+	}
+
+	/**
+	 * @covers ::add_wordpress_updater_hooks
+	 */
+	public function test_wordpress_updater_hooks(): void {
+		WP_Mock::expectFilterAdded(
+			'pre_set_site_transient_update_plugins',
+			array( new AnyInstance( WordPress_Updater::class ), 'detect_force_update' ),
+			10,
+			2
+		);
+
+		WP_Mock::expectFilterAdded(
+			'update_plugins_https://bhwp.ie',
+			array( new AnyInstance( WordPress_Updater::class ), 'add_update_information' ),
+			10,
+			4
+		);
+
+		$this->add_actions();
 	}
 }

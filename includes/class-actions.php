@@ -75,9 +75,16 @@ class Actions {
 
 		add_filter(
 			'pre_set_site_transient_update_plugins',
-			array( $plugin_update, 'add_product_data_to_wordpress_plugin_information' ),
+			array( $plugin_update, 'detect_force_update' ),
 			10,
 			2
+		);
+
+		add_filter(
+			"update_plugins_{$this->settings->get_licence_server_host()}",
+			array( $plugin_update, 'add_update_information' ),
+			10,
+			4
 		);
 	}
 
@@ -112,7 +119,20 @@ class Actions {
 	 * Enqueue the JavaScript to handle the licence tab on the plugins.php page.
 	 */
 	protected function add_assets_hooks(): void {
-		$assets = new Admin_Assets();
+
+		// Only load the JS on the plugin information modal for this plugin.
+		global $pagenow;
+		if ( 'plugin-install.php' !== $pagenow
+			|| ! isset( $_GET['plugin'] )
+			|| sanitize_key( wp_unslash( $_GET['plugin'] ) !== $this->settings->get_plugin_slug() )
+		) {
+			return;
+		}
+
+		$assets = new Admin_Assets(
+			$this->api,
+			$this->settings,
+		);
 
 		add_action( 'admin_enqueue_scripts', array( $assets, 'enqueue_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $assets, 'enqueue_styles' ) );
