@@ -9,6 +9,8 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client;
 
+use BrianHenryIE\WP_SLSWC_Client\WP_Includes\WordPress_Updater;
+
 /**
  * @see Settings_Interface
  */
@@ -30,6 +32,19 @@ trait Settings_Trait {
 		// `get_plugins()` is cached.
 		$plugin_data = get_plugins()[ $this->get_plugin_basename() ];
 		return $plugin_data['Name'];
+	}
+
+	/**
+	 * NB: Heading must be `Update URI` not `UpdateURI`.
+	 * This heading is required because WordPress uses it in the filter to fetch update information.
+	 *
+	 * @see WordPress_Updater::add_product_data_to_wordpress_plugin_information()
+	 */
+	public function get_licence_server_host(): string {
+		require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
+		// `get_plugins()` is cached.
+		$plugin_data = get_plugins()[ $this->get_plugin_basename() ];
+		return $plugin_data['UpdateURI'];
 	}
 
 	/**
