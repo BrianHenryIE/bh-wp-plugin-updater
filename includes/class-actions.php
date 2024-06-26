@@ -67,6 +67,8 @@ class Actions {
 	 */
 	protected function add_wordpress_updater_hooks(): void {
 
+		$hostname = wp_parse_url( sanitize_url( $this->settings->get_licence_server_host() ), PHP_URL_HOST );
+
 		$plugin_update = new WordPress_Updater(
 			$this->api,
 			$this->settings,
@@ -81,7 +83,7 @@ class Actions {
 		);
 
 		add_filter(
-			"update_plugins_{$this->settings->get_licence_server_host()}",
+			"update_plugins_{$hostname}",
 			array( $plugin_update, 'add_update_information' ),
 			10,
 			4

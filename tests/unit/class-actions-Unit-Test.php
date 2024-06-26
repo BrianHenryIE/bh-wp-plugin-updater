@@ -26,6 +26,10 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 
 		WP_Mock::passthruFunction( 'wp_unslash' );
 		WP_Mock::passthruFunction( 'sanitize_key' );
+		WP_Mock::passthruFunction( 'sanitize_url' );
+
+		WP_Mock::userFunction( 'wp_parse_url' )
+				->andReturn( 'bhwp.ie' );
 	}
 
 	protected function tearDown(): void {
@@ -123,7 +127,7 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		WP_Mock::expectFilterAdded(
-			'update_plugins_https://bhwp.ie',
+			'update_plugins_bhwp.ie',
 			array( new AnyInstance( WordPress_Updater::class ), 'add_update_information' ),
 			10,
 			4
