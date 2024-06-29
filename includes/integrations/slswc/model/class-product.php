@@ -30,9 +30,9 @@
 // "thumbnail": false
 // }
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
 
 class Product implements Plugin_Info_Interface {
 

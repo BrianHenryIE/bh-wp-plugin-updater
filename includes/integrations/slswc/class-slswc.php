@@ -3,27 +3,27 @@
  *
  * @see https://licenseserver.io/
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC;
 
-use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Check_Updates_Response;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\License_Response;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product_Response;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Software_Details;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Max_Activations_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\BH_WP_Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Check_Updates_Response;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\License_Response;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product_Response;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Software_Details;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\CLI;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
 use DateTimeImmutable;
 use JsonMapper\Handler\FactoryRegistry;
 use JsonMapper\Handler\PropertyMapper;
@@ -51,7 +51,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @used-by Cron::handle_update_check_cron_job()
 	 * @used-by CLI
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract
 	 */
 	public function refresh_licence_details( Licence $licence ): Licence {
 
@@ -80,7 +80,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence The licence to deactivate.
 	 *
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract
 	 */
 	public function deactivate_licence( Licence $licence ): Licence {
 
@@ -103,7 +103,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence The licence to activate.
 	 *
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract
 	 */
 	public function activate_licence( Licence $licence ): Licence {
 
@@ -300,7 +300,7 @@ class SLSWC implements Integration_Interface {
 	 * @param array           $request
 	 * @param \WP_Error|array $response
 	 *
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract
 	 */
 	protected function validate_response( array $request, $response ): void {
 
@@ -321,7 +321,7 @@ class SLSWC implements Integration_Interface {
 				throw new \Exception(
 					sprintf(
 					// translators: 1. Error message.
-						__( 'HTTP Error: %1$s. %2$s', 'bh-wp-slswc-client' ),
+						__( 'HTTP Error: %1$s. %2$s', 'bh-wp-plugin-updater' ),
 						$response->get_error_message(),
 						$request['server_request_url']
 					),
@@ -333,7 +333,7 @@ class SLSWC implements Integration_Interface {
 			if ( ! isset( $response['response']['code'] ) ) {
 				throw new \Exception(
 				// 'slswc_no_response_code',
-					__( 'wp_safe_remote_get() returned an unexpected result.', 'bh-wp-slswc-client' )
+					__( 'wp_safe_remote_get() returned an unexpected result.', 'bh-wp-plugin-updater' )
 				);
 			}
 
@@ -360,7 +360,7 @@ class SLSWC implements Integration_Interface {
 				$this->logger->error( $response['body'] );
 
 				throw new \Exception(
-					__( '404 There was a problem with the license server. ' . $request['server_request_url'], 'bh-wp-slswc-client' ),
+					__( '404 There was a problem with the license server. ' . $request['server_request_url'], 'bh-wp-plugin-updater' ),
 				);
 			}
 
@@ -384,7 +384,7 @@ class SLSWC implements Integration_Interface {
 					// 'slswc_validation_failed',
 						sprintf(
 						// translators: %s: Error/response message.
-							__( 'There was a problem with your license: %s', 'bh-wp-slswc-client' ),
+							__( 'There was a problem with your license: %s', 'bh-wp-plugin-updater' ),
 							$message
 						)
 					);
@@ -397,7 +397,7 @@ class SLSWC implements Integration_Interface {
 				// 'slswc_internal_server_error',
 					sprintf(
 					// translators: %s: the http response code from the server.
-						__( 'There was a problem with the license server: HTTP response code is : %s', 'bh-wp-slswc-client' ),
+						__( 'There was a problem with the license server: HTTP response code is : %s', 'bh-wp-plugin-updater' ),
 						$response['response']['code']
 					)
 				);
@@ -407,7 +407,7 @@ class SLSWC implements Integration_Interface {
 				throw new \Exception(
 				// 'slswc_unexpected_response_code',
 					sprintf(
-						__( 'HTTP response code is : % s, expecting ( 200 )', 'bh-wp-slswc-client' ),
+						__( 'HTTP response code is : % s, expecting ( 200 )', 'bh-wp-plugin-updater' ),
 						$response['response']['code']
 					)
 				);
@@ -417,7 +417,7 @@ class SLSWC implements Integration_Interface {
 			if ( empty( $response['body'] ) ) {
 				throw new \Exception(
 				// 'slswc_no_response',
-					__( 'The server returned no response.', 'bh-wp-slswc-client' )
+					__( 'The server returned no response.', 'bh-wp-plugin-updater' )
 				);
 			}
 		}

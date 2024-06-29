@@ -4,14 +4,14 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @see \BrianHenryIE\WP_SLSWC_Client\Admin\Settings_Page
- * @see \BrianHenryIE\WP_SLSWC_Client\Admin\Settings_Page::print_plugin_admin_page()
- * @see \BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Ajax
+ * @see \BrianHenryIE\WP_Plugin_Updater\Admin\Settings_Page
+ * @see \BrianHenryIE\WP_Plugin_Updater\Admin\Settings_Page::print_plugin_admin_page()
+ * @see \BrianHenryIE\WP_Plugin_Updater\Admin\Admin_Ajax
  *
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    brianhenryie/bh-wp-slswc-client
+ * @package    brianhenryie/bh-wp-plugin-updater
  *
  * Define variables available from `::display_plugin_admin_page()`.
  * @var string $plugin_name The plugin name.

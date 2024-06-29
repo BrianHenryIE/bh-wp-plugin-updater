@@ -33,7 +33,7 @@
 // }
 // }
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
 class Product_Response {
 

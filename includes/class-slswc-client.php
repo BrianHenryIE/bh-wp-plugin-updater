@@ -1,9 +1,9 @@
 <?php
 /**
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

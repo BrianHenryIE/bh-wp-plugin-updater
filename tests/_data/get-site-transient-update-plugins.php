@@ -4,7 +4,7 @@
  *
  * @see wp_update_plugins()
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 return (object) array(

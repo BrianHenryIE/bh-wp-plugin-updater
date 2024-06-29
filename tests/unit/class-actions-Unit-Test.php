@@ -1,22 +1,22 @@
 <?php
 /**
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Assets;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\WordPress_Updater;
+use BrianHenryIE\WP_Plugin_Updater\Admin\Admin_Assets;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\CLI;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\WordPress_Updater;
 use Mockery;
 use WP_Mock;
 use WP_Mock\Matcher\AnyInstance;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Actions
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Actions
  */
 class Actions_Unit_Test extends \Codeception\Test\Unit {
 

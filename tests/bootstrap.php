@@ -1,6 +1,6 @@
 <?php
 /**
- * @package           brianhenryie/bh-wp-slswc-client
+ * @package           brianhenryie/bh-wp-plugin-updater
  */
 
 $GLOBALS['project_root_dir']   = $project_root_dir  = dirname( __DIR__, 1 );

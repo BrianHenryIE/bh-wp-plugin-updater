@@ -7,7 +7,7 @@ parameters:
         - tests/_support
         - test-plugin/vendor
         - wordpress
-        - wp-content/plugins/bh-wp-slswc-client
+        - wp-content/plugins/bh-wp-plugin-updater
     bootstrapFiles:
         - phpstanbootstrap.php
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php

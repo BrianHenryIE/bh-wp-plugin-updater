@@ -5,14 +5,13 @@
  * @package brianhenryie/bh-wp-swlsc-client
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Admin;
+namespace BrianHenryIE\WP_Plugin_Updater\Admin;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
-use BrianHenryIE\WP_SLSWC_Client\SLSWC_Client;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
-use function BrianHenryIE\WP_SLSWC_Client\str_dash_to_next_capitalised_first_lower;
+use function BrianHenryIE\WP_Plugin_Updater\str_dash_to_next_capitalised_first_lower;
 
 class Admin_Assets {
 
@@ -48,7 +47,7 @@ class Admin_Assets {
 		$data = wp_json_encode(
 			array(
 				'restUrl'         => rest_url( "{$this->settings->get_rest_base()}/v1" ),
-				'nonce'           => wp_create_nonce( \BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest::class ),
+				'nonce'           => wp_create_nonce( \BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest::class ),
 				'licence_details' => $licence_details,
 				// 'licence_details' => $api->get_licence_details(),
 			)

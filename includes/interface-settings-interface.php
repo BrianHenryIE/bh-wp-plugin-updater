@@ -4,13 +4,13 @@
  *
  * The Settings class implements this with some default values/convenience inferences.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\CLI;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest;
 
 interface Settings_Interface {
 

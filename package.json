@@ -1,5 +1,5 @@
 {
-  "name": "bh-wp-slswc-client",
+  "name": "bh-wp-plugin-updater",
   "version": "1.0.0",
   "description": "License Server client library",
   "main": "index.js",

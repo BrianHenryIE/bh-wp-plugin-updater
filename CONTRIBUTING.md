@@ -62,12 +62,12 @@ npm --prefix ./openapi install
 Clone this repo, open PhpStorm, then run `composer install` to install the dependencies.
 
 ```
-git clone https://github.com/brianhenryie/bh-wp-slswc-client.git;
+git clone https://github.com/brianhenryie/bh-wp-plugin-updater.git;
 open -a PhpStorm ./;
 composer install;
 ```
 
-For integration and acceptance tests, a local webserver must be running with `localhost:8080/bh-wp-slswc-client/` pointing at the root of the repo. MySQL must also be running locally – with two databases set up with:
+For integration and acceptance tests, a local webserver must be running with `localhost:8080/bh-wp-plugin-updater/` pointing at the root of the repo. MySQL must also be running locally – with two databases set up with:
 
 ```
 mysql_username="root"

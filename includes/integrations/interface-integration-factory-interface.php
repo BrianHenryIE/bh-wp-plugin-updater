@@ -2,12 +2,12 @@
 /**
  * Interface for a factory to create Integration objects.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations;
 
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
 interface Integration_Factory_Interface {
 

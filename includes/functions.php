@@ -5,11 +5,11 @@
  * @package brianhenryie/bh-wp-swlsc-client
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 // PRIVATE – API WILL CHANGE WITHOUT NOTICE.
 
-if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_underscore_to_dash' ) ) {
+if ( ! function_exists( '\BrianHenryIE\WP_Plugin_Updater\str_underscore_to_dash' ) ) {
 	/**
 	 * Convert a string from snake case to kebab case.
 	 *
@@ -20,7 +20,7 @@ if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_underscore_to_dash' )
 	}
 }
 
-if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore' ) ) {
+if ( ! function_exists( '\BrianHenryIE\WP_Plugin_Updater\str_dash_to_underscore' ) ) {
 	/**
 	 * Convert a string from kebab case to snake case.
 	 *
@@ -31,7 +31,7 @@ if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore' )
 	}
 }
 
-if ( ! function_exists( '\BrianHenryIE\WP_SLSWC_Client\str_dash_to_next_capitalised_first_lower' ) ) {
+if ( ! function_exists( '\BrianHenryIE\WP_Plugin_Updater\str_dash_to_next_capitalised_first_lower' ) ) {
 	/**
 	 * Convert a string from kebab case to camel case.
 	 *

@@ -6,10 +6,10 @@
  * TODO: move the save function out of this class to allow deserialisation to work.
  * TODO: use the last updated time so if there is no communication to the licence server, it can be known if it's an old problem or maybe transient.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -35,14 +35,14 @@ class Licence implements \Serializable, \JsonSerializable {
 	 */
 	public static function get_licence_statuses(): array {
 		return array(
-			'valid'           => __( 'Valid', 'bh-wp-slswc-client' ),
-			'deactivated'     => __( 'Deactivated', 'bh-wp-slswc-client' ),
-			'max_activations' => __( 'Max Activations reached', 'bh-wp-slswc-client' ),
-			'invalid'         => __( 'Invalid', 'bh-wp-slswc-client' ),
-			'inactive'        => __( 'Inactive', 'bh-wp-slswc-client' ),
-			'active'          => __( 'Active', 'bh-wp-slswc-client' ),
-			'expiring'        => __( 'Expiring', 'bh-wp-slswc-client' ),
-			'expired'         => __( 'Expired', 'bh-wp-slswc-client' ),
+			'valid'           => __( 'Valid', 'bh-wp-plugin-updater' ),
+			'deactivated'     => __( 'Deactivated', 'bh-wp-plugin-updater' ),
+			'max_activations' => __( 'Max Activations reached', 'bh-wp-plugin-updater' ),
+			'invalid'         => __( 'Invalid', 'bh-wp-plugin-updater' ),
+			'inactive'        => __( 'Inactive', 'bh-wp-plugin-updater' ),
+			'active'          => __( 'Active', 'bh-wp-plugin-updater' ),
+			'expiring'        => __( 'Expiring', 'bh-wp-plugin-updater' ),
+			'expired'         => __( 'Expired', 'bh-wp-plugin-updater' ),
 		);
 	}
 
@@ -178,7 +178,7 @@ class Licence implements \Serializable, \JsonSerializable {
 	public static function get_licence_object_schema_properties(): array {
 		return array(
 			'licence_key'   => array(
-				'description' => esc_html__( 'The licence key.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'The licence key.', 'bh-wp-plugin-updater' ),
 				'type'        => 'string',
 				// 'minimum'          => 1, // TODO: Is there a set length the key will be?
 				// 'exclusiveMinimum' => true,
@@ -186,38 +186,38 @@ class Licence implements \Serializable, \JsonSerializable {
 				// 'exclusiveMaximum' => true,
 			),
 			'status'        => array(
-				'description' => esc_html__( 'The licence status.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'The licence status.', 'bh-wp-plugin-updater' ),
 				'type'        => 'string',
 				// 'enum' => array(
 				// 'invalid',
 				// ),
 			),
 			'last_updated'  => array(
-				'description' => esc_html__( 'The last time the license server was successfully contacted.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'The last time the license server was successfully contacted.', 'bh-wp-plugin-updater' ),
 				'type'        => array( 'string', 'null' ),
 				'format'      => 'date-time',
 			),
 			'purchase_date' => array(
-				'description' => esc_html__( 'The date of original purchase.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'The date of original purchase.', 'bh-wp-plugin-updater' ),
 				'type'        => array( 'string', 'null' ),
 				'format'      => 'date-time',
 			),
 			'order_link'    => array(
-				'description' => esc_html__( 'A link to the original order domain.com/my-account/orders/123.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'A link to the original order domain.com/my-account/orders/123.', 'bh-wp-plugin-updater' ),
 				'type'        => array( 'string', 'null' ),
 				'format'      => 'uri',
 			),
 			'expiry_date'   => array(
-				'description' => esc_html__( 'The expiry date.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'The expiry date.', 'bh-wp-plugin-updater' ),
 				'type'        => array( 'string', 'null' ),
 				'format'      => 'date-time',
 			),
 			'auto_renews'   => array(
-				'description' => esc_html__( 'Will the licence auto-renew?', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'Will the licence auto-renew?', 'bh-wp-plugin-updater' ),
 				'type'        => array( 'boolean', 'null' ),
 			),
 			'renewal_link'  => array(
-				'description' => esc_html__( 'A link to domain.com to renew the licence.', 'bh-wp-slswc-client' ),
+				'description' => esc_html__( 'A link to domain.com to renew the licence.', 'bh-wp-plugin-updater' ),
 				'type'        => array( 'string', 'null' ),
 				'format'      => 'uri',
 			),

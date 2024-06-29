@@ -1,17 +1,17 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Exception;
+namespace BrianHenryIE\WP_Plugin_Updater\Exception;
 
 use Throwable;
 
-class Licence_Key_Not_Set_Exception extends SLSWC_Exception_Abstract {
+class Licence_Key_Not_Set_Exception extends BH_WP_Plugin_Updater_Exception_Abstract {
 
 	const MESSAGE = 'The licence key has not been set.';
 
 	public function __construct( string $message = self::MESSAGE, int $code = 0, ?Throwable $previous = null ) {
 
 		if ( self::MESSAGE === $message ) {
-			$message = __( 'The licence key has not been set.', 'bh-wp-slswc-client' );
+			$message = __( 'The licence key has not been set.', 'bh-wp-plugin-updater' );
 		}
 
 		parent::__construct( $message, $code, $previous );

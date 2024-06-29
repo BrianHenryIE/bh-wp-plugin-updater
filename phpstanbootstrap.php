@@ -4,6 +4,6 @@
  *
  * @see https://phpstan.org/user-guide/discovering-symbols#global-constants
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 

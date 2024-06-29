@@ -1,10 +1,10 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Exception;
+namespace BrianHenryIE\WP_Plugin_Updater\Exception;
 
 use Throwable;
 
-class Slug_Not_Found_On_Server_Exception extends SLSWC_Exception_Abstract {
+class Slug_Not_Found_On_Server_Exception extends BH_WP_Plugin_Updater_Exception_Abstract {
 
 	const MESSAGE = 'The plugin slug was not found on the server.';
 
@@ -12,7 +12,7 @@ class Slug_Not_Found_On_Server_Exception extends SLSWC_Exception_Abstract {
 
 		if ( self::MESSAGE === $message ) {
 			// NB: This needs to be exactly the same as ::MESSAGE for the translator hint to work.
-			$message = __( 'The plugin slug was not found on the server.', 'bh-wp-slswc-client' );
+			$message = __( 'The plugin slug was not found on the server.', 'bh-wp-plugin-updater' );
 		}
 
 		parent::__construct( $message, $code, $previous );

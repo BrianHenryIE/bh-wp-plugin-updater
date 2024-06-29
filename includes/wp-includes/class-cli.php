@@ -7,15 +7,15 @@
  *
  * `wp plugin list --fields=name,version,update_version,update_package`
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
+namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\BH_WP_Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -116,7 +116,7 @@ class CLI {
 			);
 		} catch ( Licence_Key_Not_Set_Exception $e ) {
 			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
-		} catch ( SLSWC_Exception_Abstract $e ) {
+		} catch ( BH_WP_Plugin_Updater_Exception_Abstract $e ) {
 			WP_CLI::error( $e->getMessage() );
 		}
 
@@ -146,7 +146,7 @@ class CLI {
 			);
 		} catch ( Licence_Key_Not_Set_Exception $e ) {
 			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
-		} catch ( SLSWC_Exception_Abstract $e ) {
+		} catch ( BH_WP_Plugin_Updater_Exception_Abstract $e ) {
 			WP_CLI::error( $e->getMessage() );
 		}
 
@@ -215,7 +215,7 @@ class CLI {
 			if ( \WP_CLI\Utils\get_flag_value( $assoc_args, 'activate', false ) ) {
 				$result = $this->api->activate_licence();
 			}
-		} catch ( SLSWC_Exception_Abstract $e ) {
+		} catch ( BH_WP_Plugin_Updater_Exception_Abstract $e ) {
 			WP_CLI::error( $e->getMessage() );
 		}
 
@@ -242,7 +242,7 @@ class CLI {
 			$result = $this->api->activate_licence();
 		} catch ( Licence_Key_Not_Set_Exception $e ) {
 			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
-		} catch ( SLSWC_Exception_Abstract $e ) {
+		} catch ( BH_WP_Plugin_Updater_Exception_Abstract $e ) {
 			WP_CLI::error( $e->getMessage() );
 		}
 
@@ -272,7 +272,7 @@ class CLI {
 			$result = $this->api->deactivate_licence();
 		} catch ( Licence_Key_Not_Set_Exception $e ) {
 			WP_CLI::error( $e->getMessage() . ' Use `wp ' . $this->settings->get_cli_base() . ' licence set-key {my-key}`.' );
-		} catch ( SLSWC_Exception_Abstract $e ) {
+		} catch ( BH_WP_Plugin_Updater_Exception_Abstract $e ) {
 			WP_CLI::error( $e->getMessage() );
 		}
 

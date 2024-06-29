@@ -2,14 +2,14 @@
 /**
  * @see wp_update_plugins()
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
+namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use stdClass;
@@ -103,7 +103,7 @@ class WordPress_Updater {
 		try {
 			/** @var ?Plugin_Update_Interface $plugin_information */
 			$plugin_information = $this->api->get_check_update( $this->force_refresh );
-		} catch ( \BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception $exception ) {
+		} catch ( \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception $exception ) {
 			$this->logger->debug( 'Licence does not exist no server.' );
 			return $afalse;
 		}

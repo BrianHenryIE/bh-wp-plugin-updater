@@ -2,16 +2,16 @@
 /**
  * Tests main library singleton.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use Psr\Log\NullLogger;
 use WP_Mock;
 
 /**
- * @coversDefaultClass  \BrianHenryIE\WP_SLSWC_Client\SLSWC_Client
+ * @coversDefaultClass  \BrianHenryIE\WP_Plugin_Updater\SLSWC_Client
  */
 class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 

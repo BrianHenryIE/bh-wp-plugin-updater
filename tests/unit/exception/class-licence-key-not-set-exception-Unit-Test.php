@@ -1,11 +1,11 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Exception;
+namespace BrianHenryIE\WP_Plugin_Updater\Exception;
 
 use WP_Mock;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception
  */
 class Licence_Key_Not_Set_Exception_Unit_Test extends \Codeception\Test\Unit {
 
@@ -23,7 +23,7 @@ class Licence_Key_Not_Set_Exception_Unit_Test extends \Codeception\Test\Unit {
 
 		WP_Mock::userFunction( '__' )
 				->once()
-				->with( Licence_Key_Not_Set_Exception::MESSAGE, 'bh-wp-slswc-client' );
+				->with( Licence_Key_Not_Set_Exception::MESSAGE, 'bh-wp-plugin-updater' );
 
 		new Licence_Key_Not_Set_Exception();
 	}

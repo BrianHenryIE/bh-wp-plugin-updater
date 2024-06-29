@@ -1,9 +1,9 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Licence
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Licence
  */
 class Licence_Unit_Test extends \Codeception\Test\Unit {
 

@@ -10,7 +10,7 @@
  * @package brianhenryie/bh-wp-swlsc-client
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Model;
+namespace BrianHenryIE\WP_Plugin_Updater\Model;
 
 interface Plugin_Info_Interface {
 

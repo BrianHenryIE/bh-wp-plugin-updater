@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 class Functions_Unit_Test extends \Codeception\Test\Unit {
 

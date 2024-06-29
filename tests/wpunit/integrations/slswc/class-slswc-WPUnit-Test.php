@@ -1,21 +1,21 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Max_Activations_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use DateTimeImmutable;
 use Mockery;
 use Psr\Log\NullLogger;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\SLSWC
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\SLSWC
  */
 class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 

@@ -1,13 +1,13 @@
 <?php
 /**
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 
 interface API_Interface {
 

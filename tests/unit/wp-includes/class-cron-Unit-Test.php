@@ -1,14 +1,14 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
+namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Mockery;
 use WP_Mock;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron
  */
 class Cron_Unit_Test extends \Codeception\Test\Unit {
 

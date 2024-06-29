@@ -1,13 +1,13 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory
  */
 class Integration_Factory_Unit_Test extends \Codeception\Test\Unit {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use WP_CLI;
 

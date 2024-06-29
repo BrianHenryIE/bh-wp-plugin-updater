@@ -4,14 +4,14 @@
  *
  * {@see openapi/test-plugin-openapi.json} for the generated OpenAPI spec.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
+namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -127,7 +127,7 @@ class Rest {
 
 		// Here we add our PHP representation of JSON Schema.
 		$args['refresh'] = array(
-			'description'  => esc_html__( 'Should the licence check perform a remote request to the licence server.', 'bh-wp-slswc-client' ),
+			'description'  => esc_html__( 'Should the licence check perform a remote request to the licence server.', 'bh-wp-plugin-updater' ),
 			'type'         => 'boolean',
 			// 'validate_callback' => 'prefix_validate_my_arg',
 			// 'sanitize_callback' => 'prefix_sanitize_my_arg',
@@ -151,15 +151,15 @@ class Rest {
 			// In JSON Schema you can specify object properties in the properties attribute.
 			'properties' => array(
 				'success' => array(
-					'description' => esc_html__( 'Was the request successful?', 'bh-wp-slswc-client' ),
+					'description' => esc_html__( 'Was the request successful?', 'bh-wp-plugin-updater' ),
 					'type'        => 'boolean',
 				),
 				'message' => array(
-					'description' => esc_html__( 'A friendly message.', 'bh-wp-slswc-client' ),
+					'description' => esc_html__( 'A friendly message.', 'bh-wp-plugin-updater' ),
 					'type'        => 'string',
 				),
 				'data'    => array(
-					'description' => esc_html__( 'The licence data.', 'bh-wp-slswc-client' ),
+					'description' => esc_html__( 'The licence data.', 'bh-wp-plugin-updater' ),
 					'type'        => 'object',
 					'properties'  => Licence::get_licence_object_schema_properties(),
 				),

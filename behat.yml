@@ -2,6 +2,6 @@ default:
   suites:
     default:
       contexts:
-        - BrianHenryIE\WP_SLSWC_Client\FeatureContext
+        - BrianHenryIE\WP_Plugin_Updater\FeatureContext
       paths:
         - tests/features

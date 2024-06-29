@@ -1,9 +1,9 @@
 <?php
 
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 
 class Software_Details {
 	public function __construct(

@@ -4,18 +4,18 @@
  *
  * @see Admin_Assets
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  * @author Brian Henry <BrianHenryIE@gmail.com>
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Admin;
+namespace BrianHenryIE\WP_Plugin_Updater\Admin;
 
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
 /**
  * Class Admin_Test
  *
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Assets
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Admin\Admin_Assets
  */
 class Admin_Assets_Test extends \Codeception\Test\Unit {
 
@@ -50,7 +50,7 @@ class Admin_Assets_Test extends \Codeception\Test\Unit {
 			)
 		);
 
-		$css_file = $plugin_root_dir . '/assets/bh-wp-slswc-client-admin.css';
+		$css_file = $plugin_root_dir . '/assets/bh-wp-plugin-updater-admin.css';
 		$css_url  = "https://example.org/wp-content/plugins/{$plugin_slug}/assets/{$plugin_slug}-admin.css";
 
 		\WP_Mock::userFunction(
@@ -65,7 +65,7 @@ class Admin_Assets_Test extends \Codeception\Test\Unit {
 			Settings_Interface::class,
 			array(
 				'get_plugin_version'  => '1.0.0',
-				'get_plugin_basename' => 'bh-wp-slswc-client/bh-wp-slswc-client.php',
+				'get_plugin_basename' => 'bh-wp-plugin-updater/bh-wp-plugin-updater.php',
 			)
 		);
 
@@ -143,7 +143,7 @@ class Admin_Assets_Test extends \Codeception\Test\Unit {
 			array(
 				'times' => 1,
 				'args'  => array(
-					'bh-wp-slswc-client',
+					'bh-wp-plugin-updater',
 					\WP_Mock\Functions::type( 'string' ),
 					'before',
 				),

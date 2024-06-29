@@ -7,10 +7,10 @@
  * Author URI:    https://bhwp.ie
  * Update URI:    updatestest.bhwp.ie
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\WP_Logger\Logger;
 
@@ -21,11 +21,11 @@ if ( ! ( is_admin() || wp_doing_cron() || wp_is_serving_rest_request() || define
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-remove_action( 'plugins_loaded', '\\BrianHenryIE\\WP_SLSWC_Client\\init_plugin_updater' );
+remove_action( 'plugins_loaded', '\\BrianHenryIE\\WP_Plugin_Updater\\init_plugin_updater' );
 
 
-$settings = new class() implements \BrianHenryIE\WP_SLSWC_Client\Settings_Interface {
-	use \BrianHenryIE\WP_SLSWC_Client\Settings_Trait;
+$settings = new class() implements \BrianHenryIE\WP_Plugin_Updater\Settings_Interface {
+	use \BrianHenryIE\WP_Plugin_Updater\Settings_Trait;
 
 	public function get_plugin_basename(): string {
 		return plugin_basename( __FILE__ );

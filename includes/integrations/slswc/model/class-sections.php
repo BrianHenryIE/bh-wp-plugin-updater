@@ -1,6 +1,6 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
+namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
 class Sections {
 	public function __construct(

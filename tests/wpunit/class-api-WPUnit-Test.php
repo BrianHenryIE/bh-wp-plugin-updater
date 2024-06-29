@@ -1,14 +1,14 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use Mockery;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\API
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\API
  */
 class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 

@@ -1,6 +1,6 @@
 {
-    "name": "brianhenryie/bh-wp-slswc-client",
-    "description": "This is a short description of what plugin_title does.",
+    "name": "brianhenryie/bh-wp-plugin-updater",
+    "description": "A WordPress library to add update functionality to plugins.",
     "type": "library",
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -37,12 +37,12 @@
             "includes/functions.php"
         ],
         "wordpress": {
-            "BrianHenryIE\\WP_SLSWC_Client\\": "includes/"
+            "BrianHenryIE\\WP_Plugin_Updater\\": "includes/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BrianHenryIE\\WP_SLSWC_Client\\": [
+            "BrianHenryIE\\WP_Plugin_Updater\\": [
                 "tests/unit",
                 "tests/wpunit"
             ]
@@ -131,7 +131,7 @@
                     "vendor/php-stubs/woocommerce-stubs",
                     "vendor/wordpress/wordpress/src",
                     "vendor/wordpress/wordpress/build",
-                    "wp-content/plugins/bh-wp-slswc-client",
+                    "wp-content/plugins/bh-wp-plugin-updater",
                     "wordpress/wp-content"
                 ],
                 "composer-symlinks": false

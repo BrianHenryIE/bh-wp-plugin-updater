@@ -2,15 +2,15 @@
 /**
  * Refresh licence and product information daily.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
+namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
-use function BrianHenryIE\WP_SLSWC_Client\str_dash_to_underscore;
+use function BrianHenryIE\WP_Plugin_Updater\str_dash_to_underscore;
 
 /**
  * Manage actions related to wp-cron scheduled and background tasks.

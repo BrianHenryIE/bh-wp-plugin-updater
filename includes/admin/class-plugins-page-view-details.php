@@ -9,10 +9,10 @@
  * @package brianhenryie/bh-wp-swlsc-client
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\Admin;
+namespace BrianHenryIE\WP_Plugin_Updater\Admin;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
 class Plugins_Page_View_Details {
 

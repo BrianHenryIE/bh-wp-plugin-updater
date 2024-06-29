@@ -3,16 +3,16 @@
  * @see $data = rest_get_server()->get_data_for_routes( $routes, 'help' );
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
+namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\API_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use lucatume\WPBrowser\TestCase\WPRestApiTestCase;
 use Mockery;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest
  */
 class Rest_WPUnit_Test extends WPRestApiTestCase {
 

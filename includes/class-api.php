@@ -6,18 +6,18 @@
  * TODO: basically does error checking then calls the integration's similar functions and then caches
  * TODO: rate limit
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Key_Not_Set_Exception;
-use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Exception\BH_WP_Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use DateTimeImmutable;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -53,7 +53,7 @@ class API implements API_Interface {
 	 *
 	 * @param string $license_key
 	 *
-	 * @throws SLSWC_Exception_Abstract If failing to deactivate the existing licence.
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract If failing to deactivate the existing licence.
 	 */
 	public function set_license_key( string $license_key ): Licence {
 
@@ -142,7 +142,7 @@ class API implements API_Interface {
 	 *
 	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
 	 *
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract
 	 */
 	public function deactivate_licence(): Licence {
 
@@ -161,7 +161,7 @@ class API implements API_Interface {
 	/**
 	 * Activate the licence on this site.
 	 *
-	 * @throws SLSWC_Exception_Abstract
+	 * @throws BH_WP_Plugin_Updater_Exception_Abstract
 	 */
 	public function activate_licence(): Licence {
 

@@ -2,19 +2,19 @@
 /**
  * WordPress hooks and filters for licence management.
  *
- * @package brianhenryie/bh-wp-slswc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
-namespace BrianHenryIE\WP_SLSWC_Client;
+namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\WP_SLSWC_Client\Admin\Admin_Assets;
-use BrianHenryIE\WP_SLSWC_Client\Admin\Licence_Management_Tab;
-use BrianHenryIE\WP_SLSWC_Client\Admin\Plugins_Page;
-use BrianHenryIE\WP_SLSWC_Client\Admin\Plugins_Page_View_Details;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\CLI;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Cron;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest;
-use BrianHenryIE\WP_SLSWC_Client\WP_Includes\WordPress_Updater;
+use BrianHenryIE\WP_Plugin_Updater\Admin\Admin_Assets;
+use BrianHenryIE\WP_Plugin_Updater\Admin\Licence_Management_Tab;
+use BrianHenryIE\WP_Plugin_Updater\Admin\Plugins_Page;
+use BrianHenryIE\WP_Plugin_Updater\Admin\Plugins_Page_View_Details;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\CLI;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\WordPress_Updater;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -1,17 +1,17 @@
 <?php
 
-namespace BrianHenryIE\WP_SLSWC_Client\Exception;
+namespace BrianHenryIE\WP_Plugin_Updater\Exception;
 
 use Throwable;
 
-class Licence_Does_Not_Exist_Exception extends SLSWC_Exception_Abstract {
+class Licence_Does_Not_Exist_Exception extends BH_WP_Plugin_Updater_Exception_Abstract {
 
 	const MESSAGE = 'Licence does not exist. Please check your licence key.';
 
 	public function __construct( string $message = self::MESSAGE, int $code = 0, ?Throwable $previous = null ) {
 
 		if ( self::MESSAGE === $message ) {
-			$message = __( 'Licence does not exist. Please check your licence key.', 'bh-wp-slswc-client' );
+			$message = __( 'Licence does not exist. Please check your licence key.', 'bh-wp-plugin-updater' );
 		}
 
 		parent::__construct( $message, $code, $previous );
