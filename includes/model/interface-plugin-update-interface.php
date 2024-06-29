@@ -15,6 +15,7 @@
  *
  * @see wp_update_plugins()
  * @see https://github.com/WordPress/WordPress/blob/e67e9caef43512751aae60f37d91cf589dce78b0/wp-includes/update.php#L482-L508
+ * @see https://api.wordpress.org/plugins/update-check/1.1/
  *
  * @package brianhenryie/bh-wp-slswc-client
  */

@@ -13,7 +13,7 @@ class Integration_Factory_Unit_Test extends \Codeception\Test\Unit {
 
 	public function test_logger_is_used() {
 
-		$this->markTestIncomplete('I thought I could see the logger being used');
+		$this->markTestIncomplete( 'I thought I could see the logger being used' );
 
 		$logger = new ColorLogger();
 

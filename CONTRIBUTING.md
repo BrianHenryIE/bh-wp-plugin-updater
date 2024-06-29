@@ -10,9 +10,8 @@ For the test plugin:
 `PHP_IDE_CONFIG="serverName=localhost" wp test-plugin logger delete-all; PHP_IDE_CONFIG="serverName=localhost" wp test-plugin licence activate`
 
 ```
-wp transient delete update_plugins --network
-
-export XDEBUG_CONFIG="idekey=PHPSTORM remote_connect_back=1"
+wp transient delete update_plugins --network; XDEBUG_CONFIG="idekey=WP_CLI_XDEBUG remote_connect_back=1 log_level=0" XDEBUG_MODE=debug 
+ PHP_IDE_CONFIG=serverName=localhost wp plugin list
 ```
 
 ```
