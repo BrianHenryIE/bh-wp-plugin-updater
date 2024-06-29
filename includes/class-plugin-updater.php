@@ -8,7 +8,7 @@ namespace BrianHenryIE\WP_Plugin_Updater;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class SLSWC_Client {
+class Plugin_Updater {
 
 	protected static API_Interface $instance;
 

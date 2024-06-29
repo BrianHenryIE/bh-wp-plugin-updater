@@ -11,9 +11,9 @@ use Psr\Log\NullLogger;
 use WP_Mock;
 
 /**
- * @coversDefaultClass  \BrianHenryIE\WP_Plugin_Updater\SLSWC_Client
+ * @coversDefaultClass  \BrianHenryIE\WP_Plugin_Updater\Plugin_Updater
  */
-class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
+class Plugin_Updater_Unit_Test extends \Codeception\Test\Unit {
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -33,7 +33,7 @@ class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 
 		$this->expectException( \Exception::class );
 
-		SLSWC_Client::get_instance( null );
+		Plugin_Updater::get_instance( null );
 	}
 
 	/**
@@ -55,7 +55,7 @@ class SLSWC_Client_Unit_Test extends \Codeception\Test\Unit {
 			function ( $api, $settings, $logger ) {}
 		);
 
-		$instance = SLSWC_Client::get_instance( $settings );
+		$instance = Plugin_Updater::get_instance( $settings );
 
 		$result = $instance->get_licence_details( false );
 

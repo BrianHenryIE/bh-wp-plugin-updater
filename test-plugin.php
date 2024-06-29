@@ -58,7 +58,7 @@ class Init_Slswc_Client {
 
 		$logger = Logger::instance( $logger_settings );
 
-		SLSWC_Client::get_instance(
+		Plugin_Updater::get_instance(
 			$this->settings,
 			$logger
 		);
