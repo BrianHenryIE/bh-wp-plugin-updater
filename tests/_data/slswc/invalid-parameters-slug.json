@@ -1,0 +1,17 @@
+{
+  "code": "rest_invalid_param",
+  "message": "Invalid parameter(s): slug",
+  "data": {
+    "status": 400,
+    "params": {
+      "slug": "The software slug does not match please contact the author of this software. Found slug a-plugin expected test-plugin"
+    },
+    "details": {
+      "slug": {
+        "code": "slswc_invalid_slug",
+        "message": "The software slug does not match please contact the author of this software. Found slug a-plugin expected test-plugin",
+        "data": null
+      }
+    }
+  }
+}
