@@ -2,6 +2,8 @@
 /**
  * This is necessary to get the View Details modal to work.
  *
+ * http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
+ *
  * @see install_plugin_information()
  *
  * @package brianhenryie/bh-wp-swlsc-client
@@ -69,25 +71,22 @@ class Plugins_Page_View_Details {
 			}
 		}
 
-		$update_information = $this->api->get_check_update( false );
+		$update_information = $this->api->get_plugin_information( false );
 
 		if ( is_null( $update_information ) ) {
 			return $res;
 		}
 
 		// Check sections have content before adding any.
-//		$sections = $update_information->get_sections();
-//		if ( ! empty( $sections->get_description() ) ) {
-//			$res->sections['description'] = $sections->get_description();
-//		}
-//		if ( ! empty( $sections->get_installation() ) ) {
-//			$res->sections['installation'] = $sections->get_installation();
-//		}
-//		if ( ! empty( $sections->get_changelog() ) ) {
-//			$res->sections['changelog'] = $sections->get_changelog();
-//		} else {
-//			$res->sections['changelog'] = 'No changelog available.';
-//		}
+		$sections = $update_information->get_sections();
+
+		foreach ( $sections as $name => $section ) {
+			$res->sections[ $name ] = $section;
+		}
+
+		if ( ! isset( $sections['changelog'] ) ) {
+			$res->sections['changelog'] = 'No changelog available.';
+		}
 
 		// $res->banners // $update_information->get_banners()
 		// $res->ratings // $update_information->get_ratings()

@@ -122,7 +122,7 @@ class Cron_Unit_Test extends \Codeception\Test\Unit {
 		$api->shouldReceive( 'get_licence_details' )
 				->once()
 				->with( true );
-		$api->shouldReceive( 'get_product_information' )
+		$api->shouldReceive( 'get_plugin_information' )
 				->once()
 				->with( true );
 		$api->shouldReceive( 'get_check_update' )

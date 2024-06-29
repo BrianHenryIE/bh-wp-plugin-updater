@@ -72,7 +72,7 @@ class Cron {
 	 */
 	public function handle_update_check_cron_job(): void {
 		$this->api->get_licence_details( true );
-		$this->api->get_product_information( true );
+		$this->api->get_plugin_information( true );
 		$this->api->get_check_update( true );
 	}
 }

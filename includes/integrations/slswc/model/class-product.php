@@ -32,7 +32,9 @@
 
 namespace BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model;
 
-class Product {
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
+
+class Product implements Plugin_Info_Interface {
 
 	public function __construct(
 		protected int $software,
@@ -151,5 +153,175 @@ class Product {
 
 	public function is_thumbnail(): bool {
 		return $this->thumbnail;
+	}
+
+	public function get_sections(): array {
+		return array(
+			'changelog' => $this->get_change_log(),
+		);
+	}
+
+	public function get_name(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_slug(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_author_profile(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_contributors(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_requires(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_tested(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_requires_php(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_requires_plugins(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_compatibility(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_rating(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_ratings(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_num_ratings(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_support_url(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_support_threads(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_support_threads_resolved(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_active_installs(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_downloaded(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_last_updated(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_added(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_homepage(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_short_description(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_download_link(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_upgrade_notice(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_screenshots(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_tags(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_stable_tag(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_versions(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_business_model(): ?string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_repository_url(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_commercial_support_url(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_donate_link(): string {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_banners(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_icons(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_blocks(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_block_assets(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_author_block_count(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_author_block_rating(): int {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_blueprints(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_preview_link(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_language_packs(): array {
+		throw new \Exception( 'not implemented' );
+	}
+
+	public function get_block_translations(): array {
+		throw new \Exception( 'not implemented' );
 	}
 }

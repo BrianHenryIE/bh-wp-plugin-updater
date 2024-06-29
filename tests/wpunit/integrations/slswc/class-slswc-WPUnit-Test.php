@@ -8,7 +8,7 @@ use BrianHenryIE\WP_SLSWC_Client\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Licence;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use DateTimeImmutable;
 use Mockery;
@@ -233,7 +233,7 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		$sut = new SLSWC( $settings, $logger );
 
-		/** @var Plugin_Update $result */
+		/** @var Plugin_Update_Interface $result */
 		$result = $sut->get_remote_check_update( $licence );
 
 		$this->assertEquals( '1.2.0', $result->get_version() );

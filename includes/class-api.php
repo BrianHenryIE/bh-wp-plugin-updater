@@ -16,7 +16,8 @@ use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
 use DateTimeImmutable;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -184,7 +185,7 @@ class API implements API_Interface {
 	 *
 	 * null when first run and no cached product information.
 	 */
-	public function get_product_information( ?bool $refresh = null ): ?Product {
+	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info_Interface {
 
 		if ( true !== $refresh ) {
 			// TODO: Add a background task to refresh the product information.
@@ -228,7 +229,7 @@ class API implements API_Interface {
 	 *
 	 * null when first run and no cached information.
 	 */
-	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update {
+	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update_Interface {
 
 		if ( true !== $refresh ) {
 			// TODO: Add a background task to refresh the product information.
@@ -242,7 +243,7 @@ class API implements API_Interface {
 		};
 	}
 
-	protected function get_remote_check_update(): ?Plugin_Update {
+	protected function get_remote_check_update(): ?Plugin_Update_Interface {
 
 		$check_update = $this->service->get_remote_check_update( $this->licence );
 
@@ -251,17 +252,17 @@ class API implements API_Interface {
 		return $check_update;
 	}
 
-	protected function get_cached_check_update(): ?Plugin_Update {
+	protected function get_cached_check_update(): ?Plugin_Update_Interface {
 		$cached_product_information = get_option(
 		// plugin_slug_update_information
 			$this->settings->get_check_update_option_name(),
 			null
 		);
-		if ( $cached_product_information instanceof Plugin_Update ) {
+		if ( $cached_product_information instanceof Plugin_Update_Interface ) {
 			$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
 			return $cached_product_information;
 		}
-		$this->logger->debug( 'check_update Plugin_Update not found in cache: ' . $this->settings->get_plugin_slug() );
+		$this->logger->debug( 'check_update Plugin_Update_Interface not found in cache: ' . $this->settings->get_plugin_slug() );
 		return null;
 	}
 

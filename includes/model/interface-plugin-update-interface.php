@@ -16,8 +16,6 @@
  * @see wp_update_plugins()
  * @see https://github.com/WordPress/WordPress/blob/e67e9caef43512751aae60f37d91cf589dce78b0/wp-includes/update.php#L482-L508
  *
- * TODO: this should be an interface
- *
  * @package brianhenryie/bh-wp-slswc-client
  */
 
@@ -28,7 +26,7 @@ namespace BrianHenryIE\WP_SLSWC_Client\Model;
  *
  * @wpdoc The plugin update data with the latest details.
  */
-class Plugin_Update {
+interface Plugin_Update_Interface {
 
 	/**
 	 * Constructor
@@ -46,102 +44,66 @@ class Plugin_Update {
 	 * @param array|null  $banners_rtl
 	 * @param array|null  $translations
 	 */
-	public function __construct(
-		protected ?string $id,
-		protected string $slug,
-		protected string $version,
-		protected string $url,
-		protected string $package,
-		protected ?string $tested,
-		protected ?string $requires_php,
-		protected ?bool $autoupdate,
-		protected ?array $icons,
-		protected ?array $banners,
-		protected ?array $banners_rtl,
-		protected ?array $translations,
-	) {
-	}
+
 
 	/**
 	 * @wpdoc ID of the plugin for update purposes, should be a URI specified in the `Update URI` header field.
 	 *
 	 * This will be overwritten by `$plugin_data['UpdateURI']` in update.php.
 	 */
-	public function get_id(): ?string {
-		return $this->id;
-	}
+	public function get_id(): ?string;
 
 	/**
 	 * @wpdoc Slug of the plugin.
 	 */
-	public function get_slug(): string {
-		return $this->slug;
-	}
+	public function get_slug(): string;
 
 	/**
 	 * @wpdoc The version of the plugin.
 	 */
-	public function get_version(): string {
-		return $this->version;
-	}
+	public function get_version(): string;
 
 	/**
 	 * @wpdoc The URL for details of the plugin.
 	 */
-	public function get_url(): string {
-		return $this->url;
-	}
+	public function get_url(): string;
 
 	/**
 	 * @wpdoc The update ZIP for the plugin.
 	 */
-	public function get_package(): string {
-		return $this->package;
-	}
+	public function get_package(): string;
 
 	/**
 	 * @wpdoc The version of WordPress the plugin is tested against.
 	 */
-	public function get_tested(): ?string {
-		return $this->tested;
-	}
+	public function get_tested(): ?string;
 
 	/**
 	 * @wpdoc The version of PHP which the plugin requires.
 	 */
-	public function get_requires_php(): ?string {
-		return $this->requires_php;
-	}
+	public function get_requires_php(): ?string;
 
 	/**
 	 * @wpdoc Whether the plugin should automatically update.
 	 *
 	 * TODO: does this mean the plugi author suggests it, or it's used as a record of the site admin enabling it?
 	 */
-	public function get_autoupdate(): ?bool {
-		return $this->autoupdate;
-	}
+	public function get_autoupdate(): ?bool;
 
 	/**
 	 * @wpdoc Array of plugin icons.
 	 */
-	public function get_icons(): ?array {
-		return $this->icons;
-	}
+	public function get_icons(): ?array;
 
 	/**
 	 * @wpdoc Array of plugin banners.
 	 */
-	public function get_banners(): ?array {
-		return $this->banners;
-	}
+	public function get_banners(): ?array;
 
 	/**
 	 * @wpdoc Array of plugin RTL banners.
 	 */
-	public function get_banners_rtl(): ?array {
-		return $this->banners_rtl;
-	}
+	public function get_banners_rtl(): ?array;
 
 	/**
 	 * @wpdoc List of translation updates for the plugin.
@@ -153,7 +115,5 @@ class Plugin_Update {
 	 *
 	 * @return array<array{language:string,version:string,updated:string,package:string,autoupdate:string}>
 	 */
-	public function get_translations(): ?array {
-		return $this->translations;
-	}
+	public function get_translations(): ?array;
 }

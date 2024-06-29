@@ -3,7 +3,8 @@
 namespace BrianHenryIE\WP_SLSWC_Client\Integrations;
 
 use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
 
 interface Integration_Interface {
@@ -14,7 +15,7 @@ interface Integration_Interface {
 
 	public function refresh_licence_details( Licence $licence ): Licence;
 
-	public function get_remote_check_update( Licence $licence ): ?Plugin_Update;
+	public function get_remote_check_update( Licence $licence ): ?Plugin_Update_Interface;
 
-	public function get_remote_product_information( Licence $licence ): ?Product;
+	public function get_remote_product_information( Licence $licence ): ?Plugin_Info_Interface;
 }

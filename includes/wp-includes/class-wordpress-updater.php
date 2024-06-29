@@ -8,7 +8,7 @@
 namespace BrianHenryIE\WP_SLSWC_Client\WP_Includes;
 
 use BrianHenryIE\WP_SLSWC_Client\API_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -21,6 +21,10 @@ use stdClass;
 class WordPress_Updater {
 	use LoggerAwareTrait;
 
+	/**
+	 * Generally we will not refresh plugin update information synchronously, but when the update_plugins transient is
+	 * deleted, we infer that to mean the site admin wants to force a check for updates.
+	 */
 	protected bool $force_refresh = false;
 
 	/**
@@ -56,7 +60,7 @@ class WordPress_Updater {
 	 *
 	 * @return false|stdClass Always the unchanged input value.
 	 */
-	public function detect_force_update( $value, string $transient ) {
+	public function detect_force_update( $value, string $transient_name ) {
 
 		// Probably only happens on a fresh installation of WordPress.
 		if ( false === $value ) {
@@ -97,7 +101,7 @@ class WordPress_Updater {
 		}
 
 		try {
-			/** @var ?Plugin_Update $plugin_information */
+			/** @var ?Plugin_Update_Interface $plugin_information */
 			$plugin_information = $this->api->get_check_update( $this->force_refresh );
 		} catch ( \BrianHenryIE\WP_SLSWC_Client\Exception\Licence_Does_Not_Exist_Exception $exception ) {
 			$this->logger->debug( 'Licence does not exist no server.' );
@@ -110,15 +114,15 @@ class WordPress_Updater {
 	}
 
 	/**
-	 * Convert the Plugin_Update object to an array for use in the `update_plugins` transient.
+	 * Convert the Plugin_Update_Interface object to an array for use in the `update_plugins` transient.
 	 *
 	 * Not the most elegant solution, but it's the simplest.
 	 *
-	 * @param Plugin_Update $plugin_update
+	 * @param Plugin_Update_Interface $plugin_update
 	 *
 	 * @return Plugin_Update_Array
 	 */
-	protected function convert_to_array( Plugin_Update $plugin_update ): array {
+	protected function convert_to_array( Plugin_Update_Interface $plugin_update ): array {
 		return array(
 			'id'           => $plugin_update->get_id(),
 			'slug'         => $plugin_update->get_slug(),

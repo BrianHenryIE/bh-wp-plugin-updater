@@ -15,10 +15,10 @@ use BrianHenryIE\WP_SLSWC_Client\Exception\SLSWC_Exception_Abstract;
 use BrianHenryIE\WP_SLSWC_Client\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Check_Updates_Response;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\License_Response;
-use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Product_Response;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\SLSWC\Model\Software_Details;
 use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
@@ -126,7 +126,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence
 	 */
-	public function get_remote_product_information( Licence $licence ): ?Product {
+	public function get_remote_product_information( Licence $licence ): ?Plugin_Info_Interface {
 
 		// I think maybe the difference between check_update and product is one expects a valid licence
 		/** @var Product_Response $response */
@@ -140,7 +140,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence
 	 */
-	public function get_remote_check_update( Licence $licence ): ?Plugin_Update {
+	public function get_remote_check_update( Licence $licence ): ?Plugin_Update_Interface {
 
 		// I think maybe the difference between check_update and product is one expects a valid licence.
 		/** @var Check_Updates_Response $response */
@@ -154,26 +154,67 @@ class SLSWC implements Integration_Interface {
 	}
 
 	/**
-	 * Convert a Software_Details object to a Plugin_Update object.
+	 * Convert a Software_Details object to a Plugin_Update_Interface object.
 	 *
 	 * @param Software_Details $software_details
 	 */
-	protected function software_details_to_plugin_update( Software_Details $software_details ): Plugin_Update {
+	protected function software_details_to_plugin_update( Software_Details $software_details ): Plugin_Update_Interface {
+		return new class( $software_details ) implements Plugin_Update_Interface {
+			public function __construct(
+				protected Software_Details $software_details
+			) {
+			}
 
-		return new Plugin_Update(
-			$software_details->get_id(),
-			$software_details->get_slug(),
-			$software_details->get_version(),
-			$software_details->get_homepage(),
-			$software_details->get_package(),
-			$software_details->get_tested(),
-			$software_details->get_requires(),
-			null, // $software_details->get_autoupdate(),
-			null, // $software_details->get_icons(),
-			null, // TODO $software_details->get_banners(),
-			null, // $software_details->get_banners_rtl(),
-			null, // $software_details->get_translations(),
-		);
+			public function get_id(): ?string {
+				return $this->software_details->get_id();
+			}
+
+			public function get_slug(): string {
+				return $this->software_details->get_slug();
+			}
+
+			public function get_version(): string {
+				return $this->software_details->get_version();
+			}
+
+			public function get_url(): string {
+				return $this->software_details->get_homepage();
+			}
+
+			public function get_package(): string {
+				return $this->software_details->get_package();
+			}
+
+			public function get_tested(): ?string {
+				return $this->software_details->get_tested();
+			}
+
+			public function get_requires_php(): ?string {
+				return $this->software_details->get_requires();
+			}
+
+			public function get_autoupdate(): ?bool {
+				// null, //        return $this->software_details->get_autoupdate();
+				// TODO: Implement get_autoupdate() method.
+			}
+
+			public function get_icons(): ?array {
+				return $this->software_details->get_icons();
+			}
+
+			public function get_banners(): ?array {
+				// null, // TODO $software_details->get_banners();
+				// TODO: Implement get_banners() method.
+			}
+
+			public function get_banners_rtl(): ?array {
+				return $this->software_details->get_banners_rtl();
+			}
+
+			public function get_translations(): ?array {
+				return $this->software_details->get_translations();
+			}
+		};
 	}
 
 	/**
@@ -197,8 +238,8 @@ class SLSWC implements Integration_Interface {
 	 * Send a request to the server.
 	 *
 	 * @param Licence $licence
-	 * @param   string $action activate|deactivate|check_update|product.
-	 * @param   string $type The class to map the response to.
+	 * @param string  $action activate|deactivate|check_update|product.
+	 * @param string  $type The class to map the response to.
 	 * @throws
 	 */
 	protected function server_request( Licence $licence, string $action, string $type = License_Response::class ) {
@@ -256,7 +297,7 @@ class SLSWC implements Integration_Interface {
 	/**
 	 * Validate the license server response to ensure its valid response not what the response is.
 	 *
-	 * @param array $request
+	 * @param array           $request
 	 * @param \WP_Error|array $response
 	 *
 	 * @throws SLSWC_Exception_Abstract

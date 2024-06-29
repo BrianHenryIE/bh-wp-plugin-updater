@@ -5,7 +5,7 @@ namespace BrianHenryIE\WP_SLSWC_Client;
 use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_SLSWC_Client\Integrations\Integration_Interface;
-use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update;
+use BrianHenryIE\WP_SLSWC_Client\Model\Plugin_Update_Interface;
 use Mockery;
 use WP_Mock;
 
@@ -85,7 +85,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			->zeroOrMoreTimes()
 			->andReturn( 'plugin-slug' );
 
-		$plugin_update = Mockery::mock( Plugin_Update::class );
+		$plugin_update = Mockery::mock( Plugin_Update_Interface::class )->makePartial();
 
 		WP_Mock::userFunction( 'get_option' )
 				->once()

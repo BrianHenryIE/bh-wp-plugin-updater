@@ -292,11 +292,11 @@ class CLI {
 	 * @param string[]             $args The unlabelled command line arguments.
 	 * @param array<string,string> $assoc_args The labelled command line arguments.
 	 *
-	 * @see API_Interface::get_product_information()
+	 * @see API_Interface::get_plugin_information()
 	 */
 	public function get_product_details( array $args, array $assoc_args ): void {
 
-		$result = $this->api->get_product_information(
+		$result = $this->api->get_plugin_information(
 			\WP_CLI\Utils\get_flag_value( $assoc_args, 'refresh', false )
 		);
 
