@@ -5,27 +5,27 @@
  * Version:       1.1.1
  * Author:        BrianHenryIE
  * Author URI:    https://bhwp.ie
- * License Server: https://localhost:8889
+ * Update URI:    updatestest.bhwp.ie
  *
  * @package brianhenryie/bh-wp-slswc-client
  */
 
-
-namespace BrianHenryIE\WP_SLSWC_Client_Test_Plugin;
+namespace BrianHenryIE\WP_SLSWC_Client;
 
 use BrianHenryIE\WP_Logger\Logger;
-use BrianHenryIE\WP_SLSWC_Client\Licence;
-use BrianHenryIE\WP_SLSWC_Client\Settings_Interface;
-use BrianHenryIE\WP_SLSWC_Client\SLSWC_Client;
+
+// TODO: Does this break the openapi generation?
+if ( ! ( is_admin() || wp_doing_cron() || wp_is_serving_rest_request() || defined( 'WP_CLI' ) ) ) {
+	return;
+}
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+remove_action( 'plugins_loaded', '\\BrianHenryIE\\WP_SLSWC_Client\\init_plugin_updater' );
+
+
 $settings = new class() implements \BrianHenryIE\WP_SLSWC_Client\Settings_Interface {
 	use \BrianHenryIE\WP_SLSWC_Client\Settings_Trait;
-
-	public function get_licence_server_host(): string {
-		return 'updatestest.bhwp.ie';
-	}
 
 	public function get_plugin_basename(): string {
 		return plugin_basename( __FILE__ );
@@ -63,63 +63,8 @@ class Init_Slswc_Client {
 			$logger
 		);
 	}
-
-	public function example_admin_enqueue_scripts() {
-		$plugin_slug = explode( '/', plugin_basename( __FILE__ ) )[0];
-
-		$script_handle = "{$plugin_slug}-licence";
-
-		// Only load the JS on the plugin information modal for this plugin.
-		global $pagenow;
-		if ( 'plugin-install.php' !== $pagenow
-			|| ! isset( $_GET['plugin'] )
-			|| sanitize_key( wp_unslash( $_GET['plugin'] ) !== $plugin_slug )
-		) {
-			return;
-		}
-
-		$asset_file = include plugin_dir_path( __FILE__ ) . '/build/index.asset.php';
-
-		wp_enqueue_script(
-			$script_handle,
-			plugins_url( './build/index.js', __FILE__ ),
-			$asset_file['dependencies'],
-			$asset_file['version'],
-			true
-		);
-
-		$api = SLSWC_Client::get_instance();
-try {
-	$licence_details = $api->get_licence_details();
-}catch(\Exception $e) {
-	$licence_details = new Licence();
-}
-
-		$data = wp_json_encode(
-			array(
-				'restUrl'         => rest_url( "{$this->settings->get_rest_base()}/v1" ),
-				'nonce'           => wp_create_nonce( \BrianHenryIE\WP_SLSWC_Client\WP_Includes\Rest::class ),
-				'licence_details' => $licence_details,
-//				'licence_details' => $api->get_licence_details(),
-			)
-		);
-
-		// `bh-wc-zelle-gateway-licence` -> `bhWcZelleGatewayLicence`;
-		$script_var_name = lcfirst( str_replace( ' ', '', ucwords( str_replace( '-', ' ', $script_handle ) ) ) );
-
-		wp_add_inline_script(
-			$script_handle,
-			"const {$script_var_name} = {$data};",
-			'before'
-		);
-	}
 }
 
 $init_slswc = new Init_Slswc_Client( $settings );
 
 add_action( 'plugins_loaded', array( $init_slswc, 'init_slswc' ), 0 );
-
-/**
- * @hooked admin_enqueue_scripts
- */
-add_action( 'admin_enqueue_scripts', array( $init_slswc, 'example_admin_enqueue_scripts' ) );

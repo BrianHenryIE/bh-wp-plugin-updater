@@ -33,6 +33,7 @@
             "includes/"
         ],
         "files": [
+            "bootstrap.php",
             "includes/functions.php"
         ],
         "wordpress": {
