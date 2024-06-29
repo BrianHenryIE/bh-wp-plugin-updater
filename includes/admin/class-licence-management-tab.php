@@ -4,7 +4,7 @@
  *
  * @see install_plugin_information()
  *
- * @package brianhenryie/bh-wp-swlsc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater\Admin;

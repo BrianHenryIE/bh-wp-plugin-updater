@@ -5,7 +5,7 @@
  * Add the "Licence: invalid" text in the Automatic Updates column on `plugins.php`.
  * Add link to licence modal when newer plugin exists but update cannot be downloaded.
  *
- * @package brianhenryie/bh-wp-swlsc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater\Admin;

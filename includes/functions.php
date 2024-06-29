@@ -2,7 +2,7 @@
 /**
  * Some helpful functions for the plugin.
  *
- * @package brianhenryie/bh-wp-swlsc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater;

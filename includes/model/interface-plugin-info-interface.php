@@ -7,7 +7,7 @@
  * @see https://github.com/WordPress/wordpress.org/blob/trunk/wordpress.org/public_html/wp-content/plugins/plugin-directory/api/routes/class-plugin.php
  * @see http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
  *
- * @package brianhenryie/bh-wp-swlsc-client
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater\Model;
