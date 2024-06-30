@@ -32,9 +32,9 @@ jobs:
         run: |
           git checkout origin/gh-pages || true;
           if [[ $(git branch -l gh-pages) == "" ]]; then
-            gh_pages_branch_needed=true
+            gh_pages_branch_needed=true;
           else
-            gh_pages_branch_needed=false
+            gh_pages_branch_needed=false;
           fi
           echo "GH_PAGES_BRANCH_NEEDED=$gh_pages_branch_needed" >> $GITHUB_ENV;
           mkdir gh-pages || true;
@@ -84,7 +84,6 @@ jobs:
 
       - name: Start wp-env
         run: |
-          echo ${{ env.GH_PAGES_BRANCH_NEEDED }};
           mkdir openapi || true;
           npx wp-env start --debug;
           sudo chmod -R a+w wordpress/wp-content;
