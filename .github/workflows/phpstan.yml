@@ -14,16 +14,6 @@ jobs:
     permissions:
       contents: write
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     strategy:
       matrix:
         php: [ '8.0' ]
@@ -39,33 +29,37 @@ jobs:
           tools: composer, cs2pr
           extensions: zip
 
-      - name: Update environment config for GitHub Actions
-        env:
-          PLUGIN_SLUG: ${{ github.event.repository.name }}
-        run: |
-          find . -depth \( -name '.env.testing' \) -exec sed -i "s/TEST_DB_PORT=\".*\"/TEST_DB_PORT=\"${{ job.services.mysql.ports['3306'] }}\"/g" {} +
-
       - name: Read .env.testing
         uses: c-py/action-dotenv-to-setenv@v2
         with:
           env-file: .env.testing
 
-      - name: Configure MySQL
-        run: |
-          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE IF NOT EXISTS "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO root@'%';";
-
-      #      - name: Create Composer auth.json
-      #        run: php -r "file_put_contents( 'auth.json', json_encode( [ 'http-basic' => [ 'blog.brianhenry.ie' => [ 'username' => '"${{ secrets.COMPOSER_AUTH_SECRET }}"', 'password' => 'satispress' ] ] ] ) );"
-
       - name: Run composer install
         continue-on-error: true
         run: composer install
 
-      - name: Create wpconfig ... the composer.json creation didn't work
-        run: |
-          export $(grep -v '^#' .env.testing | xargs);
-          sudo vendor/bin/wp config create --dbname=$TEST_DB_NAME --dbuser=$TEST_DB_USER --dbpass=$TEST_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
-
       - name: Run PHPStan to add annotations to the code
+        id: run-phpstan
         continue-on-error: true
-        run: vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G --no-progress --error-format=checkstyle | cs2pr
+        run: |
+          vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1G --no-progress --error-format=checkstyle | cs2pr
+
+      - name: Get PhpStan level
+        id: phpstan-level
+        run: |
+          LEVEL=$(cat phpstan.neon | grep level | sed "s/[^0-9]*//")
+          echo "level=$LEVEL" >> "$GITHUB_OUTPUT" 
+
+      - name: Check success
+        if: steps.run-phpstan.outcome == 'success'
+        run: curl -o .github/phpstan.svg https://img.shields.io/badge/PHPStan-Level%20${{ steps.phpstan-level.outputs.level}}-2a5ea7.svg
+
+      - name: Check failures
+        if: steps.run-phpstan.outcome != 'success'
+        run: curl -o .github/phpstan.svg https://img.shields.io/badge/PHPStan-Level%20${{ steps.phpstan-level.outputs.level}}❌-lightgrey.svg
+
+      - name: Commit README badge changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: ".github/phpstan.svg"
+          commit_message: "🤖 PhpStan"
