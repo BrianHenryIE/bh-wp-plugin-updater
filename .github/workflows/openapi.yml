@@ -33,7 +33,7 @@ jobs:
             gh_pages_branch_needed=false
           fi
           echo "GH_PAGES_BRANCH_NEEDED=$gh_pages_branch_needed" >> $GITHUB_ENV;
-          mkdir gh-pages
+          mkdir gh-pages || true;
 
       - name:  Maybe create gh-pages branch
         if: ${{ env.GH_PAGES_BRANCH_NEEDED }}
@@ -80,7 +80,7 @@ jobs:
 
       - name: Generate OpenAPI documentation
         run: |
-          mkdir openapi;
+          mkdir openapi || true;
           npx wp-env start;
           composer generate-openapi;
           mkdir gh-pages/openapi || true;
