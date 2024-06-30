@@ -23,9 +23,9 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
+          MYSQL_DATABASE: bh_wp_plugin_updater_tests
         ports:
-          - 3306
+          - 65019:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     strategy:
@@ -35,23 +35,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-#
-#      - name: Maybe setup GitHub Pages branch
-#        run: |
-#          if [ -z $(git branch -l gh-pages | sed -e 's/ *//g') ]; then
-#            git checkout --orphan gh-pages;
-#            touch index.html;
-#            git add index.html;
-#            git commit -m 'Set up gh-pages branch' index.html;
-#            git push origin gh-pages;
-#            git checkout -;
-#          fi
-#
-#      - name: Checkout GitHub Pages branch for code coverage report
-#        uses: actions/checkout@v3
-#        with:
-#          ref: gh-pages
-#          path: tests/_output/html
+
+      - name: Check does gh-pages branch need to be created
+        run: |
+          if [[ $(git branch -l gh-pages) == "" ]]; then
+            gh_pages_branch_needed=true
+          else
+            gh_pages_branch_needed=false
+          fi
+          echo "GH_PAGES_BRANCH_NEEDED=$gh_pages_branch_needed" >> $GITHUB_ENV;
+          mkdir gh-pages
+
+      - name:  Maybe create gh-pages branch
+        if: ${{ env.GH_PAGES_BRANCH_NEEDED }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          force_orphan: true
+          allow_empty_commit: true
+          commit_message: "🤖 Creating gh-pages branch"
+
+      - name: Checkout GitHub Pages branch for code coverage report
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          path: gh-pages
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -61,89 +70,48 @@ jobs:
           tools: composer
           extensions: zip
 
-      - name: Update environment config for GitHub Actions
-        env:
-          PLUGIN_SLUG: ${{ github.event.repository.name }}
-        run: |
-          find . -depth \( -name '.env.testing' \) -exec sed -i "s/TEST_DB_PORT=\".*\"/TEST_DB_PORT=\"${{ job.services.mysql.ports['3306'] }}\"/g" {} +
-
       - name: Read .env.testing
         uses: c-py/action-dotenv-to-setenv@v2
         with:
           env-file: .env.testing
 
-      - name: Configure MySQL
-        run: |
-          mysql -h 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -ppassword -e "CREATE DATABASE IF NOT EXISTS "$TEST_DB_NAME"; USE "$TEST_DB_NAME"; GRANT ALL PRIVILEGES ON "$TEST_DB_NAME".* TO root@'%';";
-
       - name: Run composer install
         continue-on-error: true
         run: composer install
-
-      - name: Create wpconfig ... the composer.json creation didn't work
-        run: |
-          export $(grep -v '^#' .env.testing | xargs);
-          sudo vendor/bin/wp config create --dbname=$TEST_DB_NAME --dbuser=$TEST_DB_USER --dbpass=$TEST_DB_PASSWORD --dbhost=127.0.0.1:${{ job.services.mysql.ports['3306'] }} --allow-root --extra-php="define( 'WP_DEBUG', true ); define( 'WP_DEBUG_LOG', true );"
-          cat wordpress/wp-config.php
-
-      - name: Run composer post-install-cmd
-        continue-on-error: true
-        run: composer run-script post-install-cmd
-
-      - name: Check database
-        run: vendor/bin/wp db check --debug
 
       - name: Allow writing to wp-content
         run: sudo chmod -R a+w wp-content
 
       - name: Clear previous code coverage
         run: |
-          cd tests/_output/html && rm -rf * && cd ../../.. || true
+          rm -rf gh-pages/phpunit || true;
+          mkdir gh-pages/phpunit || true;
 
       - name: Run unit tests
-        run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage unit.cov --debug || true;
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage ./tests/_output/unit.cov --debug || true;
 
       - name: Run wpunit tests
-        run: XDEBUG_MODE=coverage vendor/bin/codecept run wpunit --coverage wpunit.cov --debug || true;
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run wpunit --coverage ./tests/_output/wpunit.cov --debug || true;
 
       - name: Merge code coverage
-        run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;
+        run: vendor/bin/phpcov merge --clover tests/_output/clover.xml --php ./gh-pages/phpunit/phpunit.cov --html gh-pages/phpunit/html/ ./tests/_output/;
 
-      - name: Edit phpcov html output to work with gh-pages
+      # See: https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/
+      - name: Add `.nojekyll` file so code coverage report successfully deploys to gh-pages
+        working-directory: gh-pages/phpunit
         run: |
-          cd tests/_output/html
-          mv _css css; find . -depth -name '*.html' -exec sed -i "s/_css\//css\//" {} +
-          mv _icons icons; find . -depth -name '*.html' -exec sed -i "s/_icons\//icons\//" {} +
-          mv _js js; find . -depth -name '*.html' -exec sed -i "s/_js\//js\//" {} +
-          git init;
-          git add *
-          cd ../../..
-
-      - name: Discard environment changes before committing other changes
-        run: |
-          git checkout -- .env.testing
-          git checkout -- tests/wpunit.suite.yml
-
-      - name: Publish on GitHub Pages
-        uses: ftnext/action-push-ghpages@v1.0.0
-        with:
-          build_dir: tests/_output/html
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-#      - name: Commit code coverage to gh-pages
-#        uses: stefanzweifel/git-auto-commit-action@v4.1.1
-#        with:
-#          repository: tests/_output/html
-#          branch: gh-pages
-#          commit_message: "🤖 Commit code coverage to gh-pages"
-#        env:
-#          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          touch .nojekyll
+          git add -- .nojekyll *
 
       - name: Update README badge
-        run: vendor/bin/php-coverage-badger tests/_output/clover.xml .github/coverage.svg PHPUnit
+        run: vendor/bin/php-coverage-badger tests/_output/clover.xml gh-pages/phpunit/coverage.svg PHPUnit
 
-      - name: Commit code coverage badge
-        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+      - name: Commit code coverage to gh-pages
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🤖 Commit code coverage badge"
-          file_pattern: .github/coverage.svg
+          repository: gh-pages
+          branch: gh-pages
+          commit_message: "🤖 Save code coverage report to gh-pages" # TODO: include the percentage change in the message.
+          commit_options: ""
+        env:
+          GITHUB_TOKEN: "${{ github.token }}"
