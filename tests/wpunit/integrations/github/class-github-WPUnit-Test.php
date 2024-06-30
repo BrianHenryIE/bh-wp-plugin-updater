@@ -2,6 +2,7 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub;
 
+use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use Psr\Http\Message\ResponseInterface;
 
@@ -11,12 +12,6 @@ use Psr\Http\Message\ResponseInterface;
 class GitHub_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 	public function test_one() {
-
-		$a = json_encode(
-			json_decode(
-				file_get_contents( codecept_root_dir( 'tests/_data/github/releases.json' ) )
-			)
-		);
 
 		$http_client    = new \PsrMock\Psr18\Client();
 		$streamFactory  = new \PsrMock\Psr17\StreamFactory();
@@ -69,7 +64,9 @@ class GitHub_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 			3
 		);
 
-		$sut = new GitHub( $http_client, $settings );
+		$logger = new ColorLogger();
+
+		$sut = new GitHub( $http_client, $settings, $logger );
 
 		$result = $sut->get_remote_check_update( new Licence() );
 		$this->assertEquals( '2.4.2', $result->get_version() );

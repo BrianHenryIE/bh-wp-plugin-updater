@@ -54,6 +54,12 @@ class Plugin_Updater_Unit_Test extends \Codeception\Test\Unit {
 			array( Actions::class, '__construct' ),
 			function ( $api, $settings, $logger ) {}
 		);
+		\Patchwork\redefine(
+			array( API::class, '__construct' ),
+			function ( $settings, $logger, $integration_factory = null ) {
+				$this->setLogger( new NullLogger() );
+			}
+		);
 
 		$instance = Plugin_Updater::get_instance( $settings );
 
