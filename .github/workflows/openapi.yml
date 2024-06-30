@@ -83,6 +83,7 @@ jobs:
 
       - name: Start wp-env
         run: |
+          echo ${{ env.GH_PAGES_BRANCH_NEEDED }};
           mkdir openapi || true;
           npx wp-env start --debug;
           sudo chmod -R a+w wordpress/wp-content;
