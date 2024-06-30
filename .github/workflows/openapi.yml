@@ -30,6 +30,7 @@ jobs:
 
       - name: Check does gh-pages branch need to be created
         run: |
+          git checkout origin/gh-pages || true;
           if [[ $(git branch -l gh-pages) == "" ]]; then
             gh_pages_branch_needed=true
           else
