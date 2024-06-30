@@ -76,7 +76,7 @@ class API implements API_Interface {
 	}
 
 	/**
-	 * Get the licence information, maybe cached, maybe remote, maaybe an empty Licence object.
+	 * Get the licence information, maybe cached, maybe remote, maybe an empty Licence object.
 	 *
 	 * @param bool|null $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
 	 *

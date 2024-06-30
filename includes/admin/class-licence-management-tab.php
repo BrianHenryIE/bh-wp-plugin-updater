@@ -52,18 +52,6 @@ class Licence_Management_Tab {
 			$res = new \stdClass();
 		}
 
-		// $minimum = array(
-		// 'slug'     => $this->settings->get_plugin_slug(),
-		// 'name'     => $this->settings->get_plugin_name(),
-		// 'sections' => array(),
-		// );
-		//
-		// foreach ( $minimum as $key => $value ) {
-		// if ( ! isset( $res->$key ) ) {
-		// $res->$key = $value;
-		// }
-		// }
-
 		$res->sections['licence'] = $this->get_licence_tab_html();
 
 		return $res;

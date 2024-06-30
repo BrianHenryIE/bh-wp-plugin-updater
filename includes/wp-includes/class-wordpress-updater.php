@@ -118,6 +118,8 @@ class WordPress_Updater {
 	 *
 	 * Not the most elegant solution, but it's the simplest.
 	 *
+	 * TODO use serialize / get object vars
+	 *
 	 * @param Plugin_Update_Interface $plugin_update
 	 *
 	 * @return Plugin_Update_Array

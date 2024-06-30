@@ -6,4 +6,3 @@
  *
  * @package brianhenryie/bh-wp-plugin-updater
  */
-
