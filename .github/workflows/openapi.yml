@@ -11,7 +11,7 @@ on:
 
 jobs:
 
-  codecoverage:
+  openapi:
     runs-on: ubuntu-latest
 
     permissions:
@@ -76,7 +76,7 @@ jobs:
         run: sudo chmod -R a+w wp-content
 
       - name: Clear previous openapi file
-        run: rm gh-pages/openapi/test-plugin-openapi.json;
+        run: rm gh-pages/openapi/test-plugin-openapi.json || true;
 
       - name: Generate OpenAPI documentation
         run: |
