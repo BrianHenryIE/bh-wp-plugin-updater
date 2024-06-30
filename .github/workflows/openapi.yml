@@ -1,0 +1,104 @@
+name: OpenAPI
+
+# Generate the OpenAPI documentation
+
+# Automatically creates the gh-pages branch but it needs to be manually enabled in the repository settings.
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  codecoverage:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        php: [ '8.0' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check does gh-pages branch need to be created
+        run: |
+          if [[ $(git branch -l gh-pages) == "" ]]; then
+            gh_pages_branch_needed=true
+          else
+            gh_pages_branch_needed=false
+          fi
+          echo "GH_PAGES_BRANCH_NEEDED=$gh_pages_branch_needed" >> $GITHUB_ENV;
+          mkdir gh-pages
+
+      - name:  Maybe create gh-pages branch
+        if: ${{ env.GH_PAGES_BRANCH_NEEDED }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          force_orphan: true
+          allow_empty_commit: true
+          commit_message: "🤖 Creating gh-pages branch"
+
+      - name: Checkout GitHub Pages branch for code coverage report
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          tools: composer
+          extensions: zip
+
+      - name: Read .env.testing
+        uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env.testing
+
+      - name: Run composer install
+        continue-on-error: true
+        run: composer install
+
+      - name: Run npm install
+        continue-on-error: true
+        run: npm install
+
+      - name: Allow writing to wp-content
+        run: sudo chmod -R a+w wp-content
+
+      - name: Clear previous openapi file
+        run: rm gh-pages/openapi/test-plugin-openapi.json;
+
+      - name: Generate OpenAPI documentation
+        run: |
+          mkdir openapi;
+          npx wp-env start;
+          composer generate-openapi;
+          mkdir gh-pages/openapi || true;
+          cp openapi/test-plugin-openapi.json gh-pages/openapi/test-plugin-openapi.json;
+
+      # See: https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/
+      - name: Add `.nojekyll` file so code coverage report successfully deploys to gh-pages
+        working-directory: gh-pages/phpunit
+        run: |
+          touch .nojekyll
+          git add -- .nojekyll *
+
+      - name: Commit code coverage to gh-pages
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          repository: gh-pages
+          branch: gh-pages
+          commit_message: "🤖 Save code coverage report to gh-pages" # TODO: include the percentage change in the message.
+          commit_options: ""
+        env:
+          GITHUB_TOKEN: "${{ github.token }}"
