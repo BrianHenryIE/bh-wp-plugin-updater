@@ -80,9 +80,8 @@ jobs:
 
       - name: Start wp-env
         run: |
-          chmod a+w ./wp-content/uploads;
-          npx wp-env start --debug;
           mkdir openapi || true;
+          npx wp-env start --debug;
 
       - name: Generate OpenAPI documentation
         run: |
