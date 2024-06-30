@@ -7,9 +7,9 @@
     "openapi": "./openapi",
     "wp-cli.yml": "./wp-cli.wp-env.yml",
     "wp-content/themes": "./wp-content/themes",
+    "wp-content/uploads": "./wp-content/uploads",
     "wp-content/plugins/document-generator-for-openapi": "./wp-content/plugins/document-generator-for-openapi",
     "wp-content/plugins/test-plugin": ".",
-    "wp-content/plugins/slswc": "./wp-content/plugins/slswc",
     "wp-content/plugins/woocommerce": "./wp-content/plugins/woocommerce",
     "wp-content/plugins/wordpress-importer": "./wp-content/plugins/wordpress-importer",
     "wp-content/plugins/wp-rest-api-log": "./wp-content/plugins/wp-rest-api-log"
