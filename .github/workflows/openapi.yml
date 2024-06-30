@@ -82,6 +82,9 @@ jobs:
         run: |
           mkdir openapi || true;
           npx wp-env start --debug;
+          run: sudo chmod -R a+w wordpress/wp-content;
+          mkdir wordpress/wp-content/uploads || true;
+          run: sudo chmod -R a+w wordpress/wp-content/uploads;
 
       - name: Generate OpenAPI documentation
         run: |
