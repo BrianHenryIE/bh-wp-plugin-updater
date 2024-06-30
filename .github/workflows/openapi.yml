@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: install more-utils for sponge
+        run: sudo apt-get install moreutils
+
       - name: Check does gh-pages branch need to be created
         run: |
           if [[ $(git branch -l gh-pages) == "" ]]; then
