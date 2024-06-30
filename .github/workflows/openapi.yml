@@ -78,10 +78,14 @@ jobs:
       - name: Clear previous openapi file
         run: rm gh-pages/openapi/test-plugin-openapi.json || true;
 
+      - name: Start wp-env
+        run: |
+          chmod a+w ./wp-content/uploads;
+          npx wp-env start --debug;
+          mkdir openapi || true;
+
       - name: Generate OpenAPI documentation
         run: |
-          mkdir openapi || true;
-          npx wp-env start;
           composer generate-openapi;
           mkdir gh-pages/openapi || true;
           cp openapi/test-plugin-openapi.json gh-pages/openapi/test-plugin-openapi.json;

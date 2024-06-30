@@ -13,6 +13,8 @@ echo "wp plugin activate --all"
 wp plugin activate --all
 
 
+chmod a+w /var/www/html/wp-content/uploads;
+
 # rm /usr/local/bin/wp;
 sudo rm /usr/local/bin/wp;
 alias wp="/var/www/html/wp-content/plugins/test-plugin/vendor/bin/wp";
