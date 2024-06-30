@@ -47,8 +47,8 @@ jobs:
           echo "GH_PAGES_BRANCH_NEEDED=$gh_pages_branch_needed" >> $GITHUB_ENV;
           mkdir gh-pages || true;
 
-      - name:  Maybe create gh-pages branch
-        if: ${{ env.GH_PAGES_BRANCH_NEEDED }}
+      - name:  Create gh-pages branch because previous step indicates it does not exist
+        if: ${{ env.GH_PAGES_BRANCH_NEEDED == true }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
