@@ -13,8 +13,8 @@ echo "wp plugin activate --all"
 wp plugin activate --all
 
 
-rm /usr/local/bin/wp;
-#  sudo rm /usr/local/bin/wp;
+# rm /usr/local/bin/wp;
+sudo rm /usr/local/bin/wp;
 alias wp="/var/www/html/wp-content/plugins/test-plugin/vendor/bin/wp";
 
 echo "Set up pretty permalinks for REST API."
