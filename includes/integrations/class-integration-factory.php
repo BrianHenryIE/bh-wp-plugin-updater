@@ -9,7 +9,9 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations;
 
+use Art4\Requests\Psr\HttpClient;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\SLSWC;
+use BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -37,6 +39,13 @@ class Integration_Factory implements Integration_Factory_Interface {
 	 * @param Settings_Interface $settings The plugin's licence server settings.
 	 */
 	public function get_integration( Settings_Interface $settings ): Integration_Interface {
-		return new SLSWC( $settings, $this->logger );
+
+		switch ( true ) {
+			case false !== strpos( $settings->get_licence_server_host(), 'github.com' ):
+				$http_client = new HttpClient();
+				return new GitHub( $http_client, $settings, $this->logger );
+			default:
+				return new SLSWC( $settings, $this->logger );
+		}
 	}
 }

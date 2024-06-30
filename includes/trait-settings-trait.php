@@ -38,7 +38,7 @@ trait Settings_Trait {
 	 * NB: Heading must be `Update URI` not `UpdateURI`.
 	 * This heading is required because WordPress uses it in the filter to fetch update information.
 	 *
-	 * @see WordPress_Updater::add_product_data_to_wordpress_plugin_information()
+	 * @see WordPress_Updater::add_update_information()
 	 */
 	public function get_licence_server_host(): string {
 		require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
