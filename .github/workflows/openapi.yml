@@ -95,19 +95,12 @@ jobs:
           mkdir gh-pages/openapi || true;
           cp openapi/test-plugin-openapi.json gh-pages/openapi/test-plugin-openapi.json;
 
-      # See: https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/
-      - name: Add `.nojekyll` file so code coverage report successfully deploys to gh-pages
-        working-directory: gh-pages/phpunit
-        run: |
-          touch .nojekyll
-          git add -- .nojekyll *
-
-      - name: Commit code coverage to gh-pages
+      - name: Commit openapi to gh-pages
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           repository: gh-pages
           branch: gh-pages
-          commit_message: "🤖 Save code coverage report to gh-pages" # TODO: include the percentage change in the message.
+          commit_message: "🤖 Save OpenAPI document to gh-pages"
           commit_options: ""
         env:
           GITHUB_TOKEN: "${{ github.token }}"
