@@ -195,7 +195,7 @@
             "for name in $(cat .wp-env.json | jq '.mappings | values[]' | sed -r 's/^\\\"|\\\"$//g'); do [ ! -d $name ] && [ ! -f $name ] && echo $name && jq 'del(.. | select(. ==\"'$name'\"))' .wp-env.json | sponge .wp-env.json; done; exit 0;"
         ],
         "generate-openapi": [
-            "wp-env run cli wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json --extract-common-types;",
+            "npx wp-env run cli /var/www/html/wp-content/plugins/test-plugin/vendor/bin/wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json --extract-common-types;",
             "cat ./openapi/test-plugin-openapi.json | jq 'del(.servers) | del(.paths.\"/\") | .jsonSchemaDialect = \"https://spec.openapis.org/oas/3.1/dialect/base\"' | sponge ./openapi/test-plugin-openapi.json"
         ]
     },
