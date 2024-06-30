@@ -71,6 +71,10 @@ class Plugins_Page_View_Details {
 			}
 		}
 
+		if ( isset( $_GET['section'] ) && 'changelog' === $_GET['section'] && ! isset( $sections['changelog'] ) ) {
+			$res->sections['changelog'] = 'No changelog available.';
+		}
+
 		$update_information = $this->api->get_plugin_information( false );
 
 		if ( is_null( $update_information ) ) {
@@ -82,10 +86,6 @@ class Plugins_Page_View_Details {
 
 		foreach ( $sections as $name => $section ) {
 			$res->sections[ $name ] = $section;
-		}
-
-		if ( ! isset( $sections['changelog'] ) ) {
-			$res->sections['changelog'] = 'No changelog available.';
 		}
 
 		// $res->banners // $update_information->get_banners()
