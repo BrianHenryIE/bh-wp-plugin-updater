@@ -78,7 +78,6 @@ jobs:
       - name: Discard environment changes before commiting other changes
         run: |
           git checkout -- .env.testing
-          git checkout -- tests/_data/dump.sql
 
       # TODO: copy this to boilerplate after confirming it works
       - name: Git pull in case chanages were committed in another Action
