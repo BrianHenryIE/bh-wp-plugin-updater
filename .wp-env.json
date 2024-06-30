@@ -17,6 +17,9 @@
   "env": {
     "development": {
       "core": "./wordpress"
+    },
+    "tests": {
+      "mysqlPort": 65019
     }
   },
   "phpVersion": "8.0"

@@ -27,8 +27,3 @@ npx wp-env run cli ./setup/initialize-internal-dev.sh $PLUGIN_SLUG;
 echo "run npx wp-env run tests-cli ./setup/initialize-internal-tests.sh $PLUGIN_SLUG;"
 npx wp-env run tests-cli ./setup/initialize-internal-tests.sh $PLUGIN_SLUG;
 
-
-
-TEST_DB_PORT=$(docker ps -f ancestor=mariadb:lts -f name=tests-mysql --format='{{.Ports}}' | sed -E 's/.*:(.*)->.*/\1/')
-find . -depth \( -name '.env.testing' \) -exec sed -i '' "s/TEST_DB_PORT=\".*\"/TEST_DB_PORT=\"$TEST_DB_PORT\"/g" {} +
-echo "Updated .env.testing with TEST_DB_PORT=\"$TEST_DB_PORT\"";
