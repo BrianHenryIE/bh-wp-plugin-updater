@@ -3,7 +3,7 @@ name: Codecoverage
 # Runs codeception unit and wpunit tests, merges the code coverage, commits the html report to
 # GitHub Pages, generates a README badge with the coverage percentage.
 
-# Requires a gh-pages branch already created.
+# Automatically creates the gh-pages branch but it needs to be manually enabled in the repository settings.
 
 on:
   push:
