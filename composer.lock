@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a102d1187b3f9c1f485fbbd1d4fe4770",
+    "content-hash": "43b70c433feed8db3651e446ffa5c2ee",
     "packages": [
         {
             "name": "art4/requests-psr18-adapter",
@@ -12092,6 +12092,51 @@
             "time": "2024-06-04T12:24:31+00:00"
         },
         {
+            "name": "wp-cli/handbook",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wp-cli/handbook",
+                "reference": "bebc75bc7fa0a1c65ee07bb8904ad9f7a6930bb1"
+            },
+            "require-dev": {
+                "wp-cli/wp-cli-tests": "^4.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "scripts": {
+                "behat": [
+                    "run-behat-tests"
+                ],
+                "behat-rerun": [
+                    "rerun-behat-tests"
+                ],
+                "lint": [
+                    "run-linter-tests"
+                ],
+                "phpcs": [
+                    "run-phpcs-tests"
+                ],
+                "phpcbf": [
+                    "run-phpcbf-cleanup"
+                ],
+                "phpunit": [
+                    "run-php-unit-tests"
+                ],
+                "prepare-tests": [
+                    "install-package-tests"
+                ],
+                "test": [
+                    "@lint",
+                    "@phpcs",
+                    "@phpunit",
+                    "@behat"
+                ]
+            },
+            "description": "Source files for the handbook that is generated for make.wordpress.org.",
+            "time": "2024-07-02T11:56:42+00:00"
+        },
+        {
             "name": "wp-cli/i18n-command",
             "version": "2.6.1",
             "source": {
@@ -13660,7 +13705,8 @@
         "brianhenryie/composer-fallback-to-git": 20,
         "brianhenryie/composer-phpstorm": 20,
         "kporras07/composer-symlinks": 20,
-        "wp-cli/dist-archive-command": 20
+        "wp-cli/dist-archive-command": 20,
+        "wp-cli/handbook": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

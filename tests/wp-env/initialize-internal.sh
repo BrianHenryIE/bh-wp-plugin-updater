@@ -15,10 +15,10 @@ echo "wp plugin activate --all"
 wp plugin activate --all
 
 
-
-# rm /usr/local/bin/wp;
+# Use the Composer installed WP-CLI.
 sudo rm /usr/local/bin/wp;
-alias wp="/var/www/html/wp-content/plugins/test-plugin/vendor/bin/wp";
+sudo ln -s /var/www/html/wp-content/plugins/test-plugin/vendor/bin/wp /usr/local/bin/wp;
+
 
 echo "Set up pretty permalinks for REST API."
 wp rewrite structure /%year%/%monthnum%/%postname%/ --hard;

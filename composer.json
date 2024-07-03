@@ -51,6 +51,9 @@
         "classmap": [
             "tests/_support",
             "wordpress"
+        ],
+        "files": [
+            "vendor/wp-cli/handbook/bin/command.php"
         ]
     },
     "repositories": {
@@ -115,6 +118,7 @@
         "wordpress/wordpress": "*",
         "wordpress/wordpress-meta": "trunk",
         "wp-cli/dist-archive-command": "dev-main",
+        "wp-cli/handbook": "dev-main",
         "wp-cli/wp-cli-bundle": "*",
         "wp-cli/wp-cli-tests": "*",
         "wp-coding-standards/wpcs": "*",
@@ -129,6 +133,9 @@
         "patches": {
             "jaschilz/php-coverage-badger": {
                 "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
+            },
+            "wp-cli/handbook": {
+                "Add wp handbook gen-custom for custom commands": "https://github.com/wp-cli/handbook/pull/526.patch"
             }
         },
         "phpstorm": {
