@@ -53,3 +53,11 @@ or
 That's it. 
 
 Composer's autoloader will load bootstrap.php, and the plugin updater will be loaded on admin, cron, rest, and wp-cli requests.
+
+The UI then is seamless with the WordPress plugin UI:
+
+<img width="938" alt="Screenshot 2024-06-10 at 6 56 08 PM" src="https://github.com/BrianHenryIE/bh-wp-plugin-updater/assets/4720401/9ffba71d-1fbf-4155-afa9-f1a45326d25a">
+
+<img width="1096" alt="Screenshot 2024-06-10 at 6 56 45 PM" src="https://github.com/BrianHenryIE/bh-wp-plugin-updater/assets/4720401/ff099bc5-4149-43c9-b449-7e27697ea2b6">
+
+Again, early days, but you get the idea.
