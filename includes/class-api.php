@@ -17,8 +17,12 @@ use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use DateTimeImmutable;
+use JsonMapper\Handler\FactoryRegistry;
+use JsonMapper\Handler\PropertyMapper;
+use JsonMapper\JsonMapperBuilder;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -247,20 +251,31 @@ class API implements API_Interface {
 
 		$check_update = $this->service->get_remote_check_update( $this->licence );
 
-		update_option( $this->settings->get_check_update_option_name(), $check_update );
+		update_option( $this->settings->get_check_update_option_name(), $check_update->__serialize() );
 
 		return $check_update;
 	}
 
 	protected function get_cached_check_update(): ?Plugin_Update_Interface {
-		$cached_product_information = get_option(
-		// plugin_slug_update_information
+		$cached_check_update = get_option(
 			$this->settings->get_check_update_option_name(),
 			null
 		);
-		if ( $cached_product_information instanceof Plugin_Update_Interface ) {
+
+		$factory_registry = new FactoryRegistry();
+		$mapper           = JsonMapperBuilder::new()
+											->withObjectConstructorMiddleware( $factory_registry )
+											->withPropertyMapper( new PropertyMapper( $factory_registry ) )
+											->build();
+
+		$mapped_product_updated = $mapper->mapToClassFromString(
+			json_encode( $cached_check_update ),
+			Plugin_Update::class
+		);
+
+		if ( $mapped_product_updated instanceof Plugin_Update_Interface ) {
 			$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
-			return $cached_product_information;
+			return $mapped_product_updated;
 		}
 		$this->logger->debug( 'check_update Plugin_Update_Interface not found in cache: ' . $this->settings->get_plugin_slug() );
 		return null;
