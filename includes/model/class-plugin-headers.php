@@ -1,7 +1,15 @@
 <?php
+/**
+ * Strongly typed representation of the plugin headers.
+ *
+ * @package brianhenryie/bh-wp-plugin-updater
+ */
 
 namespace BrianHenryIE\WP_Plugin_Updater\Model;
 
+/**
+ * The only required header is 'Name', so all others are nullable
+ */
 class Plugin_Headers {
 
 	public function __construct(
