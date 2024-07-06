@@ -4,9 +4,20 @@
 
 This is a work-in-progress library for updating non-.org WordPress plugins.
 
+Goals:
+
+* (near) zero-config – require the library and set the update URL
+* no blocking requests – all HTTP requests on cron except when the updates transient is deleted
+* work as a secondary updater – where a plugin already has an updater, it should be possible to install a second plugin with this for beta updates
+* agnostic/extensible to multiple backends 
+* confidence: WPCS, PhpStan, PHPUnit, WP-CLI, OpenAPI
+* learn a little React
+
+Basically, I have a bunch of plugins that I should sell, but I didn't like any licence system I saw. 
+
 If you're interested in using this, I'm happy to jump on a call. 
 
-The general idea is to define the interfaces required by WordPress for updates and plugin update information.
+The general idea is to define the interfaces required by WordPress for updates and plugin update information. Heavily document where each value in the arrays are being used; add strict typing and make it easy for other developers to navigaate the code, maybe even contribute.
 
 A regular .org plugin uses the endpoints (incomplete):
 
@@ -61,3 +72,5 @@ The UI then is seamless with the WordPress plugin UI:
 <img width="1096" alt="Screenshot 2024-06-10 at 6 56 45 PM" src="https://github.com/BrianHenryIE/bh-wp-plugin-updater/assets/4720401/ff099bc5-4149-43c9-b449-7e27697ea2b6">
 
 Again, early days, but you get the idea.
+
+I'm still struggling with nomenclature that fits both paid and free updates.
