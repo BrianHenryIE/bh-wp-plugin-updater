@@ -54,6 +54,10 @@ class Init_Slswc_Client {
 			public function get_log_level(): string {
 				return 'debug';
 			}
+
+			public function get_cli_base(): ?string {
+				return null;
+			}
 		};
 
 		$logger = Logger::instance( $logger_settings );
