@@ -241,5 +241,4 @@ class Plugin_Info implements Plugin_Info_Interface {
 	public function __serialize(): array {
 		return get_object_vars( $this );
 	}
-
 }

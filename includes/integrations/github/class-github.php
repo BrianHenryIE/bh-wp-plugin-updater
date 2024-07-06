@@ -35,7 +35,7 @@ class GitHub implements Integration_Interface {
 	protected Release $release;
 	protected ?string $changelog_text = null;
 
-	protected ?Readme_Parser $readme = null;
+	protected ?Readme_Parser $readme          = null;
 	protected ?Plugin_Headers $plugin_headers = null;
 
 
