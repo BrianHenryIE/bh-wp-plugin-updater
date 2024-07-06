@@ -12,6 +12,7 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model\Release;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
@@ -132,7 +133,7 @@ class GitHub implements Integration_Interface {
 			// write to tmp dir
 			$tmp_plugin_file_path = get_temp_dir() . $plugin_file_name;
 			file_put_contents( $tmp_plugin_file_path, $plugin_file_request_response['body'] );
-			$this->plugin_headers = get_file_data( $tmp_plugin_file_path, $default_headers );
+			$this->plugin_headers = new Plugin_Headers( get_file_data( $tmp_plugin_file_path, $default_headers ) );
 			unlink( $tmp_plugin_file_path );
 		}
 	}
@@ -166,11 +167,11 @@ class GitHub implements Integration_Interface {
 		return new Plugin_Update(
 			id: null,
 			slug: $this->settings->get_plugin_slug(),
-			version: trim( $release->get_tag_name(), 'v' ),
-			url: $this->plugin_headers['PluginURI'],
+			version: ltrim( $release->get_tag_name(), 'v' ),
+			url: $this->plugin_headers->get_plugin_uri(),
 			package: $release->get_assets()[0]->get_browser_download_url(),
 			tested: $this->readme->tested,
-			requires_php: $this->readme->requires_php ?? $this->plugin_headers['RequiresPHP'] ?? null,
+			requires_php: $this->readme->requires_php ?? $this->plugin_headers->get_requires_php() ?? null,
 			autoupdate: null,
 			icons: null,
 			banners: null,
