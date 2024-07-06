@@ -75,7 +75,7 @@ class Plugin_Headers {
 	/** Requires Plugins */
 	public function get_requires_plugins(): array {
 		return $this->header_array['RequiresPlugins']
-			? array_map('trim', explode(',', $this->header_array['RequiresPlugins']) )
+			? array_map( 'trim', explode( ',', $this->header_array['RequiresPlugins'] ) )
 			: array();
 	}
 }
