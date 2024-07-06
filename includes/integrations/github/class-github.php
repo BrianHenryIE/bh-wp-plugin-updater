@@ -13,11 +13,12 @@ use BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model\Release;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
-use Github\Client;
+use Github\Client as GitHub_Client;
 use JsonMapper\Handler\FactoryRegistry;
 use JsonMapper\Handler\PropertyMapper;
 use JsonMapper\JsonMapperBuilder;
@@ -29,20 +30,21 @@ use Syntatis\WPPluginReadMeParser\Parser as Readme_Parser;
 class GitHub implements Integration_Interface {
 	use LoggerAwareTrait;
 
-	protected \Github\Client $client;
+	protected GitHub_Client $client;
 
 	protected Release $release;
 	protected ?string $changelog_text = null;
 
 	protected ?Readme_Parser $readme = null;
-	protected ?array $plugin_headers = null;
+	protected ?Plugin_Headers $plugin_headers = null;
+
 
 	public function __construct(
 		ClientInterface $http_client,
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
 	) {
-		$this->client = \Github\Client::createWithHttpClient( $http_client );
+		$this->client = GitHub_Client::createWithHttpClient( $http_client );
 		$this->setLogger( $logger );
 	}
 
@@ -181,7 +183,55 @@ class GitHub implements Integration_Interface {
 	}
 
 	public function get_remote_product_information( Licence $licence ): ?Plugin_Info_Interface {
-		// TODO: Implement get_remote_product_information() method.
-		return null;
+
+		$release = $this->get_release();
+
+		return new Plugin_Info(
+			sections: array(),
+			name: $this->plugin_headers->get_name(),
+			slug: $this->settings->get_plugin_slug(),
+			version: ltrim( $release->get_tag_name(), 'v' ),
+			author: $this->plugin_headers->get_author(),
+			author_profile: $this->plugin_headers->get_author_uri(),
+			contributors: array(),
+			requires: $this->plugin_headers->get_requires_wp(),
+			tested: null,
+			requires_php: $this->plugin_headers->get_requires_php(),
+			requires_plugins: $this->plugin_headers->get_requires_plugins(),
+			compatibility: array(),
+			rating: 0,
+			ratings: array(),
+			num_ratings: 0,
+			support_url: 'support_url string',
+			support_threads: 0,
+			support_threads_resolved: 0,
+			active_installs: 0,
+			downloaded: 0,
+			last_updated: $this->release->get_created_at(),
+			added: 'added string',
+			homepage: 'homepage string',
+			short_description: 'short_description string',
+			description: 'description string',
+			download_link: $release->get_assets()[0]->get_browser_download_url(),
+			upgrade_notice: 'upgrade_notice string',
+			screenshots: array(),
+			tags: array(),
+			stable_tag: $this->release->get_tag_name(),
+			versions: array(),
+			business_model: null,
+			repository_url: $this->plugin_headers->get_plugin_uri(),
+			commercial_support_url: 'commercial_support_url string',
+			donate_link: 'donate_link string',
+			banners: array(),
+			icons: array(),
+			blocks: array(),
+			block_assets: array(),
+			author_block_count: 0,
+			author_block_rating: 0,
+			blueprints: array(),
+			preview_link: array(),
+			language_packs: array(),
+			block_translations: array(),
+		);
 	}
 }

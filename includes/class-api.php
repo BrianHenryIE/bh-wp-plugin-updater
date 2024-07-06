@@ -203,7 +203,7 @@ class API implements API_Interface {
 		};
 	}
 
-	protected function get_remote_product_information(): ?Product {
+	protected function get_remote_product_information(): ?Plugin_Info_Interface {
 
 		$product = $this->service->get_remote_product_information( $this->licence );
 
@@ -212,13 +212,13 @@ class API implements API_Interface {
 		return $product;
 	}
 
-	protected function get_cached_product_information(): ?Product {
+	protected function get_cached_product_information(): ?Plugin_Info_Interface {
 		$cached_product_information = get_option(
 			// plugin_slug_plugin_information
 			$this->settings->get_plugin_information_option_name(),
 			null
 		);
-		if ( $cached_product_information instanceof Product ) {
+		if ( $cached_product_information instanceof Plugin_Info_Interface ) {
 			$this->logger->debug( 'returning cached product information for ' . $cached_product_information->get_software_slug() );
 			return $cached_product_information;
 		}
