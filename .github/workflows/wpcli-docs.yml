@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'includes/wp-includes/class-cli.php'
 
 jobs:
 
