@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:   Test Plugin    Software License Server for WooCommerce
+ * Plugin Name:   Test Plugin
  * Description:   My test plugin description
  * Version:       1.1.1
  * Author:        BrianHenryIE

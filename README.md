@@ -4,6 +4,8 @@
 
 This is a work-in-progress library for updating non-.org WordPress plugins.
 
+If you're interested in using this, I'm happy to jump on a call. 
+
 The general idea is to define the interfaces required by WordPress for updates and plugin update information.
 
 A regular .org plugin uses the endpoints (incomplete):
@@ -13,3 +15,41 @@ A regular .org plugin uses the endpoints (incomplete):
 * https://api.wordpress.org/plugins/update-check/1.1/
 
 This is early days and everything is open to input and change.
+
+Currently working on compatability with:
+
+* GitHub releases
+* [licenseserver.io](https://licenseserver.io/)
+
+## Installation
+
+```bash
+composer config allow-plugins.brianhenryie/composer-fallback-to-git true
+composer require --dev brianhenryie/composer-fallback-to-git
+
+composer require brianhenryie/bh-wp-plugin-updater
+```
+
+then in the plugin header
+
+```php
+<?php
+/**
+ * Plugin Name:   Example Plugin
+ * Update URI:    github.com/brianhenryie/example-plugin
+ */
+```
+
+or
+
+```php
+<?php
+/**
+ * Plugin Name:   Example Plugin
+ * Update URI:    example.org/wp-json/slswc/v1
+ */
+```
+
+That's it. 
+
+Composer's autoloader will load bootstrap.php, and the plugin updater will be loaded on admin, cron, rest, and wp-cli requests.
