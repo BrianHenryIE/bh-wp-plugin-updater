@@ -41,7 +41,7 @@ class Integration_Factory implements Integration_Factory_Interface {
 	public function get_integration( Settings_Interface $settings ): Integration_Interface {
 
 		switch ( true ) {
-			case false !== strpos( $settings->get_licence_server_host(), 'github.com' ):
+			case str_contains( $settings->get_licence_server_host(), 'github.com' ):
 				$http_client = new HttpClient();
 				return new GitHub( $http_client, $settings, $this->logger );
 			default:
