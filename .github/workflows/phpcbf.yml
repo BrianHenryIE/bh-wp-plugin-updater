@@ -74,16 +74,24 @@ jobs:
         run: vendor/bin/phpcbf
 
       - name: Run PHPCS to add annotations to the code
+        id: run-phpcs
         continue-on-error: true
-        run: vendor/bin/phpcs -q -n --report=checkstyle | cs2pr
+        run: |
+          vendor/bin/phpcs -q -n --report=checkstyle | cs2pr
 
       - name: Discard environment changes before commiting other changes
-        run: |
-          git checkout -- .env.testing
+        run: git checkout -- .env.testing
+
+      - name: Check success
+        if: steps.run-phpcs.outcome == 'success'
+        run: curl -o .github/phpcs.svg https://img.shields.io/badge/PHPCS-WPCS%20${{ steps.phpstan-level.outputs.level}}-8892BF.svg
+
+      - name: Check failures
+        if: steps.run-phpcs.outcome != 'success'
+        run: curl -o .github/phpcs.svg https://img.shields.io/badge/PHPCS-WPCS%20${{ steps.phpstan-level.outputs.level}}❌-lightgrey.svg
 
       # TODO: copy this to boilerplate after confirming it works
       - name: Git pull in case chanages were committed in another Action
-        if: steps.auto-commit-action.outputs.changes_detected == 'true'
         run: git pull
 
       - name: Commit PHPCBF changes
