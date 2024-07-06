@@ -2,16 +2,16 @@
 
 // {
 // "status": "active",
-// "slug": "test-plugin",
+// "slug": "example-plugin",
 // "message": "License Valid",
 // "software_details": {
-// "name": "test-plugin",
+// "name": "example-plugin",
 // "id": "3",
-// "slug": "test-plugin",
-// "plugin": "test-plugin",
+// "slug": "example-plugin",
+// "plugin": "example-plugin",
 // "version": "1.2.0",
 // "last_updated": "2024-06-11 02:33:17",
-// "homepage": "https:\/\/updatestest.bhwp.ie\/product\/test-plugin\/",
+// "homepage": "https:\/\/updatestest.bhwp.ie\/product\/example-plugin\/",
 // "requires": "",
 // "tested": "",
 // "new_version": "1.2.0",

@@ -7,7 +7,7 @@
 For the test plugin:
 `composer install --no-dev`
 
-`PHP_IDE_CONFIG="serverName=localhost" wp test-plugin logger delete-all; PHP_IDE_CONFIG="serverName=localhost" wp test-plugin licence activate`
+`PHP_IDE_CONFIG="serverName=localhost" wp example-plugin logger delete-all; PHP_IDE_CONFIG="serverName=localhost" wp example-plugin licence activate`
 
 ```
 wp transient delete update_plugins --network; XDEBUG_CONFIG="idekey=WP_CLI_XDEBUG remote_connect_back=1 log_level=0" XDEBUG_MODE=debug 
@@ -15,7 +15,7 @@ wp transient delete update_plugins --network; XDEBUG_CONFIG="idekey=WP_CLI_XDEBU
 ```
 
 ```
-cd test-plugin;
+cd example-plugin;
 rm -rf vendor;
 composer update --no-dev;
 cd ..;
@@ -26,7 +26,7 @@ echo "y" | npx wp-env destroy && npx wp-env start;
 ```
 
 
-`wp test-plugin logger delete-all; wp test-plugin licence activate`
+`wp example-plugin logger delete-all; wp example-plugin licence activate`
 
 `composer show --self`
 `composer show --direct`
@@ -37,22 +37,22 @@ echo "y" | npx wp-env destroy && npx wp-env start;
 
 ### OpenAPI
 
-`wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json`
+`wp openapi-generator export-file example-plugin/v1 --destination=./openapi/example-plugin-openapi.json`
 TODO: maybe open an issue at https://github.com/schneiderundschuetz/document-generator-for-openapi
 jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
-`cat test-plugin-openapi.json | jq '.jsonSchemaDialect="https://spec.openapis.org/oas/3.1/dialect/base"' | sponge test-plugin-openapi.json`
+`cat example-plugin-openapi.json | jq '.jsonSchemaDialect="https://spec.openapis.org/oas/3.1/dialect/base"' | sponge example-plugin-openapi.json`
 
 
 (Maybe) Delete `.servers` since the URL changes for every WordPress install:
-`cat test-plugin-openapi.json | jq 'del(.servers)' | sponge test-plugin-openapi.json`
+`cat example-plugin-openapi.json | jq 'del(.servers)' | sponge example-plugin-openapi.json`
 
 Remove the root `/` path since we are only concerned with the endpoints we have defined:
-`cat test-plugin-openapi.json | jq 'del(.paths."/")' | sponge test-plugin-openapi.json`
+`cat example-plugin-openapi.json | jq 'del(.paths."/")' | sponge example-plugin-openapi.json`
 
 Regenerate:
 ```
-wp-env run cli wp openapi-generator export-file test-plugin/v1 --destination=./openapi/test-plugin-openapi.json --extract-common-types;
-cat ./openapi/test-plugin-openapi.json | jq 'del(.servers) | del(.paths."/") | .jsonSchemaDialect = "https://spec.openapis.org/oas/3.1/dialect/base"' | sponge ./openapi/test-plugin-openapi.json
+wp-env run cli wp openapi-generator export-file example-plugin/v1 --destination=./openapi/example-plugin-openapi.json --extract-common-types;
+cat ./openapi/example-plugin-openapi.json | jq 'del(.servers) | del(.paths."/") | .jsonSchemaDialect = "https://spec.openapis.org/oas/3.1/dialect/base"' | sponge ./openapi/example-plugin-openapi.json
 npm --prefix ./openapi install
 ```
 

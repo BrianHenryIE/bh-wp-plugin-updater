@@ -82,7 +82,7 @@ jobs:
         run: sudo chmod -R a+w wp-content
 
       - name: Clear previous openapi file
-        run: rm gh-pages/openapi/test-plugin-openapi.json || true;
+        run: rm gh-pages/openapi/example-plugin-openapi.json || true;
 
       - name: Start wp-env
         run: |
@@ -96,7 +96,7 @@ jobs:
         run: |
           composer generate-openapi;
           mkdir gh-pages/openapi || true;
-          cp openapi/test-plugin-openapi.json gh-pages/openapi/test-plugin-openapi.json;
+          cp openapi/example-plugin-openapi.json gh-pages/openapi/example-plugin-openapi.json;
 
       - name: Commit openapi to gh-pages
         uses: stefanzweifel/git-auto-commit-action@v5

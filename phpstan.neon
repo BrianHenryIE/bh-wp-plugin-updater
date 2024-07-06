@@ -5,7 +5,6 @@ parameters:
         - tests
     excludePaths:
         - tests/_support
-        - test-plugin/vendor
         - wordpress
         - wp-content/plugins/bh-wp-plugin-updater
     bootstrapFiles:

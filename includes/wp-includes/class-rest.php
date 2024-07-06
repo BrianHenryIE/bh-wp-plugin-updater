@@ -2,7 +2,7 @@
 /**
  * REST API for setting licence key, activating, deactivating and getting licence details and product information.
  *
- * {@see openapi/test-plugin-openapi.json} for the generated OpenAPI spec.
+ * {@see openapi/example-plugin-openapi.json} for the generated OpenAPI spec.
  *
  * @package brianhenryie/bh-wp-plugin-updater
  */

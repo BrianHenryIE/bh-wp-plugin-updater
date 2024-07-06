@@ -23,6 +23,6 @@
 /phpstanbootstrap.php   export-ignore
 /phpunit.xml.dist       export-ignore
 /README.md              export-ignore
-/test-plugin.php        export-ignore
+/example-plugin.php        export-ignore
 /wp-cli.wp-env.yml      export-ignore
 /wp-cli.yml             export-ignore

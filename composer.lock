@@ -2461,7 +2461,7 @@
                 },
                 "symlinks": {
                     "wp-content": "wordpress/wp-content",
-                    "test-plugin": "wp-content/plugins/bh-wp-cli-logger-test-plugin"
+                    "example-plugin": "wp-content/plugins/bh-wp-cli-logger-example-plugin"
                 },
                 "phpstorm": {
                     "exclude_folders": {
@@ -2469,7 +2469,7 @@
                             "vendor/php-stubs/woocommerce-stubs",
                             "vendor/wordpress/wordpress/src",
                             "vendor/wordpress/wordpress/build",
-                            "wp-content/plugins/bh-wp-cli-logger-test-plugin",
+                            "wp-content/plugins/bh-wp-cli-logger-example-plugin",
                             "wordpress/wp-content"
                         ],
                         "include_folders": [
@@ -2564,14 +2564,14 @@
                 },
                 "symlinks": {
                     "wp-content": "wordpress/wp-content",
-                    "test-plugin": "wp-content/plugins/bh-wp-logger-test-plugin",
-                    "src": "test-plugin/vendor/brianhenryie/bh-wp-logger/src",
-                    "assets": "test-plugin/vendor/brianhenryie/bh-wp-logger/assets",
-                    "vendor/brianhenryie/bh-wp-private-uploads/src": "test-plugin/vendor/brianhenryie/bh-wp-private-uploads/src",
-                    "vendor/brianhenryie/bh-wc-logger/src": "test-plugin/vendor/brianhenryie/bh-wc-logger/src",
-                    "vendor/brianhenryie/bh-wp-cli-logger/src": "test-plugin/vendor/brianhenryie/bh-wp-cli-logger/src",
-                    "vendor/brianhenryie/bh-wp-private-uploads/assets": "test-plugin/vendor/brianhenryie/bh-wp-private-uploads/assets",
-                    "vendor/wptrt/admin-notices/src": "test-plugin/vendor/wptrt/admin-notices/src"
+                    "example-plugin": "wp-content/plugins/bh-wp-logger-example-plugin",
+                    "src": "example-plugin/vendor/brianhenryie/bh-wp-logger/src",
+                    "assets": "example-plugin/vendor/brianhenryie/bh-wp-logger/assets",
+                    "vendor/brianhenryie/bh-wp-private-uploads/src": "example-plugin/vendor/brianhenryie/bh-wp-private-uploads/src",
+                    "vendor/brianhenryie/bh-wc-logger/src": "example-plugin/vendor/brianhenryie/bh-wc-logger/src",
+                    "vendor/brianhenryie/bh-wp-cli-logger/src": "example-plugin/vendor/brianhenryie/bh-wp-cli-logger/src",
+                    "vendor/brianhenryie/bh-wp-private-uploads/assets": "example-plugin/vendor/brianhenryie/bh-wp-private-uploads/assets",
+                    "vendor/wptrt/admin-notices/src": "example-plugin/vendor/wptrt/admin-notices/src"
                 },
                 "phpstorm": {
                     "exclude_folders": {
@@ -2579,7 +2579,7 @@
                             "vendor/php-stubs/woocommerce-stubs",
                             "vendor/wordpress/wordpress/src",
                             "vendor/wordpress/wordpress/build",
-                            "wp-content/plugins/bh-wp-logger-test-plugin",
+                            "wp-content/plugins/bh-wp-logger-example-plugin",
                             "wordpress/wp-content"
                         ],
                         "include_folders": [
@@ -2673,14 +2673,14 @@
                 },
                 "symlinks": {
                     "wp-content": "wordpress/wp-content",
-                    "test-plugin": "wp-content/plugins/bh-wp-private-uploads-test-plugin"
+                    "example-plugin": "wp-content/plugins/bh-wp-private-uploads-example-plugin"
                 },
                 "phpstorm": {
                     "exclude_folders": {
                         "folders": [
                             "vendor/wordpress/wordpress/src",
                             "vendor/wordpress/wordpress/build",
-                            "wp-content/plugins/bh-wp-private-uploads-test-plugin",
+                            "wp-content/plugins/bh-wp-private-uploads-example-plugin",
                             "wordpress/wp-content"
                         ],
                         "include_folders": [
