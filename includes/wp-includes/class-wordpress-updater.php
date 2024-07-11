@@ -93,7 +93,6 @@ class WordPress_Updater {
 	 * @param array                     $locales
 	 *
 	 * @return false|Plugin_Update_Array
-	 *
 	 */
 	public function add_update_information( $plugin_update_array, $plugin_data, $plugin_file, $locales ) {
 

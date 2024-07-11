@@ -40,6 +40,7 @@ if ( ! function_exists( '\\BrianHenryIE\\WP_Plugin_Updater\\init_plugin_updater'
 
 						/**
 						 * TODO: The following might work but there are known issues around symlinks that need to be tested and handled correctly.
+						 *
 						 * @see  https://core.trac.wordpress.org/ticket/42670
 						 */
 						$wp_plugin_basename = plugin_basename( __DIR__ );
