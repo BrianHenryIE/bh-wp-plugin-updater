@@ -87,17 +87,18 @@ class WordPress_Updater {
 	 * @see wp-includes/update.php:513
 	 * @see wp_update_plugins()
 	 *
-	 * @param false|Plugin_Update_Array $value
+	 * @param false|Plugin_Update_Array $plugin_update_array Should always be false, but there could be another filter added to `update_plugins_{$hostname}`.
 	 * @param Plugin_Data_Array         $plugin_data
 	 * @param string                    $plugin_file The plugin basename.
 	 * @param array                     $locales
 	 *
 	 * @return false|Plugin_Update_Array
+	 *
 	 */
-	public function add_update_information( $afalse, $plugin_data, $plugin_file, $locales ) {
+	public function add_update_information( $plugin_update_array, $plugin_data, $plugin_file, $locales ) {
 
 		if ( $this->settings->get_plugin_basename() !== $plugin_file ) {
-			return $afalse;
+			return $plugin_update_array;
 		}
 
 		try {
@@ -105,11 +106,11 @@ class WordPress_Updater {
 			$plugin_information = $this->api->get_check_update( $this->force_refresh );
 		} catch ( \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception $exception ) {
 			$this->logger->debug( 'Licence does not exist no server.' );
-			return $afalse;
+			return $plugin_update_array;
 		}
 
 		return is_null( $plugin_information )
-			? $afalse
+			? $plugin_update_array
 			: $this->convert_to_array( $plugin_information );
 	}
 
