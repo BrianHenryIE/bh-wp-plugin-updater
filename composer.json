@@ -64,24 +64,8 @@
         "outlandish/wpackagist": {
             "type": "composer",
             "url": "https://wpackagist.org"
-        },
-        "wordpress/wordpress": {
-            "url": "https://github.com/WordPress/wordpress-develop",
-            "type": "git"
-        },
-        "wordpress/wordpress-meta": {
-            "type": "package",
-            "packagist.org": false,
-            "package": {
-                "name": "wordpress/wordpress-meta",
-                "version": "trunk",
-                "source": {
-                    "url": "https://github.com/WordPress/wordpress.org.git",
-                    "type": "git",
-                    "reference": "trunk"
-                }
-            }
         }
+
     },
     "require": {
         "php": ">=8.0",
@@ -115,8 +99,6 @@
         "psr/simple-cache": "^2.0",
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "*",
-        "wordpress/wordpress": "*",
-        "wordpress/wordpress-meta": "trunk",
         "wp-cli/dist-archive-command": "dev-main",
         "wp-cli/handbook": "dev-main",
         "wp-cli/wp-cli-bundle": "*",

@@ -37,6 +37,7 @@ if ( ! function_exists( '\\BrianHenryIE\\WP_Plugin_Updater\\init_plugin_updater'
 				 * @throws \Exception When it cannot be determined. I.e. a symlink inside a symlink.
 				 */
 				public function get_plugin_basename(): string {
+					return 'example-plugin/example-plugin.php';
 
 					// TODO: The following might work but there are known issues around symlinks that need to be tested and handled correctly.
 					// @see  https://core.trac.wordpress.org/ticket/42670
