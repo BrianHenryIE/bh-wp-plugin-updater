@@ -10,7 +10,7 @@ Goals:
 * no blocking requests – all HTTP requests on cron except when the updates transient is deleted
 * work as a secondary updater – where a plugin already has an updater, it should be possible to install a second plugin with this for beta updates
 * agnostic/extensible to multiple backends 
-* confidence: WPCS, PhpStan, PHPUnit, WP-CLI, OpenAPI
+* confidence: WPCS, PhpStan, PHPUnit, Playwright, WP-CLI, OpenAPI
 * learn a little React
 
 Basically, I have a bunch of plugins that I should sell, but I didn't like any licence system I saw. 
@@ -18,7 +18,7 @@ Basically, I have a bunch of plugins that I should sell, but I didn't like any l
 If you're interested in using this, I'm happy to jump on a call. 
 
 The general idea is to define the interfaces required by WordPress for updates and plugin update information. Heavily document where each value in the arrays are being used; add strict typing and make it easy for other developers to navigaate the code, maybe even contribute.
-
+ 
 A regular .org plugin uses the endpoints (incomplete):
 
 * http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
@@ -63,7 +63,7 @@ or
 
 That's it. 
 
-Composer's autoloader will load bootstrap.php, and the plugin updater will be loaded on admin, cron, rest, and wp-cli requests.
+Composer's autoloader will load bootstrap.php, and the plugin updater will be loaded on admin, cron, rest, and wp-cli requests. Obviously, [prefix your namespaces](https://github.com/BrianHenryIE/strauss).
 
 The UI then is seamless with the WordPress plugin UI:
 
