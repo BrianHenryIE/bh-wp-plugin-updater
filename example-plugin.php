@@ -9,3 +9,5 @@
  *
  * @package brianhenryie/bh-wp-plugin-updater
  */
+
+require __DIR__ . '/vendor/autoload.php';
