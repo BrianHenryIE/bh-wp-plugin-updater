@@ -262,23 +262,39 @@ class API implements API_Interface {
 			null
 		);
 
+		if ( is_null( $cached_check_update ) ) {
+			$this->logger->debug( 'check_update Plugin_Update_Interface not found in cache: ' . $this->settings->get_plugin_slug() );
+			return null;
+		}
+
 		$factory_registry = new FactoryRegistry();
 		$mapper           = JsonMapperBuilder::new()
 											->withObjectConstructorMiddleware( $factory_registry )
 											->withPropertyMapper( new PropertyMapper( $factory_registry ) )
 											->build();
 
-		$mapped_product_updated = $mapper->mapToClassFromString(
-			json_encode( $cached_check_update ),
-			Plugin_Update::class
-		);
-
-		if ( $mapped_product_updated instanceof Plugin_Update_Interface ) {
-			$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
-			return $mapped_product_updated;
+		try {
+			$mapped_product_updated = $mapper->mapToClassFromString(
+				json_encode( $cached_check_update ),
+				Plugin_Update::class
+			);
+		} catch ( \Exception $e ) {
+			$this->logger->error(
+				'Failed to map cached check_update: ' . $e->getMessage(),
+				array(
+					'exception'   => $e,
+					'cache_value' => $cached_check_update,
+				)
+			);
+			return null;
 		}
-		$this->logger->debug( 'check_update Plugin_Update_Interface not found in cache: ' . $this->settings->get_plugin_slug() );
-		return null;
+
+		if ( ! ( $mapped_product_updated instanceof Plugin_Update_Interface ) ) {
+			return null;
+		}
+
+		$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
+		return $mapped_product_updated;
 	}
 
 	/**
