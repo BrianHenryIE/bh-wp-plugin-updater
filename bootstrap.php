@@ -1,4 +1,14 @@
 <?php
+/**
+ * Boot the plugin updater.
+ *
+ * Does not run on frontend requests.
+ *
+ * TODO: I don't think this will work when in the vendor directory. `plugin_basename()` will return the wrong value.
+ * TODO: The `function_exists()` check will not be namespaced with Strauss.
+ *
+ * @package brianhenryie/wp-plugin-updater
+ */
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
@@ -40,6 +50,7 @@ if ( ! function_exists( '\\BrianHenryIE\\WP_Plugin_Updater\\init_plugin_updater'
 
 						/**
 						 * TODO: The following might work but there are known issues around symlinks that need to be tested and handled correctly.
+						 *
 						 * @see  https://core.trac.wordpress.org/ticket/42670
 						 */
 						$wp_plugin_basename = plugin_basename( __DIR__ );
