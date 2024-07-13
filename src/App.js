@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Notice, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { getLicenseDetails, setLicenseKey, activateLicense, deactivateLicense } from './License';
+import { getLicenseDetails, setLicenseKey, activateLicense, deactivateLicense } from './api/License';
 
 /**
  * Display status notice.

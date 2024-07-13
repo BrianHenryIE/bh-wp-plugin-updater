@@ -38,16 +38,16 @@ const apiBaseUrl = '/wp-json/plugin_namespace/v1/';
  * @param {boolean} refresh Whether to refresh the license details.
  * @return {Promise} API response.
  */
-export function getLicenseDetails(nonce, refresh = false) {
+export function getLicenseDetails( nonce, refresh = false ) {
     const queryParams = {
         _ajax_nonce: nonce,
         refresh: refresh,
     };
 
-    return apiFetch({
-        url: addQueryArgs(`${apiBaseUrl}licence`, queryParams),
+    return apiFetch( {
+        url: addQueryArgs( `${apiBaseUrl}licence`, queryParams ),
         method: 'GET',
-    });
+    } );
 }
 
 /**
@@ -58,17 +58,17 @@ export function getLicenseDetails(nonce, refresh = false) {
  * @param {boolean} activate Whether to activate the license.
  * @return {Promise} API response.
  */
-export function setLicenseKey(nonce, licenseKey, activate = false) {
+export function setLicenseKey( nonce, licenseKey, activate = false ) {
     const queryParams = {
         _ajax_nonce: nonce,
         licence_key: licenseKey,
         activate: activate,
     };
 
-    return apiFetch({
-        url: addQueryArgs(`${apiBaseUrl}licence/set-key`, queryParams),
+    return apiFetch( {
+        url: addQueryArgs( `${apiBaseUrl}licence/set-key`, queryParams ),
         method: 'POST',
-    });
+    } );
 }
 
 /**
@@ -77,15 +77,15 @@ export function setLicenseKey(nonce, licenseKey, activate = false) {
  * @param {string} nonce Nonce for the request.
  * @return {Promise} API response.
  */
-export function activateLicense(nonce) {
+export function activateLicense( nonce ) {
     const queryParams = {
         _ajax_nonce: nonce,
     };
 
-    return apiFetch({
-        url: addQueryArgs(`${apiBaseUrl}licence/activate`, queryParams),
+    return apiFetch( {
+        url: addQueryArgs( `${apiBaseUrl}licence/activate`, queryParams ),
         method: 'POST',
-    });
+    } );
 }
 
 /**
@@ -94,13 +94,13 @@ export function activateLicense(nonce) {
  * @param {string} nonce Nonce for the request.
  * @return {Promise} API response.
  */
-export function deactivateLicense(nonce) {
+export function deactivateLicense( nonce ) {
     const queryParams = {
         _ajax_nonce: nonce,
     };
 
-    return apiFetch({
-        url: addQueryArgs(`${apiBaseUrl}licence/deactivate`, queryParams),
+    return apiFetch( {
+        url: addQueryArgs( `${apiBaseUrl}licence/deactivate`, queryParams ),
         method: 'POST',
-    });
+    } );
 }
