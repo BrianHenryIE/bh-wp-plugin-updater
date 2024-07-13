@@ -52,6 +52,8 @@ class WordPress_Updater {
 	 * Where the plugin is already in the transient, the value will be updated with the saved information, which
 	 * itself is updated with the cron job.
 	 *
+	 * `wp transient delete update_plugins --network`
+	 *
 	 * @hooked pre_set_site_transient_update_plugins
 	 * @see wp_update_plugins()
 	 *
@@ -67,9 +69,18 @@ class WordPress_Updater {
 			return $value;
 		}
 
+		// This evaluates to true if the cron job has never run.
+
 		// Do a synchronous refresh if the plugin is not already in the `update_plugins` transient.
-		$this->force_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
+		$force_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
 							&& ! isset( $value->no_update[ $this->settings->get_plugin_basename() ] );
+
+		global $pagenow;
+		if ( $force_refresh && is_admin() && 'plugins.php' !== $pagenow ) {
+			$force_refresh = false;
+			// TODO Schedule imediate update... on shutdown?
+		}
+		$this->force_refresh = $force_refresh;
 
 		/**
 		 * The `pre_set_site_transient_update_plugins` filter gets called twice in {@see wp_update_plugins()}. We don't
@@ -93,7 +104,6 @@ class WordPress_Updater {
 	 * @param array                     $locales
 	 *
 	 * @return false|Plugin_Update_Array
-	 *
 	 */
 	public function add_update_information( $plugin_update_array, $plugin_data, $plugin_file, $locales ) {
 
