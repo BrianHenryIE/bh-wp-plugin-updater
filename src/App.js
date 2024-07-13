@@ -65,32 +65,32 @@ function App( props ) {
 
     const enterKeyPrompt = __( 'Please enter a licence key.', 'bh-wp-plugin-updater' );
 
-    useEffect(() => {
-        // Fetch initial license details
-        getLicenseDetails(props.nonce, true).then( (result) => {
-            setPluginLicenceData(result);
-            setLicenceIsActive(result.licence_details.status === 'active');
-        });
-    }, [props.nonce]);
+    useEffect( () => {
+        // Fetch initial license details.
+        getLicenseDetails( props.nonce, true ).then( ( result ) => {
+            setPluginLicenceData( result );
+            setLicenceIsActive( result.licence_details.status === 'active' );
+        } );
+    }, [ props.nonce ] );
 
     const deactivateLicence = () => {
-        deactivateLicense(props.nonce).then( (result) => {
-            setPluginLicenceData(result);
-            setLicenceIsActive(false);
+        deactivateLicense( props.nonce ).then( ( result ) => {
+            setPluginLicenceData( result );
+            setLicenceIsActive( false );
         });
     };
 
     const activateLicence = () => {
-        activateLicense(props.nonce).then( (result) => {
-            setPluginLicenceData(result);
-            setLicenceIsActive(true);
+        activateLicense( props.nonce ).then( ( result ) => {
+            setPluginLicenceData( result );
+            setLicenceIsActive( true );
         });
     };
 
     const changeHandler = ( event ) => {
         setLicenceKey( event.target.value );
-        setLicenseKey(props.nonce, event.target.value, false).then( (result) => {
-            setPluginLicenceData(result);
+        setLicenseKey( props.nonce, event.target.value, false ).then( ( result ) => {
+            setPluginLicenceData( result );
         });
     };
 
