@@ -50,7 +50,7 @@ export function getLicenseDetails( nonce, refresh = false ) {
     };
 
     return apiFetch( {
-        url: addQueryArgs( `${apiBaseUrl}licence`, queryParams ),
+        url: addQueryArgs( `${apiBaseUrl}/licence`, queryParams ),
         method: 'GET',
     } );
 }
@@ -71,7 +71,7 @@ export function setLicenseKey( nonce, licenseKey, activate = false ) {
     };
 
     return apiFetch( {
-        url: addQueryArgs( `${apiBaseUrl}licence/set-key`, queryParams ),
+        url: addQueryArgs( `${apiBaseUrl}/licence/set-key`, queryParams ),
         method: 'POST',
     } );
 }
@@ -88,7 +88,7 @@ export function activateLicense( nonce ) {
     };
 
     return apiFetch( {
-        url: addQueryArgs( `${apiBaseUrl}licence/activate`, queryParams ),
+        url: addQueryArgs( `${apiBaseUrl}/licence/activate`, queryParams ),
         method: 'POST',
     } );
 }
@@ -105,7 +105,7 @@ export function deactivateLicense( nonce ) {
     };
 
     return apiFetch( {
-        url: addQueryArgs( `${apiBaseUrl}licence/deactivate`, queryParams ),
+        url: addQueryArgs( `${apiBaseUrl}/licence/deactivate`, queryParams ),
         method: 'POST',
     } );
 }
