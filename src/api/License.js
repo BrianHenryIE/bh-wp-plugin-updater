@@ -28,8 +28,13 @@
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
+import { getPluginSlug, getPluginLicenceDataVarName, getPluginLicenceData } from '../Utils';
 
-const apiBaseUrl = examplePluginLicense.restUrl;
+
+const pluginData = getPluginLicenceData( getPluginLicenceDataVarName( getPluginSlug() ) );
+
+const apiBaseUrl = pluginData.restUrl;
+console.log({pluginData});
 
 /**
  * Fetch license details from the server.
