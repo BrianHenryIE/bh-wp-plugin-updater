@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Avoid loading the plugin update functionality when it is not necessary.
  */
-if ( ! ( is_admin() || wp_doing_cron() || wp_is_serving_rest_request() || defined( 'WP_CLI' ) ) ) {
+if ( ! ( is_admin() || wp_doing_cron() || bh_wp_is_rest_request() || defined( 'WP_CLI' ) ) ) {
 	return;
 }
 

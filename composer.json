@@ -34,8 +34,8 @@
             "includes/"
         ],
         "files": [
-            "bootstrap.php",
-            "includes/functions.php"
+            "includes/functions.php",
+            "bootstrap.php"
         ],
         "wordpress": {
             "BrianHenryIE\\WP_Plugin_Updater\\": "includes/"

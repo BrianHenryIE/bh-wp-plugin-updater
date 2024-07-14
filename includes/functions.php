@@ -43,3 +43,10 @@ if ( ! function_exists( '\BrianHenryIE\WP_Plugin_Updater\str_dash_to_next_capita
 		return lcfirst( str_replace( ' ', '', ucwords( str_replace( '-', ' ', $string ) ) ) );
 	}
 }
+
+if ( ! function_exists( '\BrianHenryIE\WP_Plugin_Updater\bh_wp_is_rest_request' ) ) {
+
+	function bh_wp_is_rest_request(): bool {
+		return isset( $_GET['rest_route'] ) || str_contains( $_SERVER['REQUEST_URI'], '/wp-json/' );
+	}
+}
