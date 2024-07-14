@@ -249,9 +249,13 @@ class API implements API_Interface {
 
 	protected function get_remote_check_update(): ?Plugin_Update_Interface {
 
-		$check_update = $this->service->get_remote_check_update( $this->licence );
-
-		update_option( $this->settings->get_check_update_option_name(), $check_update->__serialize() );
+		try {
+			$check_update = $this->service->get_remote_check_update( $this->licence );
+			update_option( $this->settings->get_check_update_option_name(), $check_update->__serialize() );
+		} catch ( \Exception $e ) {
+			$this->logger->error( $e->getMessage(), array( 'exception' => $e ) );
+			return null;
+		}
 
 		return $check_update;
 	}
