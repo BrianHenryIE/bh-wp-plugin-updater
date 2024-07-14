@@ -1,33 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { getPluginSlug, getPluginLicenceDataVarName, getPluginLicenceData } from './Utils';
+
+/**
+ * Main entry point for the React application.
+ * Determines the plugin slug and license data variable name, retrieves the plugin license data,
+ * and renders the React application.
+ */
 
 // Determine the plugin slug from the current script's <script> tag `id` attribute.
-// Where the script handle used is `plugin-slug-licence`.
-// `<script id="script-handle-js" ...>`
-const pluginSlug = (function(){
-    var elements = document.querySelectorAll('script');
-    var currentScript = elements[elements.length - 1];
-    return currentScript.id.match(/(.*).{11}$/)[1];
-})();
-// Alternatively, the plugin slug should be in `document.baseURI`.
+const pluginSlug = getPluginSlug();
 
 // Convert `plugin-slug-licence` to `pluginSlugLicence`.
-// E.g. `bhWcZelleGatewayLicence`.
-const pluginLicenceDataVarName = (function(pluginSlug){
-    return pluginSlug
-        .toLowerCase()
-        .replace(/([-_][a-z])/g, (ltr) => ltr.toUpperCase())
-        .replace(/[^a-zA-Z]/g, '')
-})(pluginSlug + '-licence');
+const pluginLicenceDataVarName = getPluginLicenceDataVarName( pluginSlug );
 
 // The data seeded in PHP using `wp_add_inline_script()`.
 // ajaxUrl, nonce, licence_information.
-const pluginLicenceData = eval(pluginLicenceDataVarName);
+const pluginLicenceData = getPluginLicenceData( pluginLicenceDataVarName );
 
-const root = ReactDOM.createRoot(document.getElementById('section-licence'));
+const root = ReactDOM.createRoot( document.getElementById( 'section-licence' ) );
 root.render(
-    <React.StrictMode>
-        <App licenceData={pluginLicenceData}/>
-    </React.StrictMode>
+	<React.StrictMode>
+		<App licenceData={ pluginLicenceData } />
+	</React.StrictMode>
 );
