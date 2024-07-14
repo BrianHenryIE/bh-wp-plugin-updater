@@ -29,7 +29,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
-const apiBaseUrl = '/wp-json/plugin_namespace/v1/';
+const apiBaseUrl = examplePluginLicense.restUrl;
 
 /**
  * Fetch license details from the server.
