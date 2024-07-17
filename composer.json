@@ -34,8 +34,8 @@
             "includes/"
         ],
         "files": [
-            "bootstrap.php",
-            "includes/functions.php"
+            "includes/functions.php",
+            "bootstrap.php"
         ],
         "wordpress": {
             "BrianHenryIE\\WP_Plugin_Updater\\": "includes/"
@@ -59,7 +59,10 @@
     "repositories": {
         "brianhenryie/composer-phpstorm": {
             "url": "https://github.com/BrianHenryIE/composer-phpstorm",
-            "type": "git"
+            "type": "git",
+            "only": [
+                "brianhenryie/composer-phpstorm"
+            ]
         },
         "outlandish/wpackagist": {
             "type": "composer",
