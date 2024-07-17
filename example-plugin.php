@@ -10,4 +10,6 @@
  * @package brianhenryie/bh-wp-plugin-updater
  */
 
-require __DIR__ . '/vendor/autoload.php';
+ // Load all tha magic!
+ require __DIR__ . '/vendor/autoload.php';
+ 

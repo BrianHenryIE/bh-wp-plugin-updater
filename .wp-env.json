@@ -1,6 +1,6 @@
 {
   "lifecycleScripts": {
-    "afterStart": "./tests/wp-env/initialize-external.sh"
+    "afterStart": "bash 'tests/wp-env/initialize-external.sh'"
   },
   "mappings": {
     "setup": "./tests/wp-env",
