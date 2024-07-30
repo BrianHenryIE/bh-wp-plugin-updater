@@ -42,4 +42,9 @@ interface API_Interface {
 	 * This does not indicate that the licence is valid.
 	 */
 	public function is_update_available( ?bool $refresh = null ): bool;
+
+	/**
+	 * Trigger a plugin update check in the background.
+	 */
+	public function schedule_immediate_background_update(): void;
 }

@@ -75,10 +75,10 @@ class WordPress_Updater {
 		$force_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
 							&& ! isset( $value->no_update[ $this->settings->get_plugin_basename() ] );
 
-		global $pagenow;
-		if ( $force_refresh && is_admin() && 'plugins.php' !== $pagenow ) {
+		// If we're in the admin area and haven't got plugin update information, schedule an immediate background job.
+		if ( $force_refresh && is_admin() ) {
 			$force_refresh = false;
-			// TODO Schedule imediate update... on shutdown?
+			$this->api->schedule_immediate_background_update();
 		}
 		$this->force_refresh = $force_refresh;
 
