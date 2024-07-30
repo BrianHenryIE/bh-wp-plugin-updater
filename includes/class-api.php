@@ -19,6 +19,7 @@ use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use Composer\Semver\Comparator;
 use DateTimeImmutable;
 use JsonMapper\Handler\FactoryRegistry;
 use JsonMapper\Handler\PropertyMapper;
@@ -302,13 +303,20 @@ class API implements API_Interface {
 	}
 
 	/**
-	 * TODO: semver compare.
+	 * Compare the currently installed version (or 0.0.0) with the available version.
 	 */
 	public function is_update_available( ?bool $refresh = null ): bool {
-		return version_compare(
-			$this->get_check_update( $refresh )?->get_version() ?? '0.0.0',
-			get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? '0.0.0',
-			'>'
+		return Comparator::greaterThan(
+			$this->get_available_version( $refresh ) ?? '0.0.0',
+			$this->get_current_version() ?? '0.0.0',
 		);
+	}
+
+	protected function get_available_version( ?bool $refresh = null ): ?string {
+		return $this->get_check_update( $refresh )?->get_version() ?? null;
+	}
+
+	protected function get_current_version(): ?string {
+		return get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? null;
 	}
 }

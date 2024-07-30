@@ -74,6 +74,7 @@
         "php": ">=8.0",
         "ext-json": "*",
         "art4/requests-psr18-adapter": "*",
+        "composer/semver": "^3.4",
         "json-mapper/json-mapper": "*",
         "knplabs/github-api": "^3.0",
         "psr/log": "^1.0",

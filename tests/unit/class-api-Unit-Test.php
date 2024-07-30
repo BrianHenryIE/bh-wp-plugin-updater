@@ -85,16 +85,10 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 			->zeroOrMoreTimes()
 			->andReturn( 'plugin-slug' );
 
-		$plugin_update = Mockery::mock( Plugin_Update_Interface::class )->makePartial();
-
 		WP_Mock::userFunction( 'get_option' )
 				->once()
 				->with( 'plugin_slug_check_update', null )
-				->andReturn( $plugin_update );
-
-		$plugin_update->shouldReceive( 'get_version' )
-				->once()
-				->andReturn( $remote_version );
+				->andReturn( array( 'version' => $remote_version ) );
 
 		$new_version_array = array(
 			'plugin-slug/plugin-slug.php' => array(
@@ -108,7 +102,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->is_update_available( false );
 
-		$this->assertEquals( $is_update, $result );
+		$this->assertEquals( $is_update, $result, "Local: $local_version Remote: $remote_version Expected result: " . ($is_update ? 'yes' : 'no' )  );
 	}
 
 	/**
