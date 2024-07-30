@@ -15,9 +15,6 @@
     "wp-content/plugins/wp-rest-api-log": "./wp-content/plugins/wp-rest-api-log"
   },
   "env": {
-    "development": {
-      "core": "./wordpress"
-    },
     "tests": {
       "mysqlPort": 65019
     }
