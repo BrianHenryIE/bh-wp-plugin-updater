@@ -47,6 +47,17 @@ class Cron {
 	}
 
 	/**
+	 * Get the name of the cron job that will be scheduled for an immediate update check.
+	 *
+	 * I think if the repeating one's name is used it might remove the schedule.
+	 *
+	 * {plugin_slug}_update_check_immediate
+	 */
+	public function get_immediate_update_check_cron_job_name(): string {
+		return "{$this->get_update_check_cron_job_name()}_immediate";
+	}
+
+	/**
 	 * When the plugin is activated, schedule a daily update check.
 	 *
 	 * @see activate_plugin()

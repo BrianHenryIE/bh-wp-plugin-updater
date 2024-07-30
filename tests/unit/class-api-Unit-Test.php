@@ -102,7 +102,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		$result = $sut->is_update_available( false );
 
-		$this->assertEquals( $is_update, $result, "Local: $local_version Remote: $remote_version Expected result: " . ($is_update ? 'yes' : 'no' )  );
+		$this->assertEquals( $is_update, $result, "Local: $local_version Remote: $remote_version Expected result: " . ( $is_update ? 'yes' : 'no' ) );
 	}
 
 	/**
@@ -230,5 +230,33 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
 
 		$sut->set_license_key( 'abc123' );
+	}
+
+	/**
+	 * @covers ::schedule_immediate_background_update
+	 */
+	public function test_schedule_immediate_background_update(): void {
+		$licence = new Licence();
+		$licence->set_licence_key( 'abc123' );
+
+		/**
+		 * @see API::__construct
+		 */
+		\WP_Mock::userFunction( 'get_option' )
+				->with( 'a_plugin_licence', null )
+				->andReturn( $licence->serialize() );
+
+		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->shouldReceive( 'get_licence_data_option_name' )->once()->andReturn( 'a_plugin_licence' );
+		$settings->expects( 'get_plugin_slug' )->once()->andReturn( 'test-plugin' );
+
+		$logger = new ColorLogger();
+		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
+
+		\WP_Mock::userFunction( 'wp_schedule_single_event' )
+				->once()
+				->with( WP_Mock\Functions::type( 'int' ), 'test_plugin_update_check_immediate' );
+
+		$sut->schedule_immediate_background_update();
 	}
 }

@@ -41,6 +41,23 @@ class Cron_Unit_Test extends \Codeception\Test\Unit {
 	}
 
 	/**
+	 * @covers ::get_immediate_update_check_cron_job_name
+	 */
+	public function test_get_immediate_update_check_cron_job_name(): void {
+
+		$api = Mockery::mock( API_Interface::class )->makePartial();
+
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings->expects( 'get_plugin_slug' )->andReturn( 'test-plugin' );
+
+		$sut = new Cron( $api, $settings );
+
+		$result = $sut->get_immediate_update_check_cron_job_name();
+
+		$this->assertEquals( 'test_plugin_update_check_immediate', $result );
+	}
+
+	/**
 	 * @covers ::register_cron_job
 	 */
 	public function test_register_cron_job(): void {

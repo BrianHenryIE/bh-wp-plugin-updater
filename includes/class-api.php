@@ -19,6 +19,7 @@ use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
 use Composer\Semver\Comparator;
 use DateTimeImmutable;
 use JsonMapper\Handler\FactoryRegistry;
@@ -246,6 +247,15 @@ class API implements API_Interface {
 			false => $this->get_cached_check_update(),
 			default => $this->get_cached_check_update() ?? $this->get_remote_check_update(),
 		};
+	}
+
+	/**
+	 * Schedule an immediate background update check.
+	 */
+	public function schedule_immediate_background_update(): void {
+		$cron          = new Cron( $this, $this->settings );
+		$cron_job_name = $cron->get_immediate_update_check_cron_job_name();
+		wp_schedule_single_event( time(), $cron_job_name );
 	}
 
 	protected function get_remote_check_update(): ?Plugin_Update_Interface {
