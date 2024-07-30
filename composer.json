@@ -51,9 +51,6 @@
         "classmap": [
             "tests/_support",
             "wordpress"
-        ],
-        "files": [
-            "vendor/wp-cli/handbook/bin/command.php"
         ]
     },
     "repositories": {
