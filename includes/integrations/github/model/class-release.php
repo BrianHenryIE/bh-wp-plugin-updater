@@ -1,4 +1,10 @@
 <?php
+/**
+ * @see https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28
+ *
+ * @package brianhenryie/bh-wp-plugin-updater
+ */
+
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model;
 
 class Release {

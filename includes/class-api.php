@@ -251,6 +251,8 @@ class API implements API_Interface {
 
 	/**
 	 * Schedule an immediate background update check.
+	 *
+	 * TODO: rate limit this.
 	 */
 	public function schedule_immediate_background_update(): void {
 		$cron          = new Cron( $this, $this->settings );

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @see https://github.com/github/rest-api-description
+ *
+ * @package brianhenryie/bh-wp-plugin-updater
+ */
+
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model;
 
 class User {

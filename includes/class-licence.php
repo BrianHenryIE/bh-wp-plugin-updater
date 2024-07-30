@@ -3,7 +3,6 @@
  * POJO for the licence details themselves:
  * * the licence key, status, expiry date, last updated date.
  *
- * TODO: move the save function out of this class to allow deserialisation to work.
  * TODO: use the last updated time so if there is no communication to the licence server, it can be known if it's an old problem or maybe transient.
  *
  * @package brianhenryie/bh-wp-plugin-updater
