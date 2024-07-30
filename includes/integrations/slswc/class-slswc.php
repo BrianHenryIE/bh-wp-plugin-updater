@@ -16,6 +16,7 @@ use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Check_Updates_Response;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\License_Response;
@@ -159,62 +160,21 @@ class SLSWC implements Integration_Interface {
 	 * @param Software_Details $software_details
 	 */
 	protected function software_details_to_plugin_update( Software_Details $software_details ): Plugin_Update_Interface {
-		return new class( $software_details ) implements Plugin_Update_Interface {
-			public function __construct(
-				protected Software_Details $software_details
-			) {
-			}
 
-			public function get_id(): ?string {
-				return $this->software_details->get_id();
-			}
-
-			public function get_slug(): string {
-				return $this->software_details->get_slug();
-			}
-
-			public function get_version(): string {
-				return $this->software_details->get_version();
-			}
-
-			public function get_url(): string {
-				return $this->software_details->get_homepage();
-			}
-
-			public function get_package(): string {
-				return $this->software_details->get_package();
-			}
-
-			public function get_tested(): ?string {
-				return $this->software_details->get_tested();
-			}
-
-			public function get_requires_php(): ?string {
-				return $this->software_details->get_requires();
-			}
-
-			public function get_autoupdate(): ?bool {
-				// null, //        return $this->software_details->get_autoupdate();
-				// TODO: Implement get_autoupdate() method.
-			}
-
-			public function get_icons(): ?array {
-				return $this->software_details->get_icons();
-			}
-
-			public function get_banners(): ?array {
-				// null, // TODO $software_details->get_banners();
-				// TODO: Implement get_banners() method.
-			}
-
-			public function get_banners_rtl(): ?array {
-				return $this->software_details->get_banners_rtl();
-			}
-
-			public function get_translations(): ?array {
-				return $this->software_details->get_translations();
-			}
-		};
+		return new Plugin_Update(
+			id: $software_details->get_id(),
+			slug: $software_details->get_slug(),
+			version: $software_details->get_version(),
+			url: $software_details->get_homepage(),
+			package: $software_details->get_package(),
+			tested: $software_details->get_tested(),
+			requires_php: $software_details->get_requires(),
+			autoupdate: null,
+			icons: null, // $software_details->get_icons(),
+			banners: null,
+			banners_rtl: null, // $software_details->get_banners_rtl(),
+			translations: null, // $software_details->get_translations(),
+		);
 	}
 
 	/**
