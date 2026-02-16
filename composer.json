@@ -50,6 +50,13 @@
         ]
     },
     "repositories": {
+        "kamazee/pr-filter": {
+            "url": "https://github.com/BrianHenryIE/pr-filter",
+            "type": "git",
+            "only": [
+                "kamazee/pr-filter"
+            ]
+        },
         "outlandish/wpackagist": {
             "type": "composer",
             "url": "https://wpackagist.org"
@@ -85,6 +92,7 @@
         "brianhenryie/php-codecoverage-markdown": "^0.2.0",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "johnpbloch/wordpress": "*",
+        "kamazee/pr-filter": "dev-PHP-8.0",
         "lucatume/wp-browser": "^4.0",
         "phpstan/extension-installer": "*",
         "phpstan/phpstan-phpunit": "*",
