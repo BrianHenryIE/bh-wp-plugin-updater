@@ -60,7 +60,7 @@ class SLSWC implements Integration_Interface {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
-		// TODO: This should never be called on a pageload.
+		// TODO: This should never be called on a page-load.
 
 		// TODO: Do not continuously retry.
 
@@ -197,10 +197,11 @@ class SLSWC implements Integration_Interface {
 	/**
 	 * Send a request to the server.
 	 *
-	 * @param Licence $licence
-	 * @param string  $action activate|deactivate|check_update|product.
-	 * @param string  $type The class to map the response to.
-	 * @throws
+	 * @param Licence      $licence
+	 * @param string       $action activate|deactivate|check_update|product.
+	 * @param class-string $type The class to map the response to.
+	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws \JsonMapper\Exception\BuilderException
 	 */
 	protected function server_request( Licence $licence, string $action, string $type = License_Response::class ) {
 
@@ -320,7 +321,7 @@ class SLSWC implements Integration_Interface {
 				$this->logger->error( $response['body'] );
 
 				throw new \Exception(
-					__( '404 There was a problem with the license server. ' . $request['server_request_url'], 'bh-wp-plugin-updater' ),
+					__( sprintf( '404 There was a problem with the license server. %s', $request['server_request_url'] ), 'bh-wp-plugin-updater' ),
 				);
 			}
 
@@ -328,7 +329,7 @@ class SLSWC implements Integration_Interface {
 
 				$body = json_decode( $response['body'] );
 
-				$this->logger->error( '`json:' . json_encode( $body ) . '`' );
+				$this->logger->error( '`json:' . wp_json_encode( $body ) . '`' );
 
 				switch ( substr( $body->message, 0, 30 ) ) {
 					case substr( 'Invalid parameter(s): license_key, slug', 0, 30 ):

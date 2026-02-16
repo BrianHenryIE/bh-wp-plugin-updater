@@ -13,18 +13,7 @@ use WP_Mock;
 /**
  * @coversDefaultClass  \BrianHenryIE\WP_Plugin_Updater\Plugin_Updater
  */
-class Plugin_Updater_Unit_Test extends \Codeception\Test\Unit {
-
-	protected function setUp(): void {
-		parent::setUp();
-		WP_Mock::setUp();
-	}
-
-	public function tearDown(): void {
-		WP_Mock::tearDown();
-		parent::tearDown();
-		\Patchwork\restoreAll();
-	}
+class Plugin_Updater_Unit_Test extends Unit_Testcase {
 
 	/**
 	 * @covers ::get_instance
@@ -57,7 +46,7 @@ class Plugin_Updater_Unit_Test extends \Codeception\Test\Unit {
 		\Patchwork\redefine(
 			array( API::class, '__construct' ),
 			function ( $settings, $logger, $integration_factory = null ) {
-				$this->setLogger( new NullLogger() );
+				$this->logger = new NullLogger();
 			}
 		);
 

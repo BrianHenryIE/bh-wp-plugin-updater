@@ -2,7 +2,7 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-class Functions_Unit_Test extends \Codeception\Test\Unit {
+class Functions_Unit_Test extends Unit_Testcase {
 
 	public function test_str_underscore_to_dash(): void {
 		$result = str_underscore_to_dash( 'string_with_underscores' );

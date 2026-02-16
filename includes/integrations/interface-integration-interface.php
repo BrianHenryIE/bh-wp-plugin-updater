@@ -5,7 +5,6 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
-use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product;
 
 interface Integration_Interface {
 

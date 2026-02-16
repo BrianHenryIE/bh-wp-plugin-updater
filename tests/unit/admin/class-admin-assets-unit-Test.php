@@ -11,23 +11,14 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Admin;
 
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Unit_Testcase;
 
 /**
  * Class Admin_Test
  *
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Admin\Admin_Assets
  */
-class Admin_Assets_Test extends \Codeception\Test\Unit {
-
-	protected function setUp(): void {
-		parent::setUp();
-		\WP_Mock::setUp();
-	}
-
-	protected function tearDown(): void {
-		parent::tearDown();
-		\WP_Mock::tearDown();
-	}
+class Admin_Assets_Test extends Unit_Testcase {
 
 	/**
 	 * Verifies enqueue_styles() calls wp_enqueue_style() with appropriate parameters.

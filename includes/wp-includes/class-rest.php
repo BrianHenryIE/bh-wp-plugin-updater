@@ -41,9 +41,7 @@ class Rest {
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_licence_details' ),
 					'args'                => array(),
-					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
-					},
+					'permission_callback' => fn() => current_user_can( 'manage_options' ),
 				),
 				'schema' => array( $this, 'get_licence_response_schema' ),
 			),
@@ -66,9 +64,7 @@ class Rest {
 					),
 				),
 				'callback'            => array( $this, 'set_licence_key' ),
-				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
-				},
+				'permission_callback' => fn() => current_user_can( 'manage_options' ),
 			)
 		);
 
@@ -78,9 +74,7 @@ class Rest {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'activate_licence' ),
-				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
-				},
+				'permission_callback' => fn() => current_user_can( 'manage_options' ),
 			)
 		);
 
@@ -103,7 +97,7 @@ class Rest {
 		} catch ( \Exception $exception ) {
 			$result = array(
 				'success' => false,
-				'error'   => get_class( $exception ),
+				'error'   => $exception::class,
 				'message' => $exception->getMessage(),
 			);
 
@@ -121,6 +115,8 @@ class Rest {
 
 	/**
 	 * The argument schema / the arguments required in the request
+	 *
+	 * @return array{refresh:array{description:string,type:string,required:bool}}
 	 */
 	public function get_licence_details_args(): array {
 		$args = array();
@@ -139,10 +135,10 @@ class Rest {
 	}
 
 	/**
-	 * @return array{schema:string,title:string,type:string,properties:array}
+	 * @return array{"$schema": string, title: string, type: string, properties:array{success: array{description: string, type: string}, message: array{description: string, type: string}, data: array{description: string, type: string, properties: array<string, array{description: string, type: array<string>|string, format: string}>}}}
 	 */
 	public function get_licence_response_schema(): array {
-		$schema = array(
+		return array(
 			// This tells the spec of JSON Schema we are using which is draft 4.
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			// The title property marks the identity of the resource.
@@ -165,10 +161,7 @@ class Rest {
 				),
 			),
 		);
-
-		return $schema;
 	}
-
 
 
 	public function set_licence_key( WP_REST_Request $request ): WP_REST_Response {
@@ -183,7 +176,7 @@ class Rest {
 		} catch ( \Exception $exception ) {
 			$result = array(
 				'success' => false,
-				'error'   => get_class( $exception ),
+				'error'   => $exception::class,
 				'message' => $exception->getMessage(),
 			);
 
@@ -208,7 +201,7 @@ class Rest {
 		} catch ( \Exception $exception ) {
 			$result = array(
 				'success' => false,
-				'error'   => get_class( $exception ),
+				'error'   => $exception::class,
 				'message' => $exception->getMessage(),
 			);
 
@@ -231,7 +224,7 @@ class Rest {
 		} catch ( \Exception $exception ) {
 			$result = array(
 				'success' => false,
-				'error'   => get_class( $exception ),
+				'error'   => $exception::class,
 				'message' => $exception->getMessage(),
 			);
 

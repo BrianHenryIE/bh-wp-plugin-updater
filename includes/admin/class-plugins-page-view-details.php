@@ -2,7 +2,7 @@
 /**
  * This is necessary to get the View Details modal to work.
  *
- * http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
+ * @see http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
  *
  * @see install_plugin_information()
  *
@@ -45,11 +45,13 @@ class Plugins_Page_View_Details {
 	 *
 	 * $api->sections as $section_name => $content
 	 *
+	 * TODO: When could an array be passed to this?
+	 *
 	 * @param false|object|array $res The result object or array. Default false.
 	 * @param string             $action The type of information being requested from the Plugin Installation API.
 	 * @param object             $args Plugin API arguments.
 	 */
-	public function add_plugin_modal_data( $res, $action, $args ) {
+	public function add_plugin_modal_data( $res, $action, $args ): object {
 
 		if ( $this->settings->get_plugin_slug() !== $args->slug ) {
 			return $res;
@@ -66,7 +68,7 @@ class Plugins_Page_View_Details {
 		);
 
 		foreach ( $minimum as $key => $value ) {
-			if ( ! isset( $res->$key ) ) {
+			if ( ! property_exists( $res, $key ) ) {
 				$res->$key = $value;
 			}
 		}

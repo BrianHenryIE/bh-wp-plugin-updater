@@ -3,8 +3,6 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Model;
 
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
-
 class Plugin_Update implements Plugin_Update_Interface {
 	public function __construct(
 		protected ?string $id,

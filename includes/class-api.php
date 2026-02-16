@@ -27,6 +27,7 @@ use JsonMapper\Handler\PropertyMapper;
 use JsonMapper\JsonMapperBuilder;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class API implements API_Interface {
 	use LoggerAwareTrait;
@@ -44,7 +45,7 @@ class API implements API_Interface {
 
 		try {
 			$this->licence = $this->get_licence_details( false );
-		} catch ( Licence_Key_Not_Set_Exception $e ) {
+		} catch ( Licence_Key_Not_Set_Exception ) {
 			$this->licence = new Licence();
 		}
 
@@ -90,7 +91,7 @@ class API implements API_Interface {
 	 */
 	public function get_licence_details( ?bool $refresh = null ): Licence {
 
-		// TODO: refresh should never be true on a pageload.
+		// TODO: refresh should never be true on a page-load.
 
 		// TODO: Do not continuously retry.
 
@@ -119,7 +120,7 @@ class API implements API_Interface {
 			$licence = new Licence();
 			$licence->__unserialize( $value );
 			return $licence;
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
 			return null;
 		}
@@ -292,7 +293,7 @@ class API implements API_Interface {
 
 		try {
 			$mapped_product_updated = $mapper->mapToClassFromString(
-				json_encode( $cached_check_update ),
+				wp_json_encode( $cached_check_update ),
 				Plugin_Update::class
 			);
 		} catch ( \Exception $e ) {

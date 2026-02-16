@@ -5,7 +5,6 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Admin\Admin_Assets;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\CLI;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
@@ -13,16 +12,14 @@ use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\WordPress_Updater;
 use Mockery;
 use WP_Mock;
-use WP_Mock\Matcher\AnyInstance;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Actions
  */
-class Actions_Unit_Test extends \Codeception\Test\Unit {
+class Actions_Unit_Test extends Unit_Testcase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		WP_Mock::setUp();
 
 		WP_Mock::passthruFunction( 'wp_unslash' );
 		WP_Mock::passthruFunction( 'sanitize_key' );
@@ -34,7 +31,6 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 
 	protected function tearDown(): void {
 		parent::tearDown();
-		WP_Mock::tearDown();
 
 		global $pagenow;
 		unset( $pagenow );
@@ -48,7 +44,7 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 		$settings->shouldReceive( 'get_plugin_slug' )->andReturn( 'a-plugin' );
 		$settings->shouldReceive( 'get_licence_server_host' )->andReturn( 'https://bhwp.ie' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		new Actions( $api, $settings, $logger );
 	}
 
@@ -63,12 +59,12 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 
 		WP_Mock::expectActionAdded(
 			'admin_enqueue_scripts',
-			array( new AnyInstance( Admin_Assets::class ), 'enqueue_styles' )
+			array( \WP_Mock\Functions::type( Admin_Assets::class ), 'enqueue_styles' )
 		);
 
 		WP_Mock::expectActionAdded(
 			'admin_enqueue_scripts',
-			array( new AnyInstance( Admin_Assets::class ), 'enqueue_script' )
+			array( \WP_Mock\Functions::type( Admin_Assets::class ), 'enqueue_script' )
 		);
 
 		$this->add_actions();
@@ -80,12 +76,12 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 	public function test_cron_hooks(): void {
 		WP_Mock::expectActionAdded(
 			'activate_a-plugin',
-			array( new AnyInstance( Cron::class ), 'register_cron_job' )
+			array( \WP_Mock\Functions::type( Cron::class ), 'register_cron_job' )
 		);
 
 		WP_Mock::expectActionAdded(
 			'a_plugin_update_check',
-			array( new AnyInstance( Cron::class ), 'handle_update_check_cron_job' )
+			array( \WP_Mock\Functions::type( Cron::class ), 'handle_update_check_cron_job' )
 		);
 
 		$this->add_actions();
@@ -97,7 +93,7 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 	public function test_rest_hooks(): void {
 		WP_Mock::expectActionAdded(
 			'rest_api_init',
-			array( new AnyInstance( Rest::class ), 'register_routes' )
+			array( \WP_Mock\Functions::type( Rest::class ), 'register_routes' )
 		);
 
 		$this->add_actions();
@@ -109,7 +105,7 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 	public function test_cli_hooks(): void {
 		WP_Mock::expectActionAdded(
 			'cli_init',
-			array( new AnyInstance( CLI::class ), 'register_commands' )
+			array( \WP_Mock\Functions::type( CLI::class ), 'register_commands' )
 		);
 
 		$this->add_actions();
@@ -121,14 +117,14 @@ class Actions_Unit_Test extends \Codeception\Test\Unit {
 	public function test_wordpress_updater_hooks(): void {
 		WP_Mock::expectFilterAdded(
 			'pre_set_site_transient_update_plugins',
-			array( new AnyInstance( WordPress_Updater::class ), 'detect_force_update' ),
+			array( \WP_Mock\Functions::type( WordPress_Updater::class ), 'detect_force_update' ),
 			10,
 			2
 		);
 
 		WP_Mock::expectFilterAdded(
 			'update_plugins_bhwp.ie',
-			array( new AnyInstance( WordPress_Updater::class ), 'add_update_information' ),
+			array( \WP_Mock\Functions::type( WordPress_Updater::class ), 'add_update_information' ),
 			10,
 			4
 		);

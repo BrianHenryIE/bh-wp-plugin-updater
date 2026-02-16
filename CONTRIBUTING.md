@@ -1,9 +1,21 @@
 
 
+WP_CLI_TEST_DBTYPE=sqlite WP_CLI_PHP=$(which php) behat
 
-`chmod +x tests/e2e-pw/setup/initialize-external.sh`
-`chmod +x tests/e2e-pw/setup/initialize-internal.sh`
-`chmod +x tests/e2e-pw/setup/initialize-internal-tests.sh`
+XDEBUG_MODE=coverage WP_CLI_TEST_DBTYPE=sqlite vendor/bin/behat --profile=coverage
+
+
+BASEURL=http://localhost:8888 npx playwright test --ui &;
+
+
+
+
+```bash
+chmod +x tests/wp-env/initialize-external.sh;
+chmod +x tests/wp-env/initialize-internal.sh;
+chmod +x tests/wp-env/initialize-internal-tests.sh;
+```
+
 For the test plugin:
 `composer install --no-dev`
 
@@ -15,14 +27,10 @@ wp transient delete update_plugins --network; XDEBUG_CONFIG="idekey=WP_CLI_XDEBU
 ```
 
 ```
-cd example-plugin;
-rm -rf vendor;
-composer update --no-dev;
-cd ..;
 npx wp-env start;
 ```
 ```
-echo "y" | npx wp-env destroy && npx wp-env start;
+echo "y" | npx wp-env destroy && npx wp-env start --xdebug --debug;
 ```
 
 

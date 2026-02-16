@@ -127,5 +127,8 @@
     <rule ref="WordPress.WP.AlternativeFunctions">
         <exclude-pattern>*/tests/unit/*</exclude-pattern>
     </rule>
+    <rule ref="WordPress.WP.AlternativeFunctions.json_encode_json_encode">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
 
 </ruleset>

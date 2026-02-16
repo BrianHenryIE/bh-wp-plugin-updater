@@ -14,13 +14,10 @@
     "config": {
         "allow-plugins": {
             "composer/installers": true,
-            "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "johnpbloch/wordpress-core-installer": true,
             "phpstan/extension-installer": true,
-            "alleyinteractive/composer-wordpress-autoloader": true,
-            "brianhenryie/composer-fallback-to-git": true,
-            "brianhenryie/composer-phpstorm": true,
+            "alleyinteractive/composer-wordpress-autoloader": false,
             "php-http/discovery": true
         },
         "platform": {
@@ -49,23 +46,32 @@
             ]
         },
         "classmap": [
-            "tests/_support",
-            "wordpress"
+            "tests/_support"
         ]
     },
     "repositories": {
-        "brianhenryie/composer-phpstorm": {
-            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+        "kamazee/pr-filter": {
+            "url": "https://github.com/BrianHenryIE/pr-filter",
             "type": "git",
             "only": [
-                "brianhenryie/composer-phpstorm"
+                "kamazee/pr-filter"
             ]
         },
         "outlandish/wpackagist": {
             "type": "composer",
             "url": "https://wpackagist.org"
+        },
+        "wordpress/wordpress": {
+            "url": "https://github.com/WordPress/wordpress-develop",
+            "type": "git"
+        },
+        "wp-cli/handbook": {
+            "url": "https://github.com/BrianHenryIE/handbook",
+            "type": "git",
+            "only": [
+                "wp-cli/handbook"
+            ]
         }
-
     },
     "require": {
         "php": ">=8.0",
@@ -74,83 +80,50 @@
         "composer/semver": "^3.4",
         "json-mapper/json-mapper": "*",
         "knplabs/github-api": "^3.0",
-        "psr/log": "^1.0",
+        "psr/log": "*",
         "syntatis/wp-plugin-readme-parser": "*"
     },
     "require-dev": {
         "10up/wp_mock": "*",
         "alleyinteractive/composer-wordpress-autoloader": "^1.0",
         "antecedent/patchwork": "^2.1",
-        "brianhenryie/bh-wp-logger": "dev-master",
-        "brianhenryie/color-logger": "^1.0",
-        "brianhenryie/composer-fallback-to-git": "dev-main",
-        "brianhenryie/composer-phpstorm": "dev-master",
-        "cweagans/composer-patches": "*",
+        "brianhenryie/bh-wp-logger": "^0.2",
+        "brianhenryie/color-logger": "*",
+        "brianhenryie/php-codecoverage-markdown": "^0.2.0",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
-        "jaschilz/php-coverage-badger": "^2.0",
         "johnpbloch/wordpress": "*",
-        "kporras07/composer-symlinks": "dev-master",
+        "kamazee/pr-filter": "dev-PHP-8.0",
         "lucatume/wp-browser": "^4.0",
-        "phpcompatibility/phpcompatibility-wp": "*",
         "phpstan/extension-installer": "*",
+        "phpstan/phpstan-mockery": "^2.0",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpcov": "*",
         "psr-mock/http-client-implementation": "1.0.0",
         "psr-mock/http-factory-implementation": "*",
         "psr/simple-cache": "^2.0",
+        "rector/rector": "*",
         "squizlabs/php_codesniffer": "*",
         "szepeviktor/phpstan-wordpress": "*",
-        "wp-cli/dist-archive-command": "dev-main",
-        "wp-cli/handbook": "dev-main",
+        "wordpress/wordpress": "*",
+        "wp-cli/dist-archive-command": "*",
+        "wp-cli/handbook": "dev-gen_custom_cmd_pages",
         "wp-cli/wp-cli-bundle": "*",
         "wp-cli/wp-cli-tests": "*",
         "wp-coding-standards/wpcs": "*",
         "wpackagist-plugin/document-generator-for-openapi": "*",
-        "wpackagist-plugin/woocommerce": "9.0.1",
+        "wpackagist-plugin/woocommerce": "*",
         "wpackagist-plugin/wordpress-importer": "*",
-        "wpackagist-plugin/wp-rest-api-log": "^1.7",
-        "wpackagist-theme/storefront": "^4.6",
+        "wpackagist-plugin/wp-rest-api-log": "*",
+        "wpackagist-theme/storefront": "*",
         "wpackagist-theme/twentytwentyfour": "*"
     },
-    "extra": {
-        "patches": {
-            "jaschilz/php-coverage-badger": {
-                "Allow customising the text": "https://github.com/JASchilz/PHPCoverageBadge/pull/1.patch"
-            },
-            "wp-cli/handbook": {
-                "Add wp handbook gen-custom for custom commands": "https://github.com/wp-cli/handbook/pull/526.patch"
-            }
-        },
-        "phpstorm": {
-            "exclude_folders": {
-                "folders": [
-                    "example-plugin/vendor",
-                    "vendor/php-stubs/woocommerce-stubs",
-                    "vendor/wordpress/wordpress/src",
-                    "vendor/wordpress/wordpress/build",
-                    "wp-content/plugins/bh-wp-plugin-updater",
-                    "wordpress/wp-content"
-                ],
-                "composer-symlinks": false
-            }
-        },
-        "symlinks": {}
-    },
+    "extra": {},
     "scripts": {
         "post-install-cmd": [
-            "@create-symlinks",
-            "rm -rf wordpress/wp-content"
+            "@sync-composer-wpenv"
         ],
         "post-update-cmd": [
-            "@create-symlinks",
-            "rm -rf wordpress/wp-content"
-        ],
-        "create-symlinks": [
-            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
-        ],
-        "configure-phpstorm": [
-            "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
-            "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
+            "@sync-composer-wpenv"
         ],
         "test": [
             "codecept run unit",
@@ -162,16 +135,24 @@
             "phpcov merge --clover tests/_output/clover.xml --html tests/_output/html tests/_output;",
             "open tests/_output/html/index.html"
         ],
-        "cs-fix": [
-            "phpcbf || true",
+        "cs": [
             "phpcs || true",
             "phpstan analyse --memory-limit 1G"
         ],
-        "cs-fix-changes": [
-            "updated_files=$( git status | grep 'modified:\\s.*.php$' | cut -c14- | awk '{ printf(\"%s \", $0) }' ); phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G"
+        "cs-fix": [
+            "phpcbf || true",
+            "@cs"
         ],
-        "php-compatibility": [
-            "phpcs -p includes templates vendor-prefixed --standard=PHPCompatibilityWP --runtime-set testVersion 8.0-"
+        "cs-fix-strict": [
+            "phpcbf || true",
+            "phpcs || true",
+            "phpstan analyse --level max --memory-limit 1G"
+        ],
+        "cs-changes": [
+            "updated_files=$(echo $(git diff --name-only `git merge-base origin/master HEAD` | grep \\.php | tr '\\n' '\\0' | xargs -0 ls -1df 2>/dev/null)); if [ -n \"$updated_files\" ]; then phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --memory-limit 1G; else echo \"No modified php files for phpstan.\"; fi;"
+        ],
+        "cs-changes-strict": [
+            "updated_files=$(echo $(git diff --name-only `git merge-base origin/master HEAD` | grep \\.php | tr '\\n' '\\0' | xargs -0 ls -1df 2>/dev/null)); if [ -n \"$updated_files\" ]; then phpcbf $(echo $updated_files); phpcs $(echo $updated_files); phpstan analyse $(echo $updated_files) --level max --memory-limit 1G; else echo \"No modified php files for phpstan.\"; fi;"
         ],
         "create-plugin-archive": [
             "wp i18n make-pot src languages/$(basename \"$PWD\").pot --domain=$(basename \"$PWD\")",

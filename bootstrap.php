@@ -5,7 +5,7 @@
  * Does not run on frontend requests.
  *
  * TODO: I don't think this will work when in the vendor directory. `plugin_basename()` will return the wrong value.
- * TODO: The `function_exists()` check will not be namespaced with Strauss.
+ * TODO: Verify `function_exists()` check is namespaced with Strauss.
  *
  * @package brianhenryie/wp-plugin-updater
  */

@@ -82,7 +82,7 @@ class Plugins_Page {
 	 * @see \WP_Plugins_List_Table::get_view_details_link()
 	 */
 	protected function get_licence_link_url(): string {
-		$licence_link_url = admin_url(
+		return admin_url(
 			add_query_arg(
 				array(
 					'plugin'    => $this->settings->get_plugin_slug(),
@@ -95,8 +95,6 @@ class Plugins_Page {
 				'plugin-install.php'
 			)
 		);
-
-		return $licence_link_url;
 	}
 
 	/**
