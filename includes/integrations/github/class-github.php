@@ -38,7 +38,6 @@ class GitHub implements Integration_Interface {
 	protected ?Readme_Parser $readme          = null;
 	protected ?Plugin_Headers $plugin_headers = null;
 
-
 	public function __construct(
 		ClientInterface $http_client,
 		protected Settings_Interface $settings,
@@ -65,6 +64,13 @@ class GitHub implements Integration_Interface {
 		 */
 		$response = $this->client->api( 'repo' )->releases()->all( $user, $repo );
 
+		$json_string_response = wp_json_encode( $response );
+
+		if ( ! $json_string_response ) {
+			// TODO: /log/ throw/
+			return;
+		}
+
 		// TODO: remove '->with' that are not needed.
 		$factory_registry = new FactoryRegistry();
 		$mapper           = JsonMapperBuilder::new()
@@ -75,8 +81,8 @@ class GitHub implements Integration_Interface {
 											->withNamespaceResolverMiddleware()
 											->build();
 
-		/** @var Release[] $release_object */
-		$releases = $mapper->mapToClassArrayFromString( wp_json_encode( $response ), Release::class );
+		/** @var Release[] $releases */
+		$releases = $mapper->mapToClassArrayFromString( $json_string_response, Release::class );
 
 		$allow_beta = false;
 

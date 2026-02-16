@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
         run: vendor/bin/phpstan analyse ${{ steps.changed_files_includes.outputs.all_changed_files }} -c phpstan.neon --memory-limit 1G --error-format=checkstyle | sponge phpstan-checkstyle.xml
 
-      - name: Fail if there are still phpcs errors in the modified files (pr)
+      - name: Fail if there are still PHPStan errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           vendor/bin/prf filter-checkstyle ${{ env.DIFF_FILENAME }} ${{ env.CHECKSTYLE_FILENAME }}  filtered-checkstyle.xml --base-path=$(pwd)

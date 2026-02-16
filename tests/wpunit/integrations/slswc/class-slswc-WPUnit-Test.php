@@ -12,6 +12,7 @@ use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use DateTimeImmutable;
 use Mockery;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\SLSWC
@@ -23,7 +24,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	 * @covers ::server_request
 	 * @covers ::validate_response
 	 */
-	public function test_activate_licence() {
+	public function test_activate_licence(): void {
 
 		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
 		$response_code = 200;
@@ -66,7 +67,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	 * @covers ::server_request
 	 * @covers ::validate_response
 	 */
-	public function test_activate_licence_already_activated() {
+	public function test_activate_licence_already_activated(): void {
 
 		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
 		$response_code = 200;
@@ -232,7 +233,8 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 
 	// deactivating a licence twice results in the same success response from the server.
 
-
+	/**
+	 */
 	public function test_validate_response_licence_not_found(): void {
 		$this->expectExceptionForResponse(
 			codecept_root_dir( 'tests/_data/slswc/invalid-parameters-licence-key-slug.json' ),
@@ -250,7 +252,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 		);
 	}
 
-	public function expectExceptionForResponse( string $response_body_file, int $response_code, $expected_exception_class ): void {
+	/**
+	 * @param string                         $response_body_file
+	 * @param int                            $response_code
+	 * @param string&class-string<Throwable> $expected_exception_class
+	 */
+	public function expectExceptionForResponse( string $response_body_file, int $response_code, string $expected_exception_class ): void {
 		$this->expectException( $expected_exception_class );
 
 		$body = file_get_contents( $response_body_file );

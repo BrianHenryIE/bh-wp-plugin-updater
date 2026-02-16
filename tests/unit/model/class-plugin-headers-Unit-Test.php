@@ -12,7 +12,7 @@ class Plugin_Headers_Unit_Test extends Unit_Testcase {
 	/**
 	 * @covers ::get_requires_plugins
 	 */
-	public function test_get_requires_plugins() {
+	public function test_get_requires_plugins(): void {
 		$sut = new Plugin_Headers( array( 'RequiresPlugins' => 'a-plugin, another-plugin' ) );
 
 		$result = $sut->get_requires_plugins();
@@ -25,7 +25,7 @@ class Plugin_Headers_Unit_Test extends Unit_Testcase {
 	/**
 	 * @covers ::get_requires_plugins
 	 */
-	public function test_get_requires_plugins_not_set() {
+	public function test_get_requires_plugins_not_set(): void {
 		$sut = new Plugin_Headers( array() );
 
 		$result = $sut->get_requires_plugins();

@@ -46,7 +46,7 @@ class Plugin_Updater_Unit_Test extends Unit_Testcase {
 		\Patchwork\redefine(
 			array( API::class, '__construct' ),
 			function ( $settings, $logger, $integration_factory = null ) {
-				$this->setLogger( new NullLogger() );
+				$this->logger = new NullLogger();
 			}
 		);
 

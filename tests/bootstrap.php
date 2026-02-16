@@ -24,7 +24,7 @@ Autoloader::generate(
 )->register();
 
 // If there is a secrets file, load it here.
-$env_secret_fullpath = realpath( __DIR__ . '/../.env.secret' );
+$env_secret_fullpath = codecept_root_dir( '.env.secret' );
 if ( file_exists( $env_secret_fullpath ) ) {
 	$dotenv = Dotenv\Dotenv::createImmutable( codecept_root_dir(), '.env.secret' );
 	$dotenv->load();

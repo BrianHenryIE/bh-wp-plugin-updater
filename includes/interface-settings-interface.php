@@ -69,5 +69,5 @@ interface Settings_Interface {
 	 */
 	public function get_plugin_information_option_name(): string;
 
-	public function get_check_update_option_name();
+	public function get_check_update_option_name(): string;
 }

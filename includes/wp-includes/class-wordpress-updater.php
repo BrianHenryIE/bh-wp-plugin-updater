@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 use stdClass;
 
 /**
- * @phpstan-type Plugin_Update_Array array{}
+ * @phpstan-type Plugin_Update_Array array{id: string|null, slug: string, version: string, url: string, package: string, tested: string|null, requires_php: string|null, autoupdate: bool|null, icons:array|null, banners:array|null, banners_rtl:array|null, translations:array|null }
  * @phpstan-type Plugin_Data_Array array{}
  */
 class WordPress_Updater {
@@ -58,7 +58,7 @@ class WordPress_Updater {
 	 * @see wp_update_plugins()
 	 *
 	 * @param false|stdClass $value
-	 * @param string         $transient Always 'update_plugins'.
+	 * @param string         $transient_name Always 'update_plugins'.
 	 *
 	 * @return false|stdClass Always the unchanged input value.
 	 */
@@ -101,7 +101,7 @@ class WordPress_Updater {
 	 * @param false|Plugin_Update_Array $plugin_update_array Should always be false, but there could be another filter added to `update_plugins_{$hostname}`.
 	 * @param Plugin_Data_Array         $plugin_data
 	 * @param string                    $plugin_file The plugin basename.
-	 * @param array                     $locales
+	 * @param string[]                  $locales List of languages in en_US format, {@see get_available_languages()}.
 	 *
 	 * @return false|Plugin_Update_Array
 	 */

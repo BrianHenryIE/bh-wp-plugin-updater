@@ -4,11 +4,18 @@ namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\ColorLogger\ColorLogger;
 use lucatume\WPBrowser\TestCase\WPTestCase;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\Test\TestLogger;
 
 class WPUnit_Testcase extends WPTestCase {
 
-	protected LoggerInterface $logger;
+	/**
+	 * PSR logger with convenience functions for assertions. Prints logs in the console as they are generated.
+	 *
+	 * @var LoggerInterface&TestLogger&ColorLogger
+	 */
+	protected ColorLogger $logger;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -30,5 +37,18 @@ class WPUnit_Testcase extends WPTestCase {
 			return false;
 		}
 		return $this->get_installed_major_version( $plugin_basename ) === $major_version;
+	}
+
+	protected function get_fixture_as_stream( string $fixture_relative_file_path ): StreamInterface {
+		$stream_factory              = new \PsrMock\Psr17\StreamFactory();
+		$json_string_encoded_fixture = wp_json_encode(
+			json_decode(
+				file_get_contents( codecept_root_dir( $fixture_relative_file_path ) ) ?: ''
+			)
+		);
+		if ( empty( $json_string_encoded_fixture ) ) {
+			$this->fail( 'Failed to parse fixture at: ' . $fixture_relative_file_path );
+		}
+		return $stream_factory->createStream( $json_string_encoded_fixture );
 	}
 }

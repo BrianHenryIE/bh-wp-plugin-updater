@@ -95,6 +95,7 @@
         "kamazee/pr-filter": "dev-PHP-8.0",
         "lucatume/wp-browser": "^4.0",
         "phpstan/extension-installer": "*",
+        "phpstan/phpstan-mockery": "^2.0",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpcov": "*",
         "psr-mock/http-client-implementation": "1.0.0",

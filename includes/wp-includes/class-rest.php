@@ -115,6 +115,8 @@ class Rest {
 
 	/**
 	 * The argument schema / the arguments required in the request
+	 *
+	 * @return array{refresh:array{description:string,type:string,required:bool}}
 	 */
 	public function get_licence_details_args(): array {
 		$args = array();
@@ -133,7 +135,7 @@ class Rest {
 	}
 
 	/**
-	 * @return array{schema:string,title:string,type:string,properties:array}
+	 * @return array{"$schema": string, title: string, type: string, properties:array{success: array{description: string, type: string}, message: array{description: string, type: string}, data: array{description: string, type: string, properties: array<string, array{description: string, type: array<string>|string, format: string}>}}}
 	 */
 	public function get_licence_response_schema(): array {
 		return array(

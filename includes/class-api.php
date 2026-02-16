@@ -27,6 +27,7 @@ use JsonMapper\Handler\PropertyMapper;
 use JsonMapper\JsonMapperBuilder;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class API implements API_Interface {
 	use LoggerAwareTrait;
@@ -119,7 +120,7 @@ class API implements API_Interface {
 			$licence = new Licence();
 			$licence->__unserialize( $value );
 			return $licence;
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
 			return null;
 		}
@@ -292,7 +293,7 @@ class API implements API_Interface {
 
 		try {
 			$mapped_product_updated = $mapper->mapToClassFromString(
-				json_encode( $cached_check_update ),
+				wp_json_encode( $cached_check_update ),
 				Plugin_Update::class
 			);
 		} catch ( \Exception $e ) {

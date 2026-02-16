@@ -16,7 +16,7 @@ interface API_Interface {
 	 *
 	 * @see http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
 	 *
-	 * @param ?bool|null $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
+	 * @param ?bool $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
 	 */
 	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info_Interface;
 

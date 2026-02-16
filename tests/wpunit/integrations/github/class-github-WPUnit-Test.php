@@ -3,26 +3,19 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub;
 
 use BrianHenryIE\WP_Plugin_Updater\Licence;
-use Psr\Http\Message\ResponseInterface;
+use BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub
  */
-class GitHub_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
+class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
-	public function test_check_update() {
+	public function test_check_update(): void {
 
-		$http_client    = new \PsrMock\Psr18\Client();
-		$streamFactory  = new \PsrMock\Psr17\StreamFactory();
-		$responseStream = $streamFactory->createStream(
-			json_encode(
-				json_decode(
-					file_get_contents( codecept_root_dir( 'tests/_data/github/releases.json' ) )
-				)
-			)
-		);
-		$response       = ( new \PsrMock\Psr7\Response() )
-			->withBody( $responseStream )
+		$http_client     = new \PsrMock\Psr18\Client();
+		$response_stream = $this->get_fixture_as_stream( 'tests/_data/github/releases.json' );
+		$response        = ( new \PsrMock\Psr7\Response() )
+			->withBody( $response_stream )
 			->withHeader( 'Content-Type', 'application/json' );
 
 		$http_client->addResponse(
@@ -68,22 +61,15 @@ class GitHub_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase
 		$sut = new GitHub( $http_client, $settings, $logger );
 
 		$result = $sut->get_remote_check_update( new Licence() );
-		$this->assertEquals( '2.4.2', $result->get_version() );
+		$this->assertEquals( '2.4.2', $result?->get_version() );
 	}
 
-	public function test_plugin_information() {
+	public function test_plugin_information(): void {
 
-		$http_client    = new \PsrMock\Psr18\Client();
-		$streamFactory  = new \PsrMock\Psr17\StreamFactory();
-		$responseStream = $streamFactory->createStream(
-			json_encode(
-				json_decode(
-					file_get_contents( codecept_root_dir( 'tests/_data/github/releases.json' ) )
-				)
-			)
-		);
-		$response       = ( new \PsrMock\Psr7\Response() )
-			->withBody( $responseStream )
+		$http_client     = new \PsrMock\Psr18\Client();
+		$response_stream = $this->get_fixture_as_stream( 'tests/_data/github/releases.json' );
+		$response        = ( new \PsrMock\Psr7\Response() )
+			->withBody( $response_stream )
 			->withHeader( 'Content-Type', 'application/json' );
 
 		$http_client->addResponse(
@@ -129,6 +115,6 @@ class GitHub_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase
 		$sut = new GitHub( $http_client, $settings, $logger );
 
 		$result = $sut->get_remote_product_information( new Licence() );
-		$this->assertEquals( '2.4.2', $result->get_version() );
+		$this->assertEquals( '2.4.2', $result?->get_version() );
 	}
 }

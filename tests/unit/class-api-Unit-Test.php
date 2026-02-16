@@ -6,6 +6,7 @@ use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use Mockery;
+use Mockery\MockInterface;
 use WP_Mock;
 
 /**
@@ -14,6 +15,7 @@ use WP_Mock;
 class API_Unit_Test extends Unit_Testcase {
 
 	protected function get_mock_integration_factory( ?Integration_Interface $integration_mock = null ): Integration_Factory_Interface {
+		/** @var Integration_Factory_Interface&MockInterface $mock_integration_factory */
 		$mock_integration_factory = Mockery::mock( Integration_Factory_Interface::class )->makePartial();
 		$mock_integration_factory->shouldReceive( 'get_integration' )
 								->andReturn( $integration_mock ?? Mockery::mock( Integration_Interface::class ) );
@@ -23,23 +25,26 @@ class API_Unit_Test extends Unit_Testcase {
 	/**
 	 * TODO: Test some nonsense versions
 	 *
-	 * @return array{local_version: string, remote_version: string, is_update: bool}
+	 * @return array<array{local_version: string, cached_version: string|null, remote_version: string|false, is_update: bool}>
 	 */
 	public static function versions_data_provider(): array {
 		return array(
 			array(
 				'local_version'  => '1.0.0',
+				'cached_version' => null,
 				'remote_version' => '2.0.0',
 				'is_update'      => true,
 			),
 			array(
 				'local_version'  => '2.0.0',
-				'remote_version' => '2.0.0',
+				'cached_version' => null,
+				'remote_version' => false,
 				'is_update'      => false,
 			),
 			array(
 				'local_version'  => '2.0.0',
-				'remote_version' => '1.0.0',
+				'cached_version' => '1.0.0',
+				'remote_version' => false,
 				'is_update'      => false,
 			),
 		);
@@ -50,7 +55,7 @@ class API_Unit_Test extends Unit_Testcase {
 	 *
 	 * @dataProvider versions_data_provider
 	 */
-	public function test_is_update_available( string $local_version, string $remote_version, bool $is_update ): void {
+	public function test_is_update_available( string $local_version, ?string $cached_version, string|false $remote_version, bool $is_update ): void {
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_plugin_basename' )
@@ -77,7 +82,7 @@ class API_Unit_Test extends Unit_Testcase {
 		WP_Mock::userFunction( 'get_option' )
 				->once()
 				->with( 'plugin_slug_check_update', null )
-				->andReturn( array( 'version' => $remote_version ) );
+				->andReturnUsing( fn() => ! $cached_version ? null : array( 'version' => $cached_version ) );
 
 		$new_version_array = array(
 			'plugin-slug/plugin-slug.php' => array(
@@ -91,13 +96,23 @@ class API_Unit_Test extends Unit_Testcase {
 
 		$result = $sut->is_update_available( false );
 
-		$this->assertEquals( $is_update, $result, "Local: $local_version Remote: $remote_version Expected result: " . ( $is_update ? 'yes' : 'no' ) );
+		$this->assertEquals(
+			( $is_update ? $remote_version : $cached_version ) === $local_version,
+			$result,
+			sprintf(
+				'Local: %s. Cache: %s. Remote: %s. Expected result: %s',
+				$local_version,
+				$cached_version ?: 'no-cache',
+				$remote_version,
+				( $is_update ? 'yes' : 'no' )
+			)
+		);
 	}
 
 	/**
 	 * @covers ::get_licence_details
 	 */
-	public function test_get_licence_details() {
+	public function test_get_licence_details(): void {
 		$licence = new Licence();
 		$licence->set_licence_key( 'abc123' );
 		$licence->set_status( 'active' );
@@ -138,7 +153,7 @@ class API_Unit_Test extends Unit_Testcase {
 		\WP_Mock::userFunction( 'update_option' )->once()
 				->withArgs(
 					fn( $option_name, $value ) => is_array( $value )
-						&& $value['licence_key'] === 'qwerty'
+						&& 'qwerty' === $value['licence_key']
 				)
 				->andReturnTrue();
 
@@ -173,7 +188,7 @@ class API_Unit_Test extends Unit_Testcase {
 		\WP_Mock::userFunction( 'update_option' )->once()
 				->withArgs(
 					fn( $option_name, $value ) => is_array( $value )
-							&& $value['licence_key'] === 'abc123'
+							&& 'abc123' === $value['licence_key']
 				)
 				->andReturnTrue();
 

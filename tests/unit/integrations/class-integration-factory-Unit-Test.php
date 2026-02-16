@@ -11,7 +11,7 @@ use BrianHenryIE\WP_Plugin_Updater\Unit_Testcase;
  */
 class Integration_Factory_Unit_Test extends Unit_Testcase {
 
-	public function test_logger_is_used() {
+	public function test_logger_is_used(): void {
 
 		$this->markTestIncomplete( 'I thought I could see the logger being used' );
 

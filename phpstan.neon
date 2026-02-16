@@ -14,3 +14,6 @@ parameters:
         # Mockery methods are not defined in the code, but are created dynamically.
         - '/Call to an undefined method Mockery.*/'
         - '/Parameter .* Mockery.* given/'
+        - # Parameter #2 $callback of static method WP_Mock::expectActionAdded() expects (callable(): mixed)|Mockery\Matcher\Type|string, array{Mockery\Matcher\Type, 'enqueue_styles'} given.
+          identifier: argument.type
+          path: tests/unit/class-actions-Unit-Test.php
