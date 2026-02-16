@@ -74,7 +74,7 @@ jobs:
       - name: Run PHPStan at phpstan.neon level only on changed_files in includes directory
         if: ${{ github.event_name == 'pull_request' }}
         continue-on-error: true
-        run: vendor/bin/phpstan analyse ${{ steps.changed_files_includes-files.outputs.all_changed_files }} -c phpstan.neon --memory-limit 1G --error-format=checkstyle | sponge phpstan-checkstyle.xml
+        run: vendor/bin/phpstan analyse ${{ steps.changed_files_includes.outputs.all_changed_files }} -c phpstan.neon --memory-limit 1G --error-format=checkstyle | sponge phpstan-checkstyle.xml
 
       - name: Fail if there are still phpcs errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
