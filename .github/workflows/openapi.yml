@@ -99,7 +99,7 @@ jobs:
           cp openapi/example-plugin-openapi.json gh-pages/openapi/example-plugin-openapi.json;
 
       - name: Commit openapi to gh-pages
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           repository: gh-pages
           branch: gh-pages
