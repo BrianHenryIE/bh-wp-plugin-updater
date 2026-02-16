@@ -60,7 +60,7 @@ class SLSWC implements Integration_Interface {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
-		// TODO: This should never be called on a pageload.
+		// TODO: This should never be called on a page-load.
 
 		// TODO: Do not continuously retry.
 

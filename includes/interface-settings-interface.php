@@ -27,7 +27,7 @@ interface Settings_Interface {
 	 * The basename of the licensed plugin.
 	 *
 	 * The plugin directory name and filename.
-	 * Path to the plugin file or directory, relative to the plugins directory.
+	 * Path to the plugin file or directory, relative to the plugins' directory.
 	 *
 	 * E.g. `bh-wp-autologin-urls/bh-wp-autologin-urls.php`.
 	 */

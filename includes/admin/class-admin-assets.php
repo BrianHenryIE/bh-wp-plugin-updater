@@ -40,7 +40,7 @@ class Admin_Assets {
 
 		try {
 			$licence_details = $this->api->get_licence_details();
-		} catch ( \Exception $e ) {
+		} catch ( \Exception ) {
 			$licence_details = new Licence();
 		}
 

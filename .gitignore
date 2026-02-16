@@ -41,7 +41,10 @@ cache
 node_modules
 scratch
 src/vendor-prefixed/
-wp-content/
+wp-content/*
+!wp-content/mu-plugins/
+wp-content/mu-plugins/*
+!wp-content/mu-plugins/*.php
 wordpress
 /vendor/
 
@@ -65,3 +68,15 @@ dist-archive
 /tests/_support/_generated
 
 /build
+
+# Test artifacts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.phpunit.result.cache
+patches.lock.json
+/artifacts
+
+# Claude Code
+.claude/settings.local.json

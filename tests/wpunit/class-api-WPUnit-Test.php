@@ -2,7 +2,6 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
@@ -11,7 +10,7 @@ use Mockery;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\API
  */
-class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
+class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 	protected function get_mock_integration_factory( Integration_Interface $integration_mock ): Integration_Factory_Interface {
 		$mock_integration_factory = Mockery::mock( Integration_Factory_Interface::class )->makePartial();
@@ -42,7 +41,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'activate_licence' )->once()->andReturn( $licence );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
 
 		$result = $sut->activate_licence();
@@ -79,7 +78,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'get_remote_check_update' )->once()->andReturn( $plugin_update );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
 
 		$result = $sut->get_check_update( true );
@@ -117,7 +116,7 @@ class API_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'get_remote_check_update' )->once()->andReturn( $plugin_update );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
 
 		$sut->get_check_update( true );

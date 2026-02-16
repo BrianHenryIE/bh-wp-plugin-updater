@@ -3,8 +3,6 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
-
 class Software_Details {
 	public function __construct(
 		protected string $name,

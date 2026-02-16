@@ -2,20 +2,20 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Unit_Testcase;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory
  */
-class Integration_Factory_Unit_Test extends \Codeception\Test\Unit {
+class Integration_Factory_Unit_Test extends Unit_Testcase {
 
 	public function test_logger_is_used() {
 
 		$this->markTestIncomplete( 'I thought I could see the logger being used' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$settings = \Mockery::mock( Settings_Interface::class );
 
@@ -28,7 +28,7 @@ class Integration_Factory_Unit_Test extends \Codeception\Test\Unit {
 
 		try {
 			$integration->activate_licence( $licence );
-		} catch ( \Exception $exception ) {
+		} catch ( \Exception ) {
 
 		}
 

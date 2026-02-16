@@ -5,17 +5,7 @@ namespace BrianHenryIE\WP_Plugin_Updater;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Licence
  */
-class Licence_Unit_Test extends \Codeception\Test\Unit {
-
-	protected function setUp(): void {
-		parent::setUp();
-		\WP_Mock::setUp();
-	}
-
-	public function tearDown(): void {
-		\WP_Mock::tearDown();
-		parent::tearDown();
-	}
+class Licence_Unit_Test extends Unit_Testcase {
 
 	public function test_serialize(): void {
 		$this->markTestIncomplete( 'incomplete until we settle on what properties licence should have' );

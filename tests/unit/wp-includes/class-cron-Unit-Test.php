@@ -4,23 +4,14 @@ namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
 use BrianHenryIE\WP_Plugin_Updater\API_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Unit_Testcase;
 use Mockery;
 use WP_Mock;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron
  */
-class Cron_Unit_Test extends \Codeception\Test\Unit {
-
-	protected function setUp(): void {
-		parent::setUp();
-		WP_Mock::setUp();
-	}
-
-	public function tearDown(): void {
-		WP_Mock::tearDown();
-		parent::tearDown();
-	}
+class Cron_Unit_Test extends Unit_Testcase {
 
 	/**
 	 * @covers ::get_update_check_cron_job_name

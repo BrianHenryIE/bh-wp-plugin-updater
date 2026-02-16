@@ -44,7 +44,7 @@ class API implements API_Interface {
 
 		try {
 			$this->licence = $this->get_licence_details( false );
-		} catch ( Licence_Key_Not_Set_Exception $e ) {
+		} catch ( Licence_Key_Not_Set_Exception ) {
 			$this->licence = new Licence();
 		}
 
@@ -90,7 +90,7 @@ class API implements API_Interface {
 	 */
 	public function get_licence_details( ?bool $refresh = null ): Licence {
 
-		// TODO: refresh should never be true on a pageload.
+		// TODO: refresh should never be true on a page-load.
 
 		// TODO: Do not continuously retry.
 

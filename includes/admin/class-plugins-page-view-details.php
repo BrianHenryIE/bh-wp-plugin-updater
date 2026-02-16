@@ -2,7 +2,7 @@
 /**
  * This is necessary to get the View Details modal to work.
  *
- * http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
+ * @see http://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=woocommerce
  *
  * @see install_plugin_information()
  *

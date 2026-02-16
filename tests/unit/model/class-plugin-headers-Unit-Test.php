@@ -2,10 +2,12 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Model;
 
+use BrianHenryIE\WP_Plugin_Updater\Unit_Testcase;
+
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers
  */
-class Plugin_Headers_Unit_Test extends \Codeception\Test\Unit {
+class Plugin_Headers_Unit_Test extends Unit_Testcase {
 
 	/**
 	 * @covers ::get_requires_plugins

@@ -87,7 +87,7 @@ interface Plugin_Update_Interface {
 	/**
 	 * @wpdoc Whether the plugin should automatically update.
 	 *
-	 * TODO: does this mean the plugi author suggests it, or it's used as a record of the site admin enabling it?
+	 * TODO: does this mean the plugin author suggests it, or it's used as a record of the site admin enabling it?
 	 */
 	public function get_autoupdate(): ?bool;
 

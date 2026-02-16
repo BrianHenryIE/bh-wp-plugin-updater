@@ -2,15 +2,15 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\API_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Unit_Testcase;
 use Mockery;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\WP_Includes\WordPress_Updater
  */
-class WordPress_Updater_Unit_Test extends \Codeception\Test\Unit {
+class WordPress_Updater_Unit_Test extends Unit_Testcase {
 
 	/**
 	 * When the value passed to the set transient function is empty, that implies the transient was deleted
@@ -24,10 +24,10 @@ class WordPress_Updater_Unit_Test extends \Codeception\Test\Unit {
 		$api->expects( 'schedule_immediate_background_update' )->never();
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
-		$settings->expects( 'get_plugin_basename' )->andReturn( 'test-plugin/test-plugin.php' );
-		$settings->expects( 'get_plugin_slug' )->andReturn( 'test-plugin' );
+		$settings->expects( 'get_plugin_basename' )->andReturn( 'test-plugin/test-plugin.php' )->times( 3 );
+		// $settings->expects( 'get_plugin_slug' )->andReturn( 'test-plugin' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new WordPress_Updater( $api, $settings, $logger );
 
@@ -67,10 +67,10 @@ class WordPress_Updater_Unit_Test extends \Codeception\Test\Unit {
 		$api->expects( 'schedule_immediate_background_update' )->once();
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
-		$settings->expects( 'get_plugin_basename' )->andReturn( 'test-plugin/test-plugin.php' );
-		$settings->expects( 'get_plugin_slug' )->andReturn( 'test-plugin' );
+		$settings->expects( 'get_plugin_basename' )->andReturn( 'test-plugin/test-plugin.php' )->times( 3 );
+		// $settings->expects( 'get_plugin_slug' )->andReturn( 'test-plugin' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new WordPress_Updater( $api, $settings, $logger );
 

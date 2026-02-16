@@ -2,14 +2,13 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub
  */
-class GitHub_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
+class GitHub_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 	public function test_check_update() {
 
@@ -64,7 +63,7 @@ class GitHub_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 			3
 		);
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new GitHub( $http_client, $settings, $logger );
 
@@ -125,7 +124,7 @@ class GitHub_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 			3
 		);
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new GitHub( $http_client, $settings, $logger );
 

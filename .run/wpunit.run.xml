@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="wpunit" type="CodeceptionConfigurationType" factoryName="Codeception">
-    <PhpTestRunnerSettings method="" scope="ConfigurationFile" options="wpunit" />
+    <PhpTestRunnerSettings configuration_file="$PROJECT_DIR$/codeception.dist.yml" method="" scope="ConfigurationFile" options="wpunit" use_alternative_configuration_file="true" />
     <method v="2" />
   </configuration>
 </component>

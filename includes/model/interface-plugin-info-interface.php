@@ -26,12 +26,12 @@ interface Plugin_Info_Interface {
 	public function get_version(): string;
 
 	/**
-	 * author name, or author name in html href
+	 * author name, or author name in HTML href
 	 */
 	public function get_author(): string;
 
 	/**
-	 * author profiles.wordpress.org link
+	 * Author link to {@see https://profiles.wordpress.org}.
 	 */
 	public function get_author_profile(): string;
 
@@ -164,7 +164,7 @@ interface Plugin_Info_Interface {
 	public function get_author_block_count(): int;
 
 	/**
-	 * "Fun fact: ratings are stored as 1-5 in postmeta, but returned as percentages by the API"
+	 * "Fun fact: ratings are stored as 1-5 in post meta, but returned as percentages by the API"
 	 */
 	public function get_author_block_rating(): int;
 

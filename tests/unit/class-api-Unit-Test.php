@@ -2,7 +2,6 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
@@ -12,17 +11,7 @@ use WP_Mock;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\API
  */
-class API_Unit_Test extends \Codeception\Test\Unit {
-
-	protected function setUp(): void {
-		parent::setUp();
-		WP_Mock::setUp();
-	}
-
-	public function tearDown(): void {
-		WP_Mock::tearDown();
-		parent::tearDown();
-	}
+class API_Unit_Test extends Unit_Testcase {
 
 	protected function get_mock_integration_factory( ?Integration_Interface $integration_mock = null ): Integration_Factory_Interface {
 		$mock_integration_factory = Mockery::mock( Integration_Factory_Interface::class )->makePartial();
@@ -73,7 +62,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 				->once()
 				->andReturnFalse();
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
 
 		$settings->shouldReceive( 'get_check_update_option_name' )
@@ -122,7 +111,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
 
 		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->get_licence_key() );
@@ -148,14 +137,12 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		\WP_Mock::userFunction( 'update_option' )->once()
 				->withArgs(
-					function ( $option_name, $value ) {
-						return is_array( $value )
-						&& $value['licence_key'] === 'qwerty';
-					}
+					fn( $option_name, $value ) => is_array( $value )
+						&& $value['licence_key'] === 'qwerty'
 				)
 				->andReturnTrue();
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
 
 		$sut->set_license_key( 'qwerty' );
@@ -180,21 +167,17 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$mock_integration->shouldReceive( 'activate_licence' )->never();
 		$mock_integration->shouldReceive( 'deactivate_licence' )->once()
 			->withArgs(
-				function ( Licence $licence ) {
-					return $licence->get_licence_key() === 'qwerty';
-				}
+				fn( Licence $licence ) => $licence->get_licence_key() === 'qwerty'
 			);
 
 		\WP_Mock::userFunction( 'update_option' )->once()
 				->withArgs(
-					function ( $option_name, $value ) {
-						return is_array( $value )
-							&& $value['licence_key'] === 'abc123';
-					}
+					fn( $option_name, $value ) => is_array( $value )
+							&& $value['licence_key'] === 'abc123'
 				)
 				->andReturnTrue();
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
 
 		$sut->set_license_key( 'abc123' );
@@ -226,7 +209,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 
 		\WP_Mock::userFunction( 'update_option' )->never();
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
 
 		$sut->set_license_key( 'abc123' );
@@ -250,7 +233,7 @@ class API_Unit_Test extends \Codeception\Test\Unit {
 		$settings->shouldReceive( 'get_licence_data_option_name' )->once()->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_plugin_slug' )->once()->andReturn( 'test-plugin' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
 
 		\WP_Mock::userFunction( 'wp_schedule_single_event' )

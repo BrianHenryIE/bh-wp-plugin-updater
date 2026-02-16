@@ -5,29 +5,12 @@ parameters:
         - tests
     excludePaths:
         - tests/_support
-        - wordpress
-        - wp-content/plugins/bh-wp-plugin-updater
-    bootstrapFiles:
-        - phpstanbootstrap.php
-        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
-#        - vendor/wp-cli/wp-cli/php/class-wp-cli-command.php
-#        - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
-#        - vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
     scanFiles:
         - vendor/lucatume/wp-browser/includes/core-phpunit/includes/testcase-rest-api.php
         - vendor/antecedent/patchwork/Patchwork.php
-#    scanDirectories:
-#        - wp-content/plugins/...
-#        - vendor/wp-cli
     ignoreErrors:
         # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
         - '#LoggerInterface\|null#'
-        # PHPStan show errors when filters have more than two parameters.
-        # - '#^Function apply_filters(_ref_array)? invoked with \d parameters, 2 required\.$#'
-        # Parameter #1 $message of method a expects b, c given, when bad PhpDoc used.
-        # - '/Parameter .* of .* expects .* given\./'
-        # Setting an empty array with type associative array in the PhpDoc prints this.
-        # - '/does not accept default value of type array\(\)/'
         # Mockery methods are not defined in the code, but are created dynamically.
         - '/Call to an undefined method Mockery.*/'
         - '/Parameter .* Mockery.* given/'

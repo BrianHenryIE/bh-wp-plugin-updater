@@ -2,7 +2,6 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC;
 
-use BrianHenryIE\ColorLogger\ColorLogger;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
@@ -17,7 +16,7 @@ use Psr\Log\NullLogger;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\SLSWC
  */
-class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
+class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 	/**
 	 * @covers ::activate_licence
@@ -31,12 +30,10 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( $body, $response_code ) {
-				return array(
-					'body'     => $body,
-					'response' => array( 'code' => $response_code ),
-				);
-			}
+			fn() => array(
+				'body'     => $body,
+				'response' => array( 'code' => $response_code ),
+			)
 		);
 
 		$licence = new Licence();
@@ -52,7 +49,7 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings->expects( 'get_licence_server_host' )
 				->andReturn( 'https://whatever.127' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new SLSWC( $settings, $logger );
 
@@ -76,12 +73,10 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( $body, $response_code ) {
-				return array(
-					'body'     => $body,
-					'response' => array( 'code' => $response_code ),
-				);
-			}
+			fn() => array(
+				'body'     => $body,
+				'response' => array( 'code' => $response_code ),
+			)
 		);
 
 		$licence = new Licence();
@@ -97,7 +92,7 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings->expects( 'get_licence_server_host' )
 				->andReturn( 'https://whatever.127' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new SLSWC( $settings, $logger );
 
@@ -114,12 +109,10 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( $body, $response_code ) {
-				return array(
-					'body'     => $body,
-					'response' => array( 'code' => $response_code ),
-				);
-			}
+			fn() => array(
+				'body'     => $body,
+				'response' => array( 'code' => $response_code ),
+			)
 		);
 
 		$licence = new Licence();
@@ -135,7 +128,7 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings->expects( 'get_licence_server_host' )
 				->andReturn( 'https://whatever.127' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new SLSWC( $settings, $logger );
 
@@ -157,12 +150,10 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( $body, $response_code ) {
-				return array(
-					'body'     => $body,
-					'response' => array( 'code' => $response_code ),
-				);
-			}
+			fn() => array(
+				'body'     => $body,
+				'response' => array( 'code' => $response_code ),
+			)
 		);
 
 		$licence = new Licence();
@@ -205,12 +196,10 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( $body, $response_code ) {
-				return array(
-					'body'     => $body,
-					'response' => array( 'code' => $response_code ),
-				);
-			}
+			fn() => array(
+				'body'     => $body,
+				'response' => array( 'code' => $response_code ),
+			)
 		);
 
 		$licence = new Licence();
@@ -268,12 +257,10 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( $body, $response_code ) {
-				return array(
-					'body'     => $body,
-					'response' => array( 'code' => $response_code ),
-				);
-			}
+			fn() => array(
+				'body'     => $body,
+				'response' => array( 'code' => $response_code ),
+			)
 		);
 
 		$licence = new Licence();
@@ -291,7 +278,7 @@ class SLSWC_WPUnit_Test extends \lucatume\WPBrowser\TestCase\WPTestCase {
 		$settings->expects( 'get_licence_server_host' )
 				->andReturn( 'https://whatever.127' );
 
-		$logger = new ColorLogger();
+		$logger = $this->logger;
 
 		$sut = new SLSWC( $settings, $logger );
 

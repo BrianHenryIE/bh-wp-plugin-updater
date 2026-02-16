@@ -76,7 +76,7 @@ class GitHub implements Integration_Interface {
 											->build();
 
 		/** @var Release[] $release_object */
-		$releases = $mapper->mapToClassArrayFromString( json_encode( $response ), Release::class );
+		$releases = $mapper->mapToClassArrayFromString( wp_json_encode( $response ), Release::class );
 
 		$allow_beta = false;
 

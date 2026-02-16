@@ -18,7 +18,7 @@ class Plugin_Updater {
 			throw new \Exception( 'Settings must be provided on first call.' );
 		}
 
-		$logger = $logger ?? new NullLogger();
+		$logger ??= new NullLogger();
 
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new API(
