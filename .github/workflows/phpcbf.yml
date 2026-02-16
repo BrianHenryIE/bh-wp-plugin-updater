@@ -67,7 +67,9 @@ jobs:
           git diff origin/${{ env.TARGET_BRANCH_REF_NAME }} > tmp.diff
           mv tmp.diff $FILENAME
           echo "diff_filename=$FILENAME" >> $GITHUB_OUTPUT
-          echo "diff_contents=$(cat $FILENAME)" >> $GITHUB_OUTPUT
+          echo "diff_contents<<$EOF" >> $GITHUB_OUTPUT
+          echo "$(cat $FILENAME)" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
         env:
           TARGET_BRANCH_REF_NAME: ${{ github.event.pull_request.base.ref }}
 
