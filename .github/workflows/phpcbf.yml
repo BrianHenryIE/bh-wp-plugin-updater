@@ -21,8 +21,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -57,7 +55,6 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: vendor/bin/phpcs includes -v
 
-      # I think this needs `with: fetch-depth: 0` on the `actions/checkout` step above
       - name: Get the PR diff
         id: pr_diff
         if: ${{ github.event_name == 'pull_request' }}
