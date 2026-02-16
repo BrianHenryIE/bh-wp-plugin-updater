@@ -72,4 +72,5 @@ jobs:
         run: |
           git diff main > main.diff
           vendor/bin/prf filter-checkstyle main.diff phpcs-checkstyle.xml filtered-checkstyle.xml --base-path=$(pwd)
+          cat filtered-checkstyle.xml | cs2pr
 
