@@ -73,7 +73,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           git fetch origin master:refs/remotes/origin/master
-          git diff master > pr-diff.diff
+          git diff origin/master > pr-diff.diff
           vendor/bin/prf filter-checkstyle pr-diff.diff phpcs-checkstyle.xml filtered-checkstyle.xml --base-path=$(pwd)
           cat filtered-checkstyle.xml | cs2pr
           # TODO: use the PR target not master.
