@@ -72,7 +72,8 @@ jobs:
       - name: Fail if there are still phpcs errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          git diff ${{ github.event.pull_request.base.sha }} > pr-diff.diff
+          git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+          git diff ${{ github.event.pull_request.base.ref }} > pr-diff.diff
           vendor/bin/prf filter-checkstyle pr-diff.diff phpcs-checkstyle.xml filtered-checkstyle.xml --base-path=$(pwd)
           cat filtered-checkstyle.xml | cs2pr
 
