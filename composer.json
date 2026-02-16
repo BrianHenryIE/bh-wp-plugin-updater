@@ -46,8 +46,7 @@
             ]
         },
         "classmap": [
-            "tests/_support",
-            "wordpress"
+            "tests/_support"
         ]
     },
     "repositories": {
