@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -51,7 +53,7 @@ jobs:
           vendor/bin/phpcs -q --report=checkstyle | sponge phpcs-checkstyle.xml
           cat phpcs-checkstyle.xml | cs2pr
 
-      - name: Fail if there are still phpcs errors in the production code
+      - name: Fail if there are still phpcs errors in the production code (master/main)
         if: ${{ github.event_name != 'pull_request' }}
         run: vendor/bin/phpcs includes -v
 
@@ -67,7 +69,7 @@ jobs:
 #        if: ${{ github.event_name == 'pull_request' }}
 #        run: vendor/bin/phpcs ${{ steps.changed-files.outputs.all_changed_files }} -v
 
-      - name: Fail if there are still phpcs errors in the modified files
+      - name: Fail if there are still phpcs errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           git diff master > pr-diff.diff
