@@ -34,18 +34,25 @@ jobs:
       - name: Run composer install
         run: composer install
 
-      - name: Run PHPStan to add annotations to the code
+      - name: Run PHPStan at max level to add annotations to the code
+        id: phpstan_max
         continue-on-error: true
         run: |
-          vendor/bin/phpstan analyse -c phpstan.neon --level max --memory-limit 1G --error-format=checkstyle | sponge phpstan-checkstyle.xml
-          cat phpstan-checkstyle.xml | cs2pr
+          vendor/bin/phpstan analyse -c phpstan.neon --level max --memory-limit 1G --error-format=checkstyle | cs2pr
 
       # On merge to main, fail for any error in `includes`.
-      - name: Run PHPStan to add annotations to the code (main)
+      - name: Run PHPStan to print errors on the includes directory in the normal format and fail hard (main)
         run: vendor/bin/phpstan analyse includes -c phpstan.neon --memory-limit 1G
         if: ${{ github.event_name != 'pull_request' }}
 
-      # Does this need `with: fetch-depth: 0` on the `actions/checkout` step above
+      - name: Get changed files
+        if: ${{ github.event_name == 'pull_request' }}
+        id: changed_files_includes
+        uses: tj-actions/changed-files@v47
+        with:
+          separator: ' '
+          files: 'includes/**/**.php'
+
       # This outputs `steps.pr_diff.outputs.diff_filename` and `steps.pr_diff.outputs.diff_contents`.
       - name: Get the PR diff
         id: pr_diff
@@ -62,6 +69,12 @@ jobs:
           echo "$EOF" >> $GITHUB_OUTPUT
         env:
           TARGET_BRANCH_REF_NAME: ${{ github.event.pull_request.base.ref }}
+
+      # On PRs, only fail for errors in important modified files.
+      - name: Run PHPStan at phpstan.neon level only on changed_files in includes directory
+        if: ${{ github.event_name == 'pull_request' }}
+        continue-on-error: true
+        run: vendor/bin/phpstan analyse ${{ steps.changed_files_includes-files.outputs.all_changed_files }} -c phpstan.neon --memory-limit 1G --error-format=checkstyle | sponge phpstan-checkstyle.xml
 
       - name: Fail if there are still phpcs errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
