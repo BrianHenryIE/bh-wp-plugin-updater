@@ -21,8 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+#        with:
+#          fetch-depth: 0
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -72,10 +72,10 @@ jobs:
       - name: Fail if there are still phpcs errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-#          git fetch origin master:refs/remotes/origin/master
-#          git diff origin/master > pr-diff.diff
           git diff ${{ github.event.pull_request.base.ref }} > pr-diff.diff
           vendor/bin/prf filter-checkstyle pr-diff.diff phpcs-checkstyle.xml filtered-checkstyle.xml --base-path=$(pwd)
           cat filtered-checkstyle.xml | cs2pr
-          # TODO: use the PR target not master.
 
+# TODO: use the PR target not master.
+#          git fetch origin master:refs/remotes/origin/master
+#          git diff origin/master > pr-diff.diff
