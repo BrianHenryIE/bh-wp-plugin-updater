@@ -64,7 +64,8 @@ jobs:
         run: |
           FILENAME="${{ env.TARGET_BRANCH_REF_NAME }}-${{ github.event.pull_request.head.sha }}.diff"
           git fetch origin ${{ env.TARGET_BRANCH_REF_NAME }}:refs/remotes/origin/${{ env.TARGET_BRANCH_REF_NAME }}
-          git diff origin/${{ env.TARGET_BRANCH_REF_NAME }} > $FILENAME
+          git diff origin/${{ env.TARGET_BRANCH_REF_NAME }} > tmp.diff
+          mv tmp.diff $FILENAME
           echo "diff_filename=$FILENAME" >> $GITHUB_OUTPUT
           echo "diff_contents=$(cat $FILENAME)" >> $GITHUB_OUTPUT
         env:
@@ -73,7 +74,8 @@ jobs:
       - name: Fail if there are still phpcs errors in the modified files (pr)
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          vendor/bin/prf filter-checkstyle ${{ env.DIFF_FILENAME }} phpcs-checkstyle.xml filtered-checkstyle.xml --base-path=$(pwd)
+          vendor/bin/prf filter-checkstyle ${{ env.DIFF_FILENAME }} ${{ env.CHECKSTYLE_FILENAME }}  filtered-checkstyle.xml --base-path=$(pwd)
           cat filtered-checkstyle.xml | cs2pr
         env:
           DIFF_FILENAME: ${{ steps.pr_diff.outputs.diff_filename }}
+          CHECKSTYLE_FILENAME: "phpcs-checkstyle.xml"
