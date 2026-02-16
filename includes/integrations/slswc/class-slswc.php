@@ -11,7 +11,7 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Max_Activations_Exception;
-use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
@@ -52,7 +52,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @used-by Cron::handle_update_check_cron_job()
 	 * @used-by CLI
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function refresh_licence_details( Licence $licence ): Licence {
 
@@ -81,7 +81,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence The licence to deactivate.
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function deactivate_licence( Licence $licence ): Licence {
 
@@ -104,7 +104,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence The licence to activate.
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function activate_licence( Licence $licence ): Licence {
 
@@ -200,7 +200,7 @@ class SLSWC implements Integration_Interface {
 	 * @param Licence      $licence
 	 * @param string       $action activate|deactivate|check_update|product.
 	 * @param class-string $type The class to map the response to.
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 * @throws \JsonMapper\Exception\BuilderException
 	 */
 	protected function server_request( Licence $licence, string $action, string $type = License_Response::class ) {
@@ -261,7 +261,7 @@ class SLSWC implements Integration_Interface {
 	 * @param array           $request
 	 * @param \WP_Error|array $response
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	protected function validate_response( array $request, $response ): void {
 

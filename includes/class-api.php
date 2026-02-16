@@ -12,7 +12,7 @@
 namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
-use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
@@ -60,7 +60,7 @@ class API implements API_Interface {
 	 *
 	 * @param string $license_key
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract If failing to deactivate the existing licence.
+	 * @throws Plugin_Updater_Exception If failing to deactivate the existing licence.
 	 */
 	public function set_license_key( string $license_key ): Licence {
 
@@ -149,7 +149,7 @@ class API implements API_Interface {
 	 *
 	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function deactivate_licence(): Licence {
 
@@ -168,7 +168,7 @@ class API implements API_Interface {
 	/**
 	 * Activate the licence on this site.
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function activate_licence(): Licence {
 
