@@ -7,7 +7,7 @@ use BrianHenryIE\WP_Plugin_Updater\Exception\Max_Activations_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use DateTimeImmutable;
 use Mockery;
@@ -174,15 +174,16 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 				->andReturn( 'https://updatestest.bhwp.ie' );
 		$settings->expects( 'get_plugin_slug' )
 				->andReturn( 'test-plugin' );
+		$settings->expects( 'get_plugin_name' )
+				->andReturn( 'Test Plugin' );
 
 		$logger = new NullLogger();
 
 		$sut = new SLSWC( $settings, $logger );
 
-		/** @var Product $result */
 		$result = $sut->get_remote_product_information( $licence );
 
-		$this->assertEquals( 'a-plugin', $result->get_software_slug() );
+		$this->assertEquals( 'test-plugin', $result->slug );
 	}
 
 	/**
@@ -223,10 +224,9 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 
 		$sut = new SLSWC( $settings, $logger );
 
-		/** @var Plugin_Update_Interface $result */
 		$result = $sut->get_remote_check_update( $licence );
 
-		$this->assertEquals( '1.2.0', $result->get_version() );
+		$this->assertEquals( '1.2.0', $result->version );
 	}
 
 	// "Invalid parameter(s): slug" happens when the licence key is correct but does not match the plugin slug.

@@ -4,7 +4,6 @@ namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use Mockery;
 use Mockery\MockInterface;
 use WP_Mock;

@@ -6,10 +6,13 @@ use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub_Integration
  */
 class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
+	/**
+	 * @covers ::get_remote_check_update
+	 */
 	public function test_check_update(): void {
 
 		$http_client     = new \PsrMock\Psr18\Client();
@@ -58,12 +61,21 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		$logger = $this->logger;
 
-		$sut = new GitHub( $http_client, $settings, $logger );
+		$sut = new GitHub_Integration(
+			$http_client,
+			new \PsrMock\Psr17\RequestFactory(),
+			new \PsrMock\Psr17\StreamFactory(),
+			$settings,
+			$logger
+		);
 
 		$result = $sut->get_remote_check_update( new Licence() );
-		$this->assertEquals( '2.4.2', $result?->get_version() );
+		$this->assertEquals( '2.4.2', $result?->version );
 	}
 
+	/**
+	 * @covers ::get_remote_product_information
+	 */
 	public function test_plugin_information(): void {
 
 		$http_client     = new \PsrMock\Psr18\Client();
@@ -112,9 +124,15 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		$logger = $this->logger;
 
-		$sut = new GitHub( $http_client, $settings, $logger );
+		$sut = new GitHub_Integration(
+			$http_client,
+			new \PsrMock\Psr17\RequestFactory(),
+			new \PsrMock\Psr17\StreamFactory(),
+			$settings,
+			$logger
+		);
 
 		$result = $sut->get_remote_product_information( new Licence() );
-		$this->assertEquals( '2.4.2', $result?->get_version() );
+		$this->assertEquals( '2.4.2', $result?->version );
 	}
 }

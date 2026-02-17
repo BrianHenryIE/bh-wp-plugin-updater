@@ -123,6 +123,6 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 		$result = $sut->get_check_update( false );
 
-		$this->assertEquals( $result?->version, $plugin_update->version );
+		$this->assertEquals( $plugin_update->version, $result?->version );
 	}
 }
