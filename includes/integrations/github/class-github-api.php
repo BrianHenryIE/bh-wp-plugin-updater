@@ -71,7 +71,7 @@ class GitHub_API {
 	 * @throws Plugin_Updater_Exception
 	 * @throws \JsonMapper\Exception\BuilderException
 	 */
-	protected function fetch_releases(string $user, string $repo ): array {
+	protected function fetch_releases( string $user, string $repo ): array {
 
 		/**
 		 * @see Client::api()

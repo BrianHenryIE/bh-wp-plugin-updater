@@ -24,11 +24,13 @@ class Update_File {
 		public readonly string $id,
 		/**
 		 * Download URL in the woocommerce_uploads directory.
+		 *
 		 * @var string $id
 		 */
 		public readonly string $file,
 		/**
 		 * Filename alone. I.e. the last part of the URL.
+		 *
 		 * @var string $id
 		 */
 		public readonly string $name

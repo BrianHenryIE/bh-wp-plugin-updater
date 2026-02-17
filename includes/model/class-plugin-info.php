@@ -30,6 +30,7 @@ class Plugin_Info {
 		public readonly ?string $author = null,
 		/**
 		 * Author link to {@see https://profiles.wordpress.org}.
+		 *
 		 * @var ?string $author_profile
 		 */
 		public readonly ?string $author_profile = null,
@@ -52,6 +53,7 @@ class Plugin_Info {
 		public readonly ?array $requires_plugins = null,
 		/**
 		 * always an empty array?
+		 *
 		 * @var array $compatibility
 		 */
 		public readonly ?array $compatibility = null,
@@ -79,11 +81,13 @@ class Plugin_Info {
 		public readonly ?string $last_updated = null,
 		/**
 		 * 'Y-m-d'
+		 *
 		 * @var ?string $added
 		 */
 		public readonly ?string $added = null,
 		/**
 		 * header_plugin_uri
+		 *
 		 * @var ?string $homepage
 		 */
 		public readonly string $homepage = '',
@@ -101,6 +105,7 @@ class Plugin_Info {
 		public readonly array $tags = array(),
 		/**
 		 * default 'trunk'
+		 *
 		 * @var string $stable_tag
 		 */
 		public readonly string $stable_tag = 'trunk',
@@ -116,16 +121,19 @@ class Plugin_Info {
 		public readonly string|false $business_model = false,
 		/**
 		 * default '', only for community business model plugins
+		 *
 		 * @var string $repository_url
 		 */
 		public readonly string $repository_url = '',
 		/**
 		 * default '', only for commercial business model plugins
+		 *
 		 * @var string $commercial_support_url
 		 */
 		public readonly string $commercial_support_url = '',
 		/**
 		 * default ''
+		 *
 		 * @var string $donate_link
 		 */
 		public readonly string $donate_link = '',

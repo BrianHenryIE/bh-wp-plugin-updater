@@ -81,7 +81,7 @@ class GitHub_Integration implements Integration_Interface {
 
 		$release = $this->get_release();
 
-		if(is_null( $release ) ) {
+		if ( is_null( $release ) ) {
 			return null;
 		}
 
@@ -90,7 +90,7 @@ class GitHub_Integration implements Integration_Interface {
 		$readme = $this->get_readme();
 
 		// If not assets are attached to the GitHub release!
-		if(empty($release->assets)){
+		if ( empty( $release->assets ) ) {
 			return null;
 		}
 
