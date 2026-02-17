@@ -11,6 +11,9 @@ echo "Running " $(basename "$0") " for " $PLUGIN_SLUG;
 mkdir /var/www/html/wp-content/uploads || true;
 chmod a+w /var/www/html/wp-content/uploads;
 
+# Install an old version of Helly Dolly plugin to show what the plugins.php UI looks like for it.
+wp plugin install https://downloads.wordpress.org/plugin/hello-dolly.1.5.zip --force
+
 echo "wp plugin activate --all"
 wp plugin activate --all
 
