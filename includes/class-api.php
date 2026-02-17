@@ -16,9 +16,8 @@ use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
 use Composer\Semver\Comparator;
 use DateTimeImmutable;
@@ -192,7 +191,7 @@ class API implements API_Interface {
 	 *
 	 * null when first run and no cached product information.
 	 */
-	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info_Interface {
+	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info {
 
 		if ( true !== $refresh ) {
 			// TODO: Add a background task to refresh the product information.
@@ -206,7 +205,7 @@ class API implements API_Interface {
 		};
 	}
 
-	protected function get_remote_product_information(): ?Plugin_Info_Interface {
+	protected function get_remote_product_information(): ?Plugin_Info {
 
 		$product = $this->service->get_remote_product_information( $this->licence );
 
@@ -215,13 +214,13 @@ class API implements API_Interface {
 		return $product;
 	}
 
-	protected function get_cached_product_information(): ?Plugin_Info_Interface {
+	protected function get_cached_product_information(): ?Plugin_Info {
 		$cached_product_information = get_option(
 			// plugin_slug_plugin_information
 			$this->settings->get_plugin_information_option_name(),
 			null
 		);
-		if ( $cached_product_information instanceof Plugin_Info_Interface ) {
+		if ( $cached_product_information instanceof Plugin_Info ) {
 			$this->logger->debug( 'returning cached product information for ' . $cached_product_information->get_software_slug() );
 			return $cached_product_information;
 		}
@@ -236,7 +235,7 @@ class API implements API_Interface {
 	 *
 	 * null when first run and no cached information.
 	 */
-	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update_Interface {
+	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update {
 
 		if ( true !== $refresh ) {
 			// TODO: Add a background task to refresh the product information.
@@ -261,11 +260,11 @@ class API implements API_Interface {
 		wp_schedule_single_event( time(), $cron_job_name );
 	}
 
-	protected function get_remote_check_update(): ?Plugin_Update_Interface {
+	protected function get_remote_check_update(): ?Plugin_Update {
 
 		try {
 			$check_update = $this->service->get_remote_check_update( $this->licence );
-			update_option( $this->settings->get_check_update_option_name(), $check_update->__serialize() );
+			update_option( $this->settings->get_check_update_option_name(), $check_update );
 		} catch ( \Exception $e ) {
 			$this->logger->error( $e->getMessage(), array( 'exception' => $e ) );
 			return null;
@@ -274,14 +273,14 @@ class API implements API_Interface {
 		return $check_update;
 	}
 
-	protected function get_cached_check_update(): ?Plugin_Update_Interface {
+	protected function get_cached_check_update(): ?Plugin_Update {
 		$cached_check_update = get_option(
 			$this->settings->get_check_update_option_name(),
 			null
 		);
 
 		if ( is_null( $cached_check_update ) ) {
-			$this->logger->debug( 'check_update Plugin_Update_Interface not found in cache: ' . $this->settings->get_plugin_slug() );
+			$this->logger->debug( 'check_update Plugin_Update not found in cache: ' . $this->settings->get_plugin_slug() );
 			return null;
 		}
 
@@ -307,7 +306,7 @@ class API implements API_Interface {
 			return null;
 		}
 
-		if ( ! ( $mapped_product_updated instanceof Plugin_Update_Interface ) ) {
+		if ( ! ( $mapped_product_updated instanceof Plugin_Update ) ) {
 			return null;
 		}
 

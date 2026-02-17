@@ -8,7 +8,7 @@
 namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 
 use BrianHenryIE\WP_Plugin_Updater\API_Interface;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -112,7 +112,7 @@ class WordPress_Updater {
 		}
 
 		try {
-			/** @var ?Plugin_Update_Interface $plugin_information */
+			/** @var ?Plugin_Update $plugin_information */
 			$plugin_information = $this->api->get_check_update( $this->force_refresh );
 		} catch ( \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception ) {
 			$this->logger->debug( 'Licence does not exist no server.' );
@@ -125,17 +125,17 @@ class WordPress_Updater {
 	}
 
 	/**
-	 * Convert the Plugin_Update_Interface object to an array for use in the `update_plugins` transient.
+	 * Convert the Plugin_Update object to an array for use in the `update_plugins` transient.
 	 *
 	 * Not the most elegant solution, but it's the simplest.
 	 *
 	 * TODO use serialize / get object vars
 	 *
-	 * @param Plugin_Update_Interface $plugin_update
+	 * @param Plugin_Update $plugin_update
 	 *
 	 * @return Plugin_Update_Array
 	 */
-	protected function convert_to_array( Plugin_Update_Interface $plugin_update ): array {
+	protected function convert_to_array( Plugin_Update $plugin_update ): array {
 		return array(
 			'id'           => $plugin_update->get_id(),
 			'slug'         => $plugin_update->get_slug(),
