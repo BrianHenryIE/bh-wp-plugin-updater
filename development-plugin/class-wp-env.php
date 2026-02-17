@@ -15,6 +15,7 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Development_Plugin;
 
 use Exception;
+use WP_HTTP_Requests_Hooks;
 
 /**
  * Modify the URL used in requests to itself.
@@ -36,6 +37,7 @@ class WP_Env {
 		add_filter( 'home_url', $this->wpenv_fix_url( ... ), 1, 2 );
 		add_filter( 'wp_login_url', $this->wpenv_fix_url( ... ), 1, 2 );
 		add_filter( 'admin_url', $this->wpenv_fix_url( ... ), 1, 2 );
+		add_action( 'requests-requests.before_request', $this->wpenv_fix_requests_url( ... ), 1, 3 );
 	}
 
 	/**
@@ -56,6 +58,25 @@ class WP_Env {
 		}
 
 		update_option( 'wp_env_cron_hostname', $hostname );
+	}
+
+	/**
+	 * Edit urls as the Requests HTTP library is about to use them.
+	 *
+	 * @see WP_HTTP_Requests_Hooks::dispatch()
+	 * @hooked requests-requests.before_request
+	 */
+	public function wpenv_fix_requests_url( &$parameters, $request, $url ) {
+
+		$is_url = function ( string $maybe_url ): bool {
+			return $maybe_url === sanitize_url( $maybe_url );
+		};
+
+		if ( !$is_url( $parameters ) ) {
+			return;
+		}
+
+		$parameters = $this->get_internal_url( $parameters );
 	}
 
 	/**
