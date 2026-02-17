@@ -51,7 +51,7 @@ class Plugins_Page_View_Details {
 	 * @param string             $action The type of information being requested from the Plugin Installation API.
 	 * @param object             $args Plugin API arguments.
 	 */
-	public function add_plugin_modal_data( $res, $action, $args ): object {
+	public function add_plugin_modal_data( $res, $action, $args ): object|false {
 
 		if ( $this->settings->get_plugin_slug() !== $args->slug ) {
 			return $res;
