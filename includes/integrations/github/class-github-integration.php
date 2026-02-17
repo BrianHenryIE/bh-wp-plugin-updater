@@ -17,6 +17,8 @@ use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use Github\Client as GitHub_Client;
+use Github\HttpClient\Builder;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -54,40 +56,33 @@ class GitHub_Integration implements Integration_Interface {
 		$this->setLogger( $logger );
 
 		$this->github_api = new GitHub_API(
-			$this->http_client,
-			$this->request_factory,
-			$this->stream_factory,
+			$this->get_github_client(),
 			$this->settings,
 			$logger
 		);
 	}
 
-	public function activate_licence( Licence $licence ) {
-		// TODO: Implement activate_licence() method.
-		return new Licence();
+
+	protected function get_github_client(): GitHub_Client {
+		return GitHub_Client::createWithHttpClient( $this->http_client );
+		// Issues with testing.
+		return new GitHub_Client(
+			new Builder( $this->http_client, $this->request_factory, $this->stream_factory )
+		);
 	}
 
-	public function deactivate_licence( Licence $licence ) {
-		// TODO: Implement deactivate_licence() method.
-		return new Licence();
-	}
-
-	public function refresh_licence_details( Licence $licence ): Licence {
-		// TODO: Implement refresh_licence_details() method.
-		return new Licence();
-	}
 
 	public function get_remote_check_update( Licence $licence ): ?Plugin_Update {
 
-		$release = $this->get_release();
+		$release = $this->github_api->get_release();
 
 		if ( is_null( $release ) ) {
 			return null;
 		}
 
-		$plugin_headers = $this->get_plugin_headers();
+		$plugin_headers = $this->github_api->get_plugin_headers();
 
-		$readme = $this->get_readme();
+		$readme = $this->github_api->get_readme();
 
 		// If not assets are attached to the GitHub release!
 		if ( empty( $release->assets ) ) {
@@ -118,11 +113,12 @@ class GitHub_Integration implements Integration_Interface {
 	 * @see Integration_Interface::get_remote_product_information()
 	 * @param Licence $licence
 	 * @return ?Plugin_Info
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function get_remote_product_information( Licence $licence ): ?Plugin_Info {
 
-		$release        = $this->get_release();
-		$plugin_headers = $this->get_plugin_headers();
+		$plugin_headers = $this->github_api->get_plugin_headers();
+		$release        = $this->github_api->get_release();
 
 		if ( is_null( $this->plugin_headers ) ) {
 			throw new Plugin_Updater_Exception( 'Failed to update product information from GitHub' );
@@ -137,23 +133,18 @@ class GitHub_Integration implements Integration_Interface {
 	}
 
 
-	protected function get_release(): ?Release {
-		if ( ! isset( $this->release ) ) {
-			$this->release = $this->github_api->get_release();
-		}
-		return $this->release;
+	public function activate_licence( Licence $licence ) {
+		// TODO: Implement activate_licence() method.
+		return new Licence();
 	}
 
-	protected function get_plugin_headers(): ?Plugin_Headers {
-		if ( ! isset( $this->plugin_headers ) ) {
-			$this->plugin_headers = $this->github_api->get_plugin_headers();
-		}
-		return $this->plugin_headers;
+	public function deactivate_licence( Licence $licence ) {
+		// TODO: Implement deactivate_licence() method.
+		return new Licence();
 	}
-	protected function get_readme(): ?Readme_Parser {
-		if ( ! isset( $this->readme ) ) {
-			$this->readme = $this->github_api->get_readme();
-		}
-		return $this->readme;
+
+	public function refresh_licence_details( Licence $licence ): Licence {
+		// TODO: Implement refresh_licence_details() method.
+		return new Licence();
 	}
 }

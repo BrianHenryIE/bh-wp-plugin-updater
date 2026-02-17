@@ -14,21 +14,15 @@ use BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model\Release;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Github\Client as GitHub_Client;
-use Github\HttpClient\Builder;
 use JsonMapper\Handler\FactoryRegistry;
 use JsonMapper\Handler\PropertyMapper;
 use JsonMapper\JsonMapperBuilder;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Syntatis\WPPluginReadMeParser\Parser as Readme_Parser;
 
 class GitHub_API {
 	use LoggerAwareTrait;
-
-	protected GitHub_Client $client;
 
 	protected ?Release $release;
 	protected ?string $changelog_text;
@@ -39,28 +33,45 @@ class GitHub_API {
 	/**
 	 * Constructor.
 	 *
-	 * @param ClientInterface         $http_client
-	 * @param RequestFactoryInterface $request_factory
-	 * @param StreamFactoryInterface  $stream_factory
-	 * @param Settings_Interface      $settings
-	 * @param LoggerInterface         $logger
+	 * @param Settings_Interface $settings
+	 * @param LoggerInterface    $logger
 	 */
 	public function __construct(
-		protected ClientInterface $http_client,
-		protected RequestFactoryInterface $request_factory,
-		protected StreamFactoryInterface $stream_factory,
+		protected GitHub_Client $client,
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
 	) {
-		$this->client = $this->get_github_client();
 		$this->setLogger( $logger );
 	}
 
-	protected function get_github_client(): GitHub_Client {
-		return GitHub_Client::createWithHttpClient( $this->http_client );
-		return new GitHub_Client(
-			new Builder( $this->http_client, $this->request_factory, $this->stream_factory )
-		);
+	public function get_plugin_headers(): ?Plugin_Headers {
+		if ( ! isset( $this->plugin_headers ) ) {
+			$this->update();
+		}
+		if ( ! isset( $this->plugin_headers ) ) {
+			$this->plugin_headers = null;
+		}
+		return $this->plugin_headers;
+	}
+
+	public function get_release(): ?Release {
+		if ( ! isset( $this->release ) ) {
+			$this->update();
+		}
+		if ( ! isset( $this->release ) ) {
+			$this->release = null;
+		}
+		return $this->release;
+	}
+
+	public function get_readme(): ?Readme_Parser {
+		if ( ! isset( $this->readme ) ) {
+			$this->update();
+		}
+		if ( ! isset( $this->readme ) ) {
+			$this->readme = null;
+		}
+		return $this->readme;
 	}
 
 	/**
@@ -158,12 +169,6 @@ class GitHub_API {
 		return Plugin_Headers::from_file_string( $plugin_file );
 	}
 
-	public function get_plugin_headers(): ?Plugin_Headers {
-		if ( ! isset( $this->plugin_headers ) ) {
-			$this->update();
-		}
-		return $this->plugin_headers;
-	}
 
 	protected function update(): void {
 
@@ -194,26 +199,5 @@ class GitHub_API {
 
 		$plugin_file_name     = explode( '/', $this->settings->get_plugin_basename() )[1];
 		$this->plugin_headers = $this->fetch_plugin_headers( $user, $repo, $this->release->tag_name, $plugin_file_name );
-	}
-
-	public function get_release(): ?Release {
-		if ( ! isset( $this->release ) ) {
-			$this->update();
-		}
-		if ( ! isset( $this->release ) ) {
-			$this->release = null;
-			return null;
-		}
-		return $this->release;
-	}
-	public function get_readme(): ?Readme_Parser {
-		if ( ! isset( $this->readme ) ) {
-			$this->update();
-		}
-		if ( ! isset( $this->readme ) ) {
-			$this->readme = null;
-			return null;
-		}
-		return $this->readme;
 	}
 }
