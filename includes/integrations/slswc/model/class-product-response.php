@@ -38,16 +38,8 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 class Product_Response {
 
 	public function __construct(
-		protected string $status,
-		protected Product $product
+		public readonly string $status,
+		public readonly Product $product
 	) {
-	}
-
-	public function get_status(): string {
-		return $this->status;
-	}
-
-	public function get_product(): Product {
-		return $this->product;
 	}
 }

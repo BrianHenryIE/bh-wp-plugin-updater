@@ -28,41 +28,26 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 
 class License_Response {
 
 	public function __construct(
-		protected string $status,
-		protected string $slug,
-		protected string $expires,
-		protected License $license,
-		protected Domain $domain
+		/**
+		 * active|deactivated
+		 */
+		public readonly string $status,
+		public readonly string $slug,
+		/**
+		 * 2025-05-27 00:00:00
+		 */
+		public readonly string $expires,
+		public readonly License $license,
+		public readonly Domain $domain
 	) {
 	}
 
-	/**
-	 * active|deactivated
-	 */
-	public function get_status(): string {
-		return $this->status;
-	}
-
-	public function get_slug(): string {
-		return $this->slug;
-	}
-
-	/**
-	 * 2025-05-27 00:00:00
-	 */
-	public function get_expires(): \DateTimeInterface {
+	public function get_expires(): DateTimeInterface {
 		return DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $this->expires );
-	}
-
-	public function get_license(): License {
-		return $this->license;
-	}
-
-	public function get_domain(): Domain {
-		return $this->domain;
 	}
 }
