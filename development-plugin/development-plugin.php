@@ -12,10 +12,15 @@
 
 // Load all tha magic!
 
-// When loading in the local project.
+namespace BrianHenryIE\WP_Plugin_Updater\Development_Plugin;
+
+use Alley_Interactive\Autoloader\Autoloader;
+use BrianHenryIE\WP_Plugin_Updater\Development_Plugin\Rest\Transients_Controller;
+use BrianHenryIE\WP_Plugin_Updater\Development_Plugin\UI\WP_Admin_Bar;
 use BrianHenryIE\WP_Plugin_Updater\Plugin_Updater;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Trait;
+
 
 if ( file_exists( __DIR__ . '/../vendor/autoload.php' ) ) {
 	require __DIR__ . '/../vendor/autoload.php';
@@ -25,7 +30,19 @@ if ( file_exists( __DIR__ . '/../vendor/autoload.php' ) ) {
 	require __DIR__ . '/../project/vendor/autoload.php';
 }
 
+Autoloader::generate(
+	__NAMESPACE__,
+	__DIR__,
+)->register();
+
 remove_action( 'init', '\\BrianHenryIE\\WP_Plugin_Updater\\init_plugin_updater' );
+
+add_action(
+	'rest_api_init',
+	array( new Transients_Controller(), 'register_routes' )
+);
+
+( new WP_Admin_Bar() )->register_hooks();
 
 Plugin_Updater::get_instance(
 	new class() implements Settings_Interface {
