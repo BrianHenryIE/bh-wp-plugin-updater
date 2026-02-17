@@ -15,6 +15,9 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Development_Plugin;
 
 use Alley_Interactive\Autoloader\Autoloader;
+use BrianHenryIE\WP_Logger\Logger;
+use BrianHenryIE\WP_Logger\Logger_Settings_Interface;
+use BrianHenryIE\WP_Logger\Logger_Settings_Trait;
 use BrianHenryIE\WP_Plugin_Updater\Development_Plugin\Rest\Transients_Controller;
 use BrianHenryIE\WP_Plugin_Updater\Development_Plugin\UI\WP_Admin_Bar;
 use BrianHenryIE\WP_Plugin_Updater\Plugin_Updater;
@@ -47,6 +50,19 @@ add_action(
 
 ( new WP_Admin_Bar() )->register_hooks();
 
+$logger = Logger::instance(
+	new class() implements Logger_Settings_Interface {
+		use Logger_Settings_Trait;
+
+		public function get_plugin_basename(): string {
+			return 'development-plugin/development-plugin.php';
+		}
+		public function get_plugin_name(): string {
+			return 'BH Plugin Updater Development/Test/Demo plugin';
+		}
+	}
+);
+
 Plugin_Updater::get_instance(
 	new class() implements Settings_Interface {
 		use Settings_Trait;
@@ -67,7 +83,8 @@ Plugin_Updater::get_instance(
 		public function get_licence_server_host(): string {
 			return 'https://github.com/brianhenryie/bh-wp-aws-ses-bounce-handler';
 		}
-	}
+	},
+	$logger
 );
 
 /**
