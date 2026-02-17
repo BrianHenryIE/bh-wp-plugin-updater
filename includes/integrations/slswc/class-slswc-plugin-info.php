@@ -3,7 +3,6 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC;
 
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product;
-use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 

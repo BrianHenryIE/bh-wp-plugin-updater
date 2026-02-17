@@ -114,7 +114,6 @@ class API implements API_Interface {
 		}
 		try {
 			$licence = new Licence();
-			$licence->__unserialize( $value );
 			return $licence;
 		} catch ( Throwable $e ) {
 			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
