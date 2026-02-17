@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name:   Example Plugin
- * Description:   A plugin that does nothing.
+ * Plugin Name:   BH Plugin Updater Development/Test/Demo plugin
+ * Description:   A plugin to showcase the library and add test helpers.
  * Version:       1.1.1
  * Author:        BrianHenryIE
  * Author URI:    https://bhwp.ie
- * Update URI:    updatestest.bhwp.ie/wp-json/slswc/v1
+ * Update URI:    https://github.com/brianhenryie/bh-wp-aws-ses-bounce-handler
  *
  * @package brianhenryie/bh-wp-plugin-updater
  */
@@ -32,7 +32,39 @@ Plugin_Updater::get_instance(
 		use Settings_Trait;
 
 		public function get_plugin_basename(): string {
-			return 'development-plugin/development-plugin.php';
+			return 'bh-wp-aws-ses-bounce-handler/bh-wp-aws-ses-bounce-handler.php';
 		}
+
+		/**
+		 * NB: Heading must be `Update URI` not `UpdateURI`.
+		 * This heading is required because WordPress uses it in the filter to fetch update information.
+		 *
+		 * @see WordPress_Updater::add_update_information()
+		 */
+		public function get_licence_server_host(): string {
+			return 'https://github.com/brianhenryie/bh-wp-aws-ses-bounce-handler';
+		}
+	}
+);
+
+/**
+ * Fix: Deprecated: strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in /.../wp-admin/admin-header.php on line 41
+ *
+ * @see wordpress/wp-admin/admin-header.php
+ * @hooked plugins_loaded
+ */
+add_action(
+	'plugins_loaded',
+	function () {
+		if (
+		! isset( $_REQUEST['page'] )
+		|| ! is_string( $_REQUEST['page'] )
+		|| 'development-plugin-logs' !== sanitize_key( wp_unslash( $_REQUEST['page'] ) )
+		) {
+			return;
+		}
+
+		global $title;
+		$title = 'Logs page';
 	}
 );
