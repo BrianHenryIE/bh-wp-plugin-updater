@@ -85,7 +85,7 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 		$saved_plugin_update = get_option( 'a_plugin_update' );
 
-		$this->assertEquals( $result?->get_version(), $saved_plugin_update['version'] );
+		$this->assertEquals( $result?->version, $saved_plugin_update->version );
 	}
 
 	/**
@@ -123,6 +123,6 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 		$result = $sut->get_check_update( false );
 
-		$this->assertEquals( $result?->get_version(), $plugin_update->get_version() );
+		$this->assertEquals( $result?->version, $plugin_update->version );
 	}
 }
