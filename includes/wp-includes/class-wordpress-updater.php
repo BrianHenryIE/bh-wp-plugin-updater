@@ -10,13 +10,18 @@ namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 use BrianHenryIE\WP_Plugin_Updater\API_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use Composer\Semver\Comparator;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
 /**
- * @phpstan-type Plugin_Update_Array array{id: string|null, slug: string, version: string, url: string, package: string, tested: string|null, requires_php: string|null, autoupdate: bool|null, icons:array|null, banners:array|null, banners_rtl:array|null, translations:array|null }
  * @phpstan-type Plugin_Data_Array array{}
+ * @phpstan-import-type Plugin_Update_Array from Plugin_Update
+ *
+ * @uses \BrianHenryIE\WP_Plugin_Updater\API_Interface::get_check_update()
+ * @uses \BrianHenryIE\WP_Plugin_Updater\API_Interface::schedule_immediate_background_update()
+ * @uses \BrianHenryIE\WP_Plugin_Updater\Settings_Interface::get_plugin_basename()
  */
 class WordPress_Updater {
 	use LoggerAwareTrait;
@@ -25,13 +30,19 @@ class WordPress_Updater {
 	 * Generally we will not refresh plugin update information synchronously, but when the update_plugins transient is
 	 * deleted, we infer that to mean the site admin wants to force a check for updates.
 	 */
-	protected bool $force_refresh = false;
+	protected bool $force_refresh;
+
+	/**
+	 * We determine is the plugin also hosted on WordPress.org. This is used to decide how the update information is
+	 * added to the transient.
+	 */
+	protected bool $is_dot_org_plugin = false;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param API_Interface      $api
-	 * @param Settings_Interface $settings
+	 * @param API_Interface      $api The main updater functions.
+	 * @param Settings_Interface $settings The settings provided by the plugin to configure the updater.
 	 * @param LoggerInterface    $logger A PSR-3 logger.
 	 */
 	public function __construct(
@@ -40,6 +51,38 @@ class WordPress_Updater {
 		LoggerInterface $logger,
 	) {
 		$this->setLogger( $logger );
+
+		add_filter( 'site_transient_update_plugins', array( $this, 'remove_wp_org_entry_from_transient' ), 10, 2 );
+	}
+
+	/**
+	 * Remove WordPress.org update information for this plugin from the `update_plugins` transient.
+	 *
+	 * When a plugin exists on WordPress.org and we want to use this updater (e.g. for beta testing), we
+	 * remove the entry from the transient so it is not used.
+	 *
+	 * @hooked site_transient_update_plugins
+	 */
+	public function remove_wp_org_entry_from_transient( stdClass|false $value, string $transient_name ): stdClass|false {
+		if ( ! $value instanceof stdClass ) {
+			return $value;
+		}
+
+		if (
+			isset( $value->response[ $this->settings->get_plugin_basename() ] )
+			&& str_starts_with( $value->response[ $this->settings->get_plugin_basename() ]->url, 'https://wordpress.org/plugins/' )
+		) {
+			unset( $value->response[ $this->settings->get_plugin_basename() ] );
+			$this->is_dot_org_plugin = true;
+		} elseif (
+			isset( $value->no_update[ $this->settings->get_plugin_basename() ] )
+			&& str_starts_with( $value->no_update[ $this->settings->get_plugin_basename() ]->url, 'https://wordpress.org/plugins/' )
+		) {
+			unset( $value->no_update[ $this->settings->get_plugin_basename() ] );
+			$this->is_dot_org_plugin = true;
+		}
+
+		return $value;
 	}
 
 	/**
@@ -62,14 +105,28 @@ class WordPress_Updater {
 	 *
 	 * @return false|stdClass Always the unchanged input value.
 	 */
-	public function detect_force_update( $value, string $transient_name ) {
-
+	public function on_set_transient_update_plugins( stdClass|false $value, string $transient_name ) {
 		// Probably only happens on a fresh installation of WordPress.
-		if ( false === $value ) {
+		if ( ! $value instanceof stdClass ) {
 			return $value;
 		}
 
-		// This evaluates to true if the cron job has never run.
+		if ( ! isset( $this->force_refresh ) ) {
+			return $this->detect_force_update( $value );
+		} else {
+			return $this->add_update_information_to_transient_on_save( $value );
+		}
+	}
+
+	/**
+	 * Infer was the `update_plugins` transient recently deleted.
+	 *
+	 * Later use the {@see self::$force_refresh} boolean to decide if we use saved information, or make a remote API
+	 * call for the update information.
+	 *
+	 * @param stdClass $value The plugin update information being saved to the `update_plugins` transient.
+	 */
+	protected function detect_force_update( stdClass $value ): stdClass {
 
 		// Do a synchronous refresh if the plugin is not already in the `update_plugins` transient.
 		$force_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
@@ -83,12 +140,44 @@ class WordPress_Updater {
 		$this->force_refresh = $force_refresh;
 
 		/**
-		 * The `pre_set_site_transient_update_plugins` filter gets called twice in {@see wp_update_plugins()}. We don't
-		 * need it on the later run.
+		 * The `pre_set_site_transient_update_plugins` filter gets called twice in {@see wp_update_plugins()}.
+		 *
+		 * If we have a non-WordPress.org hosted plugin, {@see self::add_update_information()} will handle adding
+		 * the plugin information, and we don't need to run on the filter.
+		 *
+		 * If it is a WordPress.org hosted plugin, the `update_plugins_{$hostname}` filter will not fire and we
+		 * will use the second run of `pre_set_site_transient_update_plugins` to add the data.
 		 */
-		remove_filter( 'pre_set_site_transient_update_plugins', array( $this, 'detect_force_update' ) );
+		if ( ! $this->is_dot_org_plugin ) {
+			remove_filter( 'pre_set_site_transient_update_plugins', array( $this, 'on_set_transient_update_plugins' ) );
+		}
 
 		return $value;
+	}
+
+	/**
+	 * @param stdClass $plugin_update_object
+	 */
+	protected function add_update_information_to_transient_on_save( stdClass $plugin_update_object ): stdClass {
+
+		try {
+			/** @var ?Plugin_Update $plugin_information */
+			$plugin_information = $this->api->get_check_update( $this->force_refresh );
+		} catch ( \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception ) {
+			$this->logger->debug( 'Licence does not exist no server.' );
+			return $plugin_update_object;
+		}
+
+		if ( Comparator::greaterThan(
+			$plugin_information->new_version ?? '0.0.0',
+			$plugin_update_object->checked[ $this->settings->get_plugin_basename() ] ?? '0.0.0',
+		) ) {
+			$plugin_update_object->response[ $this->settings->get_plugin_basename() ] = $plugin_information;
+		} else {
+			$plugin_update_object->no_update[ $this->settings->get_plugin_basename() ] = $plugin_information;
+		}
+
+		return $plugin_update_object;
 	}
 
 	/**
@@ -105,7 +194,7 @@ class WordPress_Updater {
 	 *
 	 * @return false|Plugin_Update_Array
 	 */
-	public function add_update_information( $plugin_update_array, $plugin_data, $plugin_file, $locales ) {
+	public function add_update_information( false|array $plugin_update_array, array $plugin_data, string $plugin_file, array $locales ): array|false {
 
 		if ( $this->settings->get_plugin_basename() !== $plugin_file ) {
 			return $plugin_update_array;
@@ -115,40 +204,12 @@ class WordPress_Updater {
 			/** @var ?Plugin_Update $plugin_information */
 			$plugin_information = $this->api->get_check_update( $this->force_refresh );
 		} catch ( \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception ) {
-			$this->logger->debug( 'Licence does not exist no server.' );
+			$this->logger->debug( 'Licence does not exist on server.' );
 			return $plugin_update_array;
 		}
 
 		return is_null( $plugin_information )
 			? $plugin_update_array
-			: $this->convert_to_array( $plugin_information );
-	}
-
-	/**
-	 * Convert the Plugin_Update object to an array for use in the `update_plugins` transient.
-	 *
-	 * Not the most elegant solution, but it's the simplest.
-	 *
-	 * TODO use serialize / get object vars
-	 *
-	 * @param Plugin_Update $plugin_update
-	 *
-	 * @return Plugin_Update_Array
-	 */
-	protected function convert_to_array( Plugin_Update $plugin_update ): array {
-		return array(
-			'id'           => $plugin_update->get_id(),
-			'slug'         => $plugin_update->get_slug(),
-			'version'      => $plugin_update->get_version(),
-			'url'          => $plugin_update->get_url(),
-			'package'      => $plugin_update->get_package(),
-			'tested'       => $plugin_update->get_tested(),
-			'requires_php' => $plugin_update->get_requires_php(),
-			'autoupdate'   => $plugin_update->get_autoupdate(),
-			'icons'        => $plugin_update->get_icons(),
-			'banners'      => $plugin_update->get_banners(),
-			'banners_rtl'  => $plugin_update->get_banners_rtl(),
-			'translations' => $plugin_update->get_translations(),
-		);
+			: (array) $plugin_information;
 	}
 }

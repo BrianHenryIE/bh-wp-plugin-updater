@@ -77,7 +77,7 @@ class Actions {
 
 		add_filter(
 			'pre_set_site_transient_update_plugins',
-			array( $plugin_update, 'detect_force_update' ),
+			array( $plugin_update, 'on_set_transient_update_plugins' ),
 			10,
 			2
 		);
