@@ -54,6 +54,6 @@ class Plugin_Updater_Unit_Test extends Unit_Testcase {
 
 		$result = $instance->get_licence_details( false );
 
-		$this->assertEquals( 'unknown', $result->get_status() );
+		$this->assertEquals( 'unknown', $result->status );
 	}
 }

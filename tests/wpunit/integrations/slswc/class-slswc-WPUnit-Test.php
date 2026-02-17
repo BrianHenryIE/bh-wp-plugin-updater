@@ -58,7 +58,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 		/** @var Licence $result */
 		$result = $sut->activate_licence( $licence );
 
-		$this->assertEquals( 'active', $result->get_status() );
+		$this->assertEquals( 'active', $result->status );
 	}
 
 	/**
@@ -102,7 +102,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 		/** @var Licence $result */
 		$result = $sut->activate_licence( $licence );
 
-		$this->assertEquals( 'active', $result->get_status() );
+		$this->assertEquals( 'active', $result->status );
 	}
 
 	public function test_deactivate_licence(): void {
@@ -139,7 +139,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 		/** @var Licence $result */
 		$result = $sut->deactivate_licence( $licence );
 
-		$this->assertEquals( 'deactivated', $result->get_status() );
+		$this->assertEquals( 'deactivated', $result->status );
 	}
 
 	/**

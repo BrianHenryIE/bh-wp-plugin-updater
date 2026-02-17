@@ -63,12 +63,12 @@ class API implements API_Interface {
 	 */
 	public function set_license_key( string $license_key ): Licence {
 
-		$existing_key = $this->licence->get_licence_key();
+		$existing_key = $this->licence->licence_key;
 		if ( $existing_key === $license_key ) {
 			return $this->licence;
 		}
 		if ( ! empty( $existing_key ) ) {
-			if ( $this->licence->get_status() === 'active' ) {
+			if ( $this->licence->status === 'active' ) {
 				$this->service->deactivate_licence( $this->licence );
 			}
 		}
@@ -113,7 +113,7 @@ class API implements API_Interface {
 			return null;
 		}
 		try {
-			$licence = new Licence();
+			$licence = new Licence( ...$value );
 			return $licence;
 		} catch ( Throwable $e ) {
 			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
@@ -151,7 +151,7 @@ class API implements API_Interface {
 	 */
 	public function deactivate_licence(): Licence {
 
-		if ( is_null( $this->licence->get_licence_key() ) ) {
+		if ( is_null( $this->licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -170,7 +170,7 @@ class API implements API_Interface {
 	 */
 	public function activate_licence(): Licence {
 
-		if ( is_null( $this->licence->get_licence_key() ) ) {
+		if ( is_null( $this->licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 

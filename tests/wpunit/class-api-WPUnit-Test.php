@@ -50,7 +50,7 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 
 		$saved_licence = get_option( 'a_plugin_licence' );
 
-		$this->assertEquals( $result->get_status(), $saved_licence['status'] );
+		$this->assertEquals( $result->status, $saved_licence['status'] );
 	}
 
 	/**

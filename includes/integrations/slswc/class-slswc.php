@@ -55,7 +55,7 @@ class SLSWC implements Integration_Interface {
 	 */
 	public function refresh_licence_details( Licence $licence ): Licence {
 
-		if ( is_null( $licence->get_licence_key() ) ) {
+		if ( is_null( $licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -84,7 +84,7 @@ class SLSWC implements Integration_Interface {
 	 */
 	public function deactivate_licence( Licence $licence ): Licence {
 
-		if ( is_null( $licence->get_licence_key() ) ) {
+		if ( is_null( $licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -113,7 +113,7 @@ class SLSWC implements Integration_Interface {
 	 */
 	public function activate_licence( Licence $licence ): Licence {
 
-		if ( is_null( $licence->get_licence_key() ) ) {
+		if ( is_null( $licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -217,7 +217,7 @@ class SLSWC implements Integration_Interface {
 
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
-			'license_key' => $licence->get_licence_key(),
+			'license_key' => $licence->licence_key,
 			'domain'      => get_home_url(), // Ideally, the server would use the HTTP user agent header, which contains the URL.
 		);
 

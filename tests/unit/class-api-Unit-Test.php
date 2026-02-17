@@ -129,7 +129,7 @@ class API_Unit_Test extends Unit_Testcase {
 		$logger = $this->logger;
 		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
 
-		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->get_licence_key() );
+		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->licence_key );
 	}
 
 	/**
@@ -184,7 +184,7 @@ class API_Unit_Test extends Unit_Testcase {
 		$mock_integration->shouldReceive( 'activate_licence' )->never();
 		$mock_integration->shouldReceive( 'deactivate_licence' )->once()
 			->withArgs(
-				fn( Licence $licence ) => $licence->get_licence_key() === 'qwerty'
+				fn( Licence $licence ) => $licence->licence_key === 'qwerty'
 			);
 
 		\WP_Mock::userFunction( 'update_option' )->once()

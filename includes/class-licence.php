@@ -90,31 +90,6 @@ class Licence {
 		);
 	}
 
-	/**
-	 * Get the licence key itself.
-	 */
-	public function get_licence_key() {
-		return $this->licence_key;
-	}
-
-	/**
-	 * Get the licence status.
-	 */
-	public function get_status(): string {
-		return $this->status;
-	}
-
-	/**
-	 * Get the licence expiry date.
-	 */
-	public function get_expiry_date(): ?DateTimeInterface {
-		return $this->expiry_date;
-	}
-
-	public function get_last_updated(): ?DateTimeInterface {
-		return $this->last_updated;
-	}
-
 	public function is_active() {
 		return 'active' === $this->status;
 

@@ -183,7 +183,7 @@ class Rest {
 			return new WP_REST_Response( $result, 500 );
 		}
 
-		// assert( $licence->get_licence_key() === $licence_key );
+		// assert( $licence->licence_key === $licence_key );
 
 		$result = array(
 			'success' => true,
