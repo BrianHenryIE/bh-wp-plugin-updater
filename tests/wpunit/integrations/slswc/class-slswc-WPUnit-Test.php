@@ -187,7 +187,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 
 		$result = $sut->get_remote_product_information( $licence );
 
-		$this->assertEquals( 'test-plugin', $result->slug );
+		$this->assertEquals( 'test-plugin', $result?->slug );
 	}
 
 	/**
@@ -231,7 +231,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 
 		$result = $sut->get_remote_check_update( $licence );
 
-		$this->assertEquals( '1.2.0', $result->version );
+		$this->assertEquals( '1.2.0', $result?->version );
 	}
 
 	// "Invalid parameter(s): slug" happens when the licence key is correct but does not match the plugin slug.

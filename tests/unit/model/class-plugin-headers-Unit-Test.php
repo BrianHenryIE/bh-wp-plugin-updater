@@ -22,6 +22,7 @@ class Plugin_Headers_Unit_Test extends Unit_Testcase {
 
 		$result = $sut->requires_plugins;
 
+		$this->assertIsArray( $result );
 		$this->assertCount( 2, $result );
 
 		$this->assertEquals( 'a-plugin', $result[0] );

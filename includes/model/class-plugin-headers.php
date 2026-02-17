@@ -10,7 +10,7 @@ namespace BrianHenryIE\WP_Plugin_Updater\Model;
 /**
  * The only required header is 'Name', so all others are nullable.
  *
- * @phpstan-type Plugin_Headers_Array array{Name:string, PluginURI:string|null, Version:string|null, Description:string|null, Author:string|null, AuthorURI:string|null, TextDomain:string|null, DomainPath:string|null, Network:string|null, RequiresWP:string|null, RequiresPHP:string|null, UpdateURI:string|null, RequiresPlugins:string|null}
+ * @phpstan-type Plugin_Headers_Array array{Name:string, PluginURI?:string|null, Version?:string|null, Description?:string|null, Author?:string|null, AuthorURI?:string|null, TextDomain?:string|null, DomainPath?:string|null, Network?:string|null, RequiresWP?:string|null, RequiresPHP?:string|null, UpdateURI?:string|null, RequiresPlugins?:string|null}
  * @phpstan-type Plugin_Headers_Class_As_Array array{name:string, plugin_uri:string|null, version:string|null, description:string|null, author:string|null, author_uri:string|null, text_domain:string|null, domain_path:string|null, network:string|null, requires_wp:string|null, requires_php:string|null, update_uri:string|null, requires_plugins:null|array<string>}
  */
 class Plugin_Headers {
