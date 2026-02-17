@@ -75,8 +75,7 @@ class API implements API_Interface {
 
 		// TODO: Set the status to unknown?
 
-		$this->licence->set_licence_key( $license_key );
-		$this->save_licence_information( $this->licence );
+		$this->save_licence_information( $this->licence, array( 'licence_key' => $license_key ) );
 
 		return $this->licence;
 	}
@@ -132,12 +131,12 @@ class API implements API_Interface {
 	 *
 	 * @return void
 	 */
-	protected function save_licence_information( Licence $licence ): void {
+	protected function save_licence_information( Licence $licence, array $updates = array() ): void {
 		$licence->set_last_updated( new DateTimeImmutable() );
 
 		update_option(
 			$this->settings->get_licence_data_option_name(),
-			$licence->__serialize()
+			array_merge( (array) $licence, $updates )
 		);
 	}
 
@@ -264,7 +263,7 @@ class API implements API_Interface {
 
 		try {
 			$check_update = $this->service->get_remote_check_update( $this->licence );
-			update_option( $this->settings->get_check_update_option_name(), $check_update );
+			update_option( $this->settings->get_check_update_option_name(), (array) $check_update );
 		} catch ( \Exception $e ) {
 			$this->logger->error( $e->getMessage(), array( 'exception' => $e ) );
 			return null;
