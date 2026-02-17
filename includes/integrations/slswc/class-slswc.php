@@ -63,10 +63,18 @@ class SLSWC implements Integration_Interface {
 
 		// TODO: Do not continuously retry.
 
+		/** @var License_Response $response */
 		$response = $this->server_request( $licence, 'check_update' ); // ?? "check update"? I think maybe this should be "activate".
 
-		$licence->set_status( $response->get_status() );
-		$licence->set_last_updated( new DateTimeImmutable() );
+		return new Licence(
+			...array_merge(
+				(array) $licence,
+				array(
+					'status'       => $response->status,
+					'last_updated' => new DateTimeImmutable(),
+				)
+			)
+		);
 
 		return $licence;
 	}

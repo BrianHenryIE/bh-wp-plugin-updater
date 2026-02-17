@@ -218,7 +218,7 @@ class CLI {
 		}
 
 		// TODO:
-		WP_CLI::success( $result->get_status() );
+		WP_CLI::success( $result->status );
 	}
 
 	/**
@@ -248,7 +248,7 @@ class CLI {
 		}
 
 		// TODO:
-		WP_CLI::success( $result->get_status() );
+		WP_CLI::success( $result->status );
 	}
 
 	/**
