@@ -25,10 +25,14 @@ class Software_Details {
 		public readonly bool $external,
 		/**
 		 * `package` and `download_link` in the JSON seem to be the same.
+		 *
+		 * @var string $package
 		 */
 		public readonly string $package,
 		/**
 		 * `package` and `download_link` in the JSON seem to be the same.
+		 *
+		 * @var string $download_link
 		 */
 		public readonly string $download_link
 	) {

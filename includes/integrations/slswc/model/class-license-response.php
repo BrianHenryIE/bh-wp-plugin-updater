@@ -35,11 +35,15 @@ class License_Response {
 	public function __construct(
 		/**
 		 * active|deactivated
+		 *
+		 * @var string
 		 */
 		public readonly string $status,
 		public readonly string $slug,
 		/**
 		 * 2025-05-27 00:00:00
+		 *
+		 * @var string
 		 */
 		public readonly string $expires,
 		public readonly License $license,
