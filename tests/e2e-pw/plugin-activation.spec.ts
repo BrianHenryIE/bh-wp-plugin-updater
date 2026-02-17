@@ -7,7 +7,7 @@ test.describe( 'Plugin activation', () => {
 	test( 'example plugin is listed on the plugins page', async ( { admin, page } ) => {
 		await admin.visitAdminPage( 'plugins.php' );
 
-		const pluginRow = page.locator( 'tr[data-slug="example-plugin"]' );
+		const pluginRow = page.locator( 'tr[data-slug="development-plugin"]' );
 		await expect( pluginRow ).toBeVisible();
 
 		const deactivateLink = pluginRow.locator( 'a:has-text("Deactivate")' );
