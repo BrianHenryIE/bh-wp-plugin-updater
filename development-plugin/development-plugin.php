@@ -35,6 +35,9 @@ Autoloader::generate(
 	__DIR__,
 )->register();
 
+// `wp-env` fixes.
+( new WP_Env() )->register_hooks();
+
 remove_action( 'init', '\\BrianHenryIE\\WP_Plugin_Updater\\init_plugin_updater' );
 
 add_action(
