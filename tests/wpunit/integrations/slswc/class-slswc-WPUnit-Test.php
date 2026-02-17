@@ -37,11 +37,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 			)
 		);
 
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expiry_date( new DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new DateTimeImmutable(),
+			last_updated: new DateTimeImmutable(),
+		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
@@ -80,11 +81,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 			)
 		);
 
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expiry_date( new DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new DateTimeImmutable(),
+			last_updated: new DateTimeImmutable(),
+		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
@@ -116,11 +118,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 			)
 		);
 
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expiry_date( new DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new DateTimeImmutable(),
+			last_updated: new DateTimeImmutable(),
+		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_plugin_slug' )->zeroOrMoreTimes();
@@ -157,11 +160,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 			)
 		);
 
-		$licence = new Licence();
-		$licence->set_licence_key( '87486a5c45612f31ffdeb77506d20d4d3a157d37' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expiry_date( new DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: '87486a5c45612f31ffdeb77506d20d4d3a157d37',
+			status: 'active',
+			expiry_date: new DateTimeImmutable(),
+			last_updated: new DateTimeImmutable(),
+		);
 
 		update_option( 'a_plugin_licence', $licence );
 
@@ -204,11 +208,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 			)
 		);
 
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expiry_date( new DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new DateTimeImmutable(),
+			last_updated: new DateTimeImmutable(),
+		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->expects( 'get_licence_data_option_name' )
@@ -270,11 +275,12 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 			)
 		);
 
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new DateTimeImmutable() );
-		$licence->set_expiry_date( new DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new DateTimeImmutable(),
+			last_updated: new DateTimeImmutable(),
+		);
 
 		update_option( 'a_plugin_licence', $licence );
 

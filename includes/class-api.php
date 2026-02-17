@@ -75,9 +75,7 @@ class API implements API_Interface {
 
 		// TODO: Set the status to unknown?
 
-		$this->save_licence_information( $this->licence, array( 'licence_key' => $license_key ) );
-
-		return $this->licence;
+		return $this->save_licence_information( $this->licence, array( 'licence_key' => $license_key ) );
 	}
 
 	/**
@@ -131,12 +129,15 @@ class API implements API_Interface {
 	 *
 	 * @return void
 	 */
-	protected function save_licence_information( Licence $licence, array $updates = array() ): void {
-		$licence->set_last_updated( new DateTimeImmutable() );
+	protected function save_licence_information( Licence $licence, array $updates = array() ): Licence {
 
 		update_option(
 			$this->settings->get_licence_data_option_name(),
 			array_merge( (array) $licence, $updates )
+		);
+
+		return new Licence(
+			...( array_merge( (array) $licence, $updates ) )
 		);
 	}
 

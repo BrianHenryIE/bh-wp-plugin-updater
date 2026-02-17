@@ -28,16 +28,17 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 	 * @covers ::get_saved_licence_information
 	 */
 	public function test_save_licence_information(): void {
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new \DateTimeImmutable() );
-		$licence->set_expiry_date( new \DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new \DateTimeImmutable(),
+			last_updated: new \DateTimeImmutable(),
+		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		update_option( 'a_plugin_licence', $licence->__serialize() );
+		update_option( 'a_plugin_licence', (array) $licence );
 
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'activate_licence' )->once()->andReturn( $licence );

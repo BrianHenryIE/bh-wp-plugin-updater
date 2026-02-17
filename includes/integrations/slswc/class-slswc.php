@@ -91,10 +91,15 @@ class SLSWC implements Integration_Interface {
 		/** @var License_Response $response */
 		$response = $this->server_request( $licence, 'deactivate' );
 
-		$licence->set_status( $response->status );
-		$licence->set_expiry_date( $response->get_expires() );
-
-		return $licence;
+		return new Licence(
+			...array_merge(
+				(array) $licence,
+				array(
+					'status'      => $response->status,
+					'expiry_date' => $response->get_expires(),
+				)
+			),
+		);
 	}
 
 	/**
@@ -115,7 +120,9 @@ class SLSWC implements Integration_Interface {
 		/** @var License_Response $response */
 		$response = $this->server_request( $licence, 'activate', License_Response::class );
 
-		$licence->set_status( $response->status );
+		$licence = new Licence(
+			...array_merge( (array) $licence, array( 'status' => $response->status ) ),
+		);
 
 		// TODO: string -> DateTime
 		// $licence->set_expires( $response_body->expires );

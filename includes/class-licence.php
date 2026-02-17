@@ -10,12 +10,22 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-use DateTimeImmutable;
 use DateTimeInterface;
-use SimplePie\Parse\Date;
 
 class Licence {
 
+	/**
+	 * Constructor.
+	 *
+	 * @param ?string            $licence_key
+	 * @param string             $status
+	 * @param ?DateTimeInterface $expiry_date
+	 * @param ?DateTimeInterface $last_updated
+	 * @param ?DateTimeInterface $purchase_date
+	 * @param ?string            $order_link
+	 * @param ?bool              $auto_renews
+	 * @param ?string            $renewal_link
+	 */
 	public function __construct(
 		/**
 		 * The licence key itself. Will be null until set.
@@ -88,28 +98,10 @@ class Licence {
 	}
 
 	/**
-	 * Set the licence key
-	 *
-	 * @param string $licence_key licence key.
-	 */
-	public function set_licence_key( string $licence_key ): void {
-		$this->licence_key = $licence_key;
-	}
-
-	/**
 	 * Get the licence status.
 	 */
 	public function get_status(): string {
 		return $this->status;
-	}
-
-	/**
-	 * Set the licence status
-	 *
-	 * @param string $status licence status.
-	 */
-	public function set_status( string $status ): void {
-		$this->status = $status;
 	}
 
 	/**
@@ -119,21 +111,8 @@ class Licence {
 		return $this->expiry_date;
 	}
 
-	/**
-	 * Set the licence expires date.
-	 *
-	 * @param DateTimeInterface $expiry_date licence expiry date.
-	 */
-	public function set_expiry_date( DateTimeInterface $expiry_date ): void {
-		$this->expiry_date = $expiry_date;
-	}
-
 	public function get_last_updated(): ?DateTimeInterface {
 		return $this->last_updated;
-	}
-
-	public function set_last_updated( ?DateTimeInterface $last_updated ): void {
-		$this->last_updated = $last_updated;
 	}
 
 	public function is_active() {

@@ -41,8 +41,9 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123'
+		);
 
 		wp_set_current_user( 1 );
 
@@ -73,9 +74,10 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'inactive' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'inactive',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -109,9 +111,10 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -151,8 +154,9 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -184,8 +188,9 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		wp_set_current_user( 1 );
 

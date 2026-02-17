@@ -112,15 +112,16 @@ class API_Unit_Test extends Unit_Testcase {
 	 * @covers ::get_licence_details
 	 */
 	public function test_get_licence_details(): void {
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new \DateTimeImmutable() );
-		$licence->set_expiry_date( new \DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new \DateTimeImmutable(),
+			last_updated: new \DateTimeImmutable(),
+		);
 
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )
-				->andReturn( $licence->serialize() );
+				->andReturn( (array) $licence );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
@@ -135,12 +136,13 @@ class API_Unit_Test extends Unit_Testcase {
 	 * @covers ::set_license_key
 	 */
 	public function test_set_licence_key(): void {
-		$licence = new Licence();
-		$licence->set_status( 'invalid' );
+		$licence = new Licence(
+			status: 'invalid',
+		);
 
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )
-				->andReturn( $licence->serialize() );
+				->andReturn( (array) $licence );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
@@ -166,13 +168,14 @@ class API_Unit_Test extends Unit_Testcase {
 	 * @covers ::set_license_key
 	 */
 	public function test_set_licence_key_should_deactivate_existing_licence(): void {
-		$licence = new Licence();
-		$licence->set_licence_key( 'qwerty' );
-		$licence->set_status( 'active' );
+		$licence = new Licence(
+			licence_key: 'qwerty',
+			status: 'active',
+		);
 
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )
-				->andReturn( $licence->serialize() );
+				->andReturn( (array) $licence );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
@@ -200,15 +203,16 @@ class API_Unit_Test extends Unit_Testcase {
 	 * @covers ::set_license_key
 	 */
 	public function test_set_licence_key_should_return_early_when_its_the_same_key(): void {
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		/**
 		 * @see API::__construct
 		 */
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )
-				->andReturn( $licence->serialize() );
+				->andReturn( (array) $licence );
 
 		/**
 		 * @see API::get_licence_details()
@@ -233,15 +237,16 @@ class API_Unit_Test extends Unit_Testcase {
 	 * @covers ::schedule_immediate_background_update
 	 */
 	public function test_schedule_immediate_background_update(): void {
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		/**
 		 * @see API::__construct
 		 */
 		\WP_Mock::userFunction( 'get_option' )
 				->with( 'a_plugin_licence', null )
-				->andReturn( $licence->serialize() );
+				->andReturn( (array) $licence );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->once()->andReturn( 'a_plugin_licence' );
