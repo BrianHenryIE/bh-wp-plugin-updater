@@ -8,7 +8,10 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Model;
 
 /**
- * The only required header is 'Name', so all others are nullable
+ * The only required header is 'Name', so all others are nullable.
+ *
+ * @phpstan-type Plugin_Headers_Array array{Name:string, PluginURI:string|null, Version:string|null, Description:string|null, Author:string|null, AuthorURI:string|null, TextDomain:string|null, DomainPath:string|null, Network:string|null, RequiresWP:string|null, RequiresPHP:string|null, UpdateURI:string|null, RequiresPlugins:string|null}
+ * @phpstan-type Plugin_Headers_Class_As_Array array{name:string, plugin_uri:string|null, version:string|null, description:string|null, author:string|null, author_uri:string|null, text_domain:string|null, domain_path:string|null, network:string|null, requires_wp:string|null, requires_php:string|null, update_uri:string|null, requires_plugins:null|array<string>}
  */
 class Plugin_Headers {
 
@@ -57,26 +60,31 @@ class Plugin_Headers {
 	) {
 	}
 
-	public static function from_array( array $header_array ): self {
-		return new Plugin_Headers(
-			name: $header_array['Name'],
-			plugin_uri: $header_array['PluginURI'] ?? null,
-			version: $header_array['Version'] ?? null,
-			description: $header_array['Description'] ?? null,
-			author: $header_array['Author'] ?? null,
-			author_uri: $header_array['AuthorURI'] ?? null,
-			text_domain: $header_array['TextDomain'] ?? null,
-			domain_path: $header_array['DomainPath'] ?? null,
-			network: $header_array['Network'] ?? null,
-			requires_wp: $header_array['RequiresWP'] ?? null,
-			requires_php: $header_array['RequiresPHP'] ?? null,
-			update_uri: $header_array['UpdateURI'] ?? null,
-			requires_plugins: isset( $header_array['RequiresPlugins'] )
-				? array_map( 'trim', explode( ',', $header_array['RequiresPlugins'] ) )
-				: array()
-		);
-	}
+	/**
+	 * Parse the plugin headers from a string.
+	 *
+	 * WordPress's {@see get_file_data()} which parses the headers from a file, requires an actual file, so we
+	 * write to the temp directory first and then delete it.
+	 *
+	 * @param string $plugin_php_file The contents of a main plugin file.
+	 */
 	public static function from_file_string( string $plugin_php_file ): Plugin_Headers {
+
+		$plugin_filename      = 'plugin_headers';
+		$tmp_plugin_file_path = get_temp_dir() . $plugin_filename;
+		file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
+		$plugin_headers = self::from_file( $tmp_plugin_file_path );
+		wp_delete_file( $tmp_plugin_file_path );
+
+		return $plugin_headers;
+	}
+
+	/**
+	 * Given a filepath, parse its plugin headers.
+	 *
+	 * @param string $plugin_php_filepath An absolute path, ending in something like `wp-content/plugins/my-plugin/my-plugin.php`.
+	 */
+	public static function from_file( string $plugin_php_filepath ): Plugin_Headers {
 
 		/**
 		 * TODO: remove unused.
@@ -99,13 +107,31 @@ class Plugin_Headers {
 			'RequiresPlugins' => 'Requires Plugins',
 		);
 
-		// write to tmp dir
-		$plugin_filename      = 'plugin_headers';
-		$tmp_plugin_file_path = get_temp_dir() . $plugin_filename;
-		file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
-		$plugin_headers = self::from_array( get_file_data( $tmp_plugin_file_path, $default_headers ) );
-		unlink( $tmp_plugin_file_path );
+		return self::from_array( get_file_data( $plugin_php_filepath, $default_headers ) );
+	}
 
-		return $plugin_headers;
+	/**
+	 * Given an array of headers, construct this object.
+	 *
+	 * @param Plugin_Headers_Array&array $header_array A PHP array of the standard plugin headers.
+	 */
+	public static function from_array( array $header_array ): Plugin_Headers {
+		return new Plugin_Headers(
+			name: $header_array['Name'],
+			plugin_uri: $header_array['PluginURI'] ?? null,
+			version: $header_array['Version'] ?? null,
+			description: $header_array['Description'] ?? null,
+			author: $header_array['Author'] ?? null,
+			author_uri: $header_array['AuthorURI'] ?? null,
+			text_domain: $header_array['TextDomain'] ?? null,
+			domain_path: $header_array['DomainPath'] ?? null,
+			network: $header_array['Network'] ?? null,
+			requires_wp: $header_array['RequiresWP'] ?? null,
+			requires_php: $header_array['RequiresPHP'] ?? null,
+			update_uri: $header_array['UpdateURI'] ?? null,
+			requires_plugins: isset( $header_array['RequiresPlugins'] )
+				? array_map( 'trim', explode( ',', $header_array['RequiresPlugins'] ) )
+				: null
+		);
 	}
 }

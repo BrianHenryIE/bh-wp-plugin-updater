@@ -9,6 +9,7 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\WordPress_Updater;
 
 /**
@@ -42,9 +43,10 @@ trait Settings_Trait {
 	 */
 	public function get_licence_server_host(): string {
 		require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
-		// `get_plugins()` is cached.
-		$plugin_data = get_plugins()[ $this->get_plugin_basename() ];
-		return $plugin_data['UpdateURI'];
+
+		$headers = Plugin_Headers::from_file( WP_PLUGIN_DIR . '/' . $this->get_plugin_basename() );
+
+		return $headers->update_uri;
 	}
 
 	/**
