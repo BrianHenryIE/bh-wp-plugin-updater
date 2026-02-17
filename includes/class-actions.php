@@ -119,6 +119,10 @@ class Actions {
 
 	/**
 	 * Enqueue the JavaScript to handle the licence tab on the plugins.php page.
+	 *
+	 * No nonce available here. No saving data here.
+	 *
+	 * phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	protected function add_assets_hooks(): void {
 
@@ -126,7 +130,7 @@ class Actions {
 		global $pagenow;
 		if ( 'plugin-install.php' !== $pagenow
 			|| ! isset( $_GET['plugin'] )
-			|| sanitize_key( wp_unslash( $_GET['plugin'] ) !== $this->settings->get_plugin_slug() )
+			|| sanitize_key( wp_unslash( $_GET['plugin'] ) ) !== $this->settings->get_plugin_slug()
 		) {
 			return;
 		}

@@ -34,21 +34,21 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		add_filter(
 			'pre_http_request',
-			function ( $pre, $parsed_args, $url ) {
+			function ( $pre, $parsed_args, string $url ) {
 				switch ( $url ) {
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/CHANGELOG.md':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/CHANGELOG.md' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/CHANGELOG.md' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/README.txt':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/README.txt' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/README.txt' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/bh-wp-autologin-urls.php':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/bh-wp-autologin-urls.php' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/bh-wp-autologin-urls.php' ),
 							'response' => array( 'code' => 200 ),
 						);
 					default:
@@ -97,21 +97,21 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		add_filter(
 			'pre_http_request',
-			function ( $pre, $parsed_args, $url ) {
+			function ( $pre, $parsed_args, string $url ) {
 				switch ( $url ) {
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/CHANGELOG.md':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/CHANGELOG.md' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/CHANGELOG.md' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/README.txt':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/README.txt' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/README.txt' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/bh-wp-autologin-urls.php':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/bh-wp-autologin-urls.php' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/bh-wp-autologin-urls.php' ),
 							'response' => array( 'code' => 200 ),
 						);
 					default:

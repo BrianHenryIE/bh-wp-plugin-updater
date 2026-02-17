@@ -33,7 +33,7 @@ class Plugin_Headers_Unit_Test extends Unit_Testcase {
 	 * @covers ::from_array
 	 */
 	public function test_get_requires_plugins_not_set(): void {
-		$sut = Plugin_Headers::from_array( array( 'Name' => 'the-plugin' ) );
+		$sut = Plugin_Headers::from_array( array( 'Name' => 'the-plugin' ) ); // @phpstan-ignore argument.type
 
 		$result = $sut->requires_plugins;
 

@@ -31,6 +31,9 @@ Plugin_Updater::get_instance(
 	new class() implements Settings_Interface {
 		use Settings_Trait;
 
+		/**
+		 * The plugin basename of the plugin to be updated.
+		 */
 		public function get_plugin_basename(): string {
 			return 'bh-wp-aws-ses-bounce-handler/bh-wp-aws-ses-bounce-handler.php';
 		}
@@ -57,13 +60,23 @@ add_action(
 	'plugins_loaded',
 	function () {
 		if (
-		! isset( $_REQUEST['page'] )
-		|| ! is_string( $_REQUEST['page'] )
-		|| 'development-plugin-logs' !== sanitize_key( wp_unslash( $_REQUEST['page'] ) )
+			/**
+			 * Read-only; not production code.
+			 *
+			 * phpcs:disable WordPress.Security.NonceVerification.Recommended
+			 */
+			! isset( $_REQUEST['page'] )
+			|| ! is_string( $_REQUEST['page'] )
+			|| 'development-plugin-logs' !== sanitize_key( wp_unslash( $_REQUEST['page'] ) )
 		) {
 			return;
 		}
 
+		/**
+		 * There doesn't seem to be another way to set it, except to have this function be global.
+		 *
+		 * phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
+		 */
 		global $title;
 		$title = 'Logs page';
 	}

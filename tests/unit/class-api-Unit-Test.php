@@ -53,6 +53,11 @@ class API_Unit_Test extends Unit_Testcase {
 	 * @covers ::is_update_available
 	 *
 	 * @dataProvider versions_data_provider
+	 *
+	 * @param string       $local_version The current version of the installed plugin before the update search request.
+	 * @param ?string      $cached_version The known/cached version of the most recent server response.
+	 * @param string|false $remote_version The version retrieved just now from a remote fetch.
+	 * @param bool         $is_update
 	 */
 	public function test_is_update_available( string $local_version, ?string $cached_version, string|false $remote_version, bool $is_update ): void {
 
@@ -184,7 +189,7 @@ class API_Unit_Test extends Unit_Testcase {
 		$mock_integration->shouldReceive( 'activate_licence' )->never();
 		$mock_integration->shouldReceive( 'deactivate_licence' )->once()
 			->withArgs(
-				fn( Licence $licence ) => $licence->licence_key === 'qwerty'
+				fn( Licence $licence ) => 'qwerty' === $licence->licence_key
 			);
 
 		\WP_Mock::userFunction( 'update_option' )->once()

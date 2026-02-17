@@ -13,15 +13,23 @@ use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
 use function BrianHenryIE\WP_Plugin_Updater\str_dash_to_next_capitalised_first_lower;
 
+/**
+ * @uses \BrianHenryIE\WP_Plugin_Updater\API_Interface::get_licence_details()
+ * @uses \BrianHenryIE\WP_Plugin_Updater\Settings_Interface::get_plugin_slug()
+ * @uses \BrianHenryIE\WP_Plugin_Updater\Settings_Interface::get_rest_base()
+ */
 class Admin_Assets {
 
+	/**
+	 * Constructor
+	 *
+	 * @param API_Interface      $api
+	 * @param Settings_Interface $settings
+	 */
 	public function __construct(
 		protected API_Interface $api,
 		protected Settings_Interface $settings,
 	) {
-	}
-
-	public function register_script(): void {
 	}
 
 	public function enqueue_script(): void {
@@ -32,7 +40,7 @@ class Admin_Assets {
 
 		wp_enqueue_script(
 			$script_handle,
-			plugins_url( '../../build/index.js', __FILE__ ),
+			plugins_url( '../../build/index.js', __FILE__ ), // TODO: This doesn't look right.
 			$asset_file['dependencies'],
 			$asset_file['version'],
 			true

@@ -9,6 +9,7 @@ use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
+use BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase;
 use DateTimeImmutable;
 use Mockery;
 use Psr\Log\NullLogger;
@@ -17,7 +18,7 @@ use Throwable;
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\SLSWC
  */
-class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
+class SLSWC_WPUnit_Test extends WPUnit_Testcase {
 
 	/**
 	 * @covers ::activate_licence
@@ -26,7 +27,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	 */
 	public function test_activate_licence(): void {
 
-		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
+		$body          = $this->get_fixture_as_string( 'tests/_data/slswc/activate-success.json' );
 		$response_code = 200;
 
 		add_filter(
@@ -70,7 +71,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	 */
 	public function test_activate_licence_already_activated(): void {
 
-		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/activate-success.json' ) );
+		$body          = $this->get_fixture_as_string( 'tests/_data/slswc/activate-success.json' );
 		$response_code = 200;
 
 		add_filter(
@@ -107,7 +108,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 
 	public function test_deactivate_licence(): void {
 
-		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/deactivate-success.json' ) );
+		$body          = $this->get_fixture_as_string( 'tests/_data/slswc/deactivate-success.json' );
 		$response_code = 200;
 
 		add_filter(
@@ -148,8 +149,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	 * @covers ::validate_response
 	 */
 	public function test_get_product_information(): void {
-
-		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/get-product-information-success.json' ) );
+		$body          = $this->get_fixture_as_string( 'tests/_data/slswc/get-product-information-success.json' );
 		$response_code = 200;
 
 		add_filter(
@@ -197,7 +197,7 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	 */
 	public function test_check_update_success(): void {
 
-		$body          = file_get_contents( codecept_root_dir( 'tests/_data/slswc/check-update-success.json' ) );
+		$body          = $this->get_fixture_as_string( 'tests/_data/slswc/check-update-success.json' );
 		$response_code = 200;
 
 		add_filter(
@@ -239,33 +239,33 @@ class SLSWC_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase 
 	// deactivating a licence twice results in the same success response from the server.
 
 	/**
+	 * Slug_Not_Found_On_Server_Exception::class
 	 */
 	public function test_validate_response_licence_not_found(): void {
 		$this->expectExceptionForResponse(
-			codecept_root_dir( 'tests/_data/slswc/invalid-parameters-licence-key-slug.json' ),
+			'tests/_data/slswc/invalid-parameters-licence-key-slug.json',
 			400,
 			Licence_Does_Not_Exist_Exception::class
 		);
-		// Slug_Not_Found_On_Server_Exception::class
 	}
 
 	public function test_validate_response_max_activations(): void {
 		$this->expectExceptionForResponse(
-			codecept_root_dir( 'tests/_data/slswc/max-activations-reached.json' ),
+			'tests/_data/slswc/max-activations-reached.json',
 			200,
 			Max_Activations_Exception::class
 		);
 	}
 
 	/**
-	 * @param string                         $response_body_file
+	 * @param string                         $response_body_relative_filepath
 	 * @param int                            $response_code
-	 * @param string&class-string<Throwable> $expected_exception_class
+	 * @param string|class-string<Throwable> $expected_exception_class
 	 */
-	public function expectExceptionForResponse( string $response_body_file, int $response_code, string $expected_exception_class ): void {
+	public function expectExceptionForResponse( string $response_body_relative_filepath, int $response_code, string $expected_exception_class ): void {
 		$this->expectException( $expected_exception_class );
 
-		$body = file_get_contents( $response_body_file );
+		$body = $this->get_fixture_as_string( $response_body_relative_filepath );
 
 		add_filter(
 			'pre_http_request',
