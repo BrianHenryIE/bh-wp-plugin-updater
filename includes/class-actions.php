@@ -98,6 +98,11 @@ class Actions {
 	 */
 	protected function add_plugins_page_modal_hooks(): void {
 
+		global $pagenow;
+		// if( 'plugin-install.php' !== $pagenow ) {
+		// return;
+		// }
+
 		$view_details = new Plugins_Page_View_Details( $this->api, $this->settings );
 		add_filter( 'plugins_api', array( $view_details, 'add_plugin_modal_data' ), 10, 3 );
 
