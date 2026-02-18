@@ -211,7 +211,7 @@ class GitHub_API {
 
 		$get_first_release = function ( $releases, $allow_beta ): ?Release {
 				$allowed_releases = $this->filter_releases( $releases, $allow_beta );
-				return empty( $allowed_releases ) ? null : array_first( $allowed_releases );
+				return empty( $allowed_releases ) ? null : $allowed_releases[ array_key_first( $allowed_releases ) ];
 		};
 
 		$this->release = $get_first_release( $releases, $allow_beta );

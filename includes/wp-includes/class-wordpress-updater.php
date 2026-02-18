@@ -15,6 +15,7 @@ use BrianHenryIE\WP_Plugin_Updater\API_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Composer\Semver\Comparator;
+use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use stdClass;
@@ -115,10 +116,19 @@ class WordPress_Updater {
 			return $value;
 		}
 
-		if ( ! isset( $this->force_refresh ) ) {
-			return $this->detect_force_update( $value );
-		} else {
-			return $this->add_update_information_to_transient_on_save( $value );
+		/**
+		 * E.g. {@see \Art4\Requests\Exception\Psr\RequestException} can be thrown with the message:
+		 * "cURL error 77: error setting certificate file: /var/www/html/wp-includes/Requests/src/../certificates/cacert.pem".
+		 */
+		try {
+			if ( ! isset( $this->force_refresh ) ) {
+				return $this->detect_force_update( $value );
+			} else {
+				return $this->add_update_information_to_transient_on_save( $value );
+			}
+		} catch ( Exception $exception ) {
+			$this->logger->error( $exception->getMessage(), array( 'exception' => $exception ) );
+			return $value;
 		}
 	}
 

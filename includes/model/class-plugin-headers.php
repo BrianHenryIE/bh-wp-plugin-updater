@@ -72,7 +72,13 @@ class Plugin_Headers {
 		try {
 			$plugin_filename      = 'plugin_headers';
 			$tmp_plugin_file_path = tempnam( get_temp_dir(), $plugin_filename );
-			file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
+			if ( false === $tmp_plugin_file_path ) {
+				throw new \RuntimeException( 'Failed to create temp file for plugin header parsing.' );
+			}
+			$result = file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
+			if ( false === $result ) {
+				throw new \RuntimeException( 'Failed to create temp file for plugin header parsing.' );
+			}
 			return self::from_file( $tmp_plugin_file_path );
 		} finally {
 			if ( isset( $tmp_plugin_file_path ) && file_exists( $tmp_plugin_file_path ) ) {
@@ -131,7 +137,7 @@ class Plugin_Headers {
 			requires_wp: $header_array['RequiresWP'] ?? null,
 			requires_php: $header_array['RequiresPHP'] ?? null,
 			update_uri: $header_array['UpdateURI'] ?? null,
-			requires_plugins: isset( $header_array['RequiresPlugins'] )
+			requires_plugins: ! empty( $header_array['RequiresPlugins'] )
 				? array_map( 'trim', explode( ',', $header_array['RequiresPlugins'] ) )
 				: null
 		);

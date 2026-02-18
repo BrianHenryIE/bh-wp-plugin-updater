@@ -136,7 +136,8 @@ class Actions {
 		global $pagenow;
 		if ( 'plugin-install.php' !== $pagenow
 			|| ! isset( $_GET['plugin'] )
-			|| ( is_string( $_GET['plugin'] ) && sanitize_key( wp_unslash( $_GET['plugin'] ) ) !== $this->settings->get_plugin_slug() )
+			|| ! is_string( $_GET['plugin'] )
+			|| sanitize_key( wp_unslash( $_GET['plugin'] ) ) !== $this->settings->get_plugin_slug()
 		) {
 			return;
 		}

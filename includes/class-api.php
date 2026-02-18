@@ -334,7 +334,7 @@ class API implements API_Interface {
 	}
 
 	protected function get_available_version( ?bool $refresh = null ): ?string {
-		return $this->get_check_update( $refresh )->version ?? null;
+		return $this->get_check_update( $refresh )?->version;
 	}
 
 	protected function get_current_version(): ?string {
