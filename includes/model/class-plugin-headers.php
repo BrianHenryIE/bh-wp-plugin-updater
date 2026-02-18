@@ -69,14 +69,16 @@ class Plugin_Headers {
 	 * @param string $plugin_php_file The contents of a main plugin file.
 	 */
 	public static function from_file_string( string $plugin_php_file ): Plugin_Headers {
-
-		$plugin_filename      = 'plugin_headers';
-		$tmp_plugin_file_path = tempnam( get_temp_dir(), $plugin_filename );
-		file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
-		$plugin_headers = self::from_file( $tmp_plugin_file_path );
-		wp_delete_file( $tmp_plugin_file_path );
-
-		return $plugin_headers;
+		try {
+			$plugin_filename = 'plugin_headers';
+			$tmp_plugin_file_path = tempnam(get_temp_dir(), $plugin_filename);
+			file_put_contents($tmp_plugin_file_path, $plugin_php_file);
+			return self::from_file($tmp_plugin_file_path);
+		} finally {
+			if(file_exists($tmp_plugin_file_path)) {
+				wp_delete_file($tmp_plugin_file_path);
+			}
+		}
 	}
 
 	/**

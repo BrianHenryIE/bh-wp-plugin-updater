@@ -196,7 +196,7 @@ class API implements API_Interface {
 
 		$licence = $this->service->deactivate_licence( $this->licence );
 
-		// Set last updated. (should do that in
+		// Set last updated.
 		return $this->save_licence_information( $licence );
 	}
 

@@ -180,7 +180,7 @@ class GitHub_API {
 	 */
 	protected function fetch_readme( string $user, string $repo, string $tag_name ): ?Readme_Parser {
 
-		$readme_names = array( 'readme.txt', 'README.txt' );
+		$readme_names = array( 'readme.txt', 'README.txt', 'Readme.txt' );
 		foreach ( $readme_names as $readme_name ) {
 			try {
 				$readme = $this->fetch_raw_file( $user, $repo, $tag_name, $readme_name );
