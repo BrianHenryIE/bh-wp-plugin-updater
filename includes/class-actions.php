@@ -47,12 +47,13 @@ class Actions {
 	protected function add_cron_hooks(): void {
 		$cron = new Cron(
 			$this->api,
-			$this->settings
+			$this->settings,
+			$this->logger,
 		);
 
-		// Is this enough? If it's deleted once, it will be deleted forever.
+		// if(DOING_CRON)
 		add_action(
-			"activate_{$this->settings->get_plugin_slug()}",
+			'init',
 			array( $cron, 'register_cron_job' )
 		);
 

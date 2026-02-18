@@ -75,7 +75,7 @@ class Actions_Unit_Test extends Unit_Testcase {
 	 */
 	public function test_cron_hooks(): void {
 		WP_Mock::expectActionAdded(
-			'activate_a-plugin',
+			'init',
 			array( \WP_Mock\Functions::type( Cron::class ), 'register_cron_job' )
 		);
 
