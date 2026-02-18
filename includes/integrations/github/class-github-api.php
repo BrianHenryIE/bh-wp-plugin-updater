@@ -22,6 +22,9 @@ use Syntatis\WPPluginReadMeParser\Parser as Readme_Parser;
 class GitHub_API {
 	use LoggerAwareTrait;
 
+	protected string $github_username;
+	protected string $github_repository;
+
 	protected ?Release $release;
 	protected ?string $changelog_text;
 
@@ -40,6 +43,21 @@ class GitHub_API {
 		LoggerInterface $logger,
 	) {
 		$this->setLogger( $logger );
+		$this->init();
+	}
+
+	protected function init(): void {
+
+		/** @var array{user?:string, repo?:string} $output_array */
+		if (
+			1 !== preg_match( '/github.com\/(?<user>.*?)\/(?<repo>[^\/]*)/', $this->settings->get_licence_server_host(), $output_array )
+			|| ! isset( $output_array['user'], $output_array['repo'] )
+		) {
+			throw new Plugin_Updater_Exception( 'Failed to parse GitHub URI user and repo from ' . $this->settings->get_licence_server_host() );
+		}
+
+		$this->github_username   = $output_array['user'];
+		$this->github_repository = $output_array['repo'];
 	}
 
 	public function get_plugin_headers(): ?Plugin_Headers {
@@ -72,6 +90,16 @@ class GitHub_API {
 		return $this->readme;
 	}
 
+	public function get_changelog_text(): ?string {
+		if ( ! isset( $this->changelog_text ) ) {
+			$this->update();
+		}
+		if ( ! isset( $this->changelog_text ) ) {
+			$this->changelog_text = null;
+		}
+		return $this->changelog_text;
+	}
+
 	/**
 	 * @param string $user
 	 * @param string $repo
@@ -79,6 +107,8 @@ class GitHub_API {
 	 * @return Release[]
 	 * @throws Plugin_Updater_Exception
 	 * @throws \JsonMapper\Exception\BuilderException
+	 * @throws \InvalidArgumentException
+	 * @throws \Exception
 	 */
 	protected function fetch_releases( string $user, string $repo ): array {
 
@@ -159,35 +189,24 @@ class GitHub_API {
 		return Plugin_Headers::from_file_string( $plugin_file );
 	}
 
-
+	/**
+	 * @return void
+	 * @throws Plugin_Updater_Exception
+	 * @throws \JsonMapper\Exception\BuilderException
+	 */
 	protected function update(): void {
 
-		/** @var array{user?:string, repo?:string} $output_array */
-		if (
-			1 !== preg_match( '/github.com\/(?<user>.*?)\/(?<repo>[^\/]*)/', $this->settings->get_licence_server_host(), $output_array )
-			|| ! isset( $output_array['user'], $output_array['repo'] )
-		) {
-			throw new Plugin_Updater_Exception( 'Failed to parse GitHub URI user and repo from ' . $this->settings->get_licence_server_host() );
-		}
-
-		$user = $output_array['user'];
-		$repo = $output_array['repo'];
-
-		try {
-			$releases = $this->fetch_releases( $user, $repo );
-		} catch ( \Throwable ) {
-			return;
-		}
+		$releases = $this->fetch_releases( $this->github_username, $this->github_repository );
 
 		$allow_beta = false;
 
 		$this->release = $this->filter_releases( $releases, $allow_beta )[0];
 
-		$this->changelog_text = $this->fetch_raw_file( $user, $repo, $this->release->tag_name, 'CHANGELOG.md' );
+		$this->changelog_text = $this->fetch_raw_file( $this->github_username, $this->github_repository, $this->release->tag_name, 'CHANGELOG.md' );
 
-		$this->readme = $this->fetch_readme( $user, $repo, $this->release->tag_name );
+		$this->readme = $this->fetch_readme( $this->github_username, $this->github_repository, $this->release->tag_name );
 
 		$plugin_file_name     = explode( '/', $this->settings->get_plugin_basename() )[1];
-		$this->plugin_headers = $this->fetch_plugin_headers( $user, $repo, $this->release->tag_name, $plugin_file_name );
+		$this->plugin_headers = $this->fetch_plugin_headers( $this->github_username, $this->github_repository, $this->release->tag_name, $plugin_file_name );
 	}
 }
