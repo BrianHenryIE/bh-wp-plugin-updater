@@ -10,10 +10,8 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub;
 
 use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
-use BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model\Release;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
@@ -24,7 +22,6 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Syntatis\WPPluginReadMeParser\Parser as Readme_Parser;
 
 class GitHub_Integration implements Integration_Interface {
 	use LoggerAwareTrait;
@@ -74,15 +71,14 @@ class GitHub_Integration implements Integration_Interface {
 	 */
 	public function get_remote_check_update( Licence $licence ): ?Plugin_Update {
 
+		$this->logger->debug( 'Returning new Plugin_Update' );
+
 		$release = $this->github_api->get_release();
 
 		if ( is_null( $release ) ) {
+			$this->logger->info( 'No GitHub release found' );
 			return null;
 		}
-
-		$plugin_headers = $this->github_api->get_plugin_headers();
-
-		$readme = $this->github_api->get_readme();
 
 		// If no assets are attached to the GitHub release!
 		if ( empty( $release->assets ) ) {
@@ -90,7 +86,14 @@ class GitHub_Integration implements Integration_Interface {
 			return null;
 		}
 
-		$this->logger->debug( 'Returning new Plugin_Update' );
+		$plugin_headers = $this->github_api->get_plugin_headers();
+
+		if ( is_null( $plugin_headers ) ) {
+			$this->logger->info( 'Main plugin file not found at github release tag' );
+			return null;
+		}
+
+		$readme = $this->github_api->get_readme();
 
 		return GitHub_Plugin_Update::from_release(
 			$this->settings,
@@ -111,16 +114,19 @@ class GitHub_Integration implements Integration_Interface {
 	 */
 	public function get_remote_product_information( Licence $licence ): ?Plugin_Info {
 
-		$release        = $this->github_api->get_release();
-		$plugin_headers = $this->github_api->get_plugin_headers();
-		$changelog_text = $this->github_api->get_changelog_text() ?? '';
+		$release = $this->github_api->get_release();
 
 		if ( is_null( $release ) ) {
 			throw new Plugin_Updater_Exception( 'Failed to fetch release information from GitHub repo' );
 		}
+
+		$plugin_headers = $this->github_api->get_plugin_headers();
+
 		if ( is_null( $plugin_headers ) ) {
 			throw new Plugin_Updater_Exception( 'Failed to update product information from GitHub' );
 		}
+
+		$changelog_text = $this->github_api->get_changelog_text() ?? '';
 
 		return GitHub_WP_Plugin_Info::from_release(
 			$this->settings->get_plugin_slug(),

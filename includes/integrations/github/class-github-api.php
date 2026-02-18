@@ -144,7 +144,7 @@ class GitHub_API {
 	protected function fetch_raw_file( string $user, string $repo, string $tag_name, string $path ): string {
 
 		$url              = sprintf(
-			'https://raw.githubusercontent.com/%s/%s/%s/%s' .
+			'https://raw.githubusercontent.com/%s/%s/%s/%s',
 			sanitize_key( $user ),
 			sanitize_key( $repo ),
 			sanitize_key( $tag_name ),
