@@ -6,8 +6,8 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 
 interface API_Interface {
 
@@ -18,9 +18,9 @@ interface API_Interface {
 	 *
 	 * @param ?bool $refresh True: force refresh from API; false: do not refresh; null: use cached value or refresh if missing.
 	 */
-	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info_Interface;
+	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info;
 
-	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update_Interface;
+	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update;
 
 	public function set_license_key( string $license_key ): Licence;
 

@@ -6,10 +6,13 @@ use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase;
 
 /**
- * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub
+ * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\GitHub_Integration
  */
 class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
+	/**
+	 * @covers ::get_remote_check_update
+	 */
 	public function test_check_update(): void {
 
 		$http_client     = new \PsrMock\Psr18\Client();
@@ -31,21 +34,21 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		add_filter(
 			'pre_http_request',
-			function ( $pre, $parsed_args, $url ) {
+			function ( $pre, $parsed_args, string $url ) {
 				switch ( $url ) {
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/CHANGELOG.md':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/CHANGELOG.md' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/CHANGELOG.md' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/README.txt':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/README.txt' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/README.txt' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/bh-wp-autologin-urls.php':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/bh-wp-autologin-urls.php' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/bh-wp-autologin-urls.php' ),
 							'response' => array( 'code' => 200 ),
 						);
 					default:
@@ -58,12 +61,21 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		$logger = $this->logger;
 
-		$sut = new GitHub( $http_client, $settings, $logger );
+		$sut = new GitHub_Integration(
+			$http_client,
+			new \PsrMock\Psr17\RequestFactory(),
+			new \PsrMock\Psr17\StreamFactory(),
+			$settings,
+			$logger
+		);
 
 		$result = $sut->get_remote_check_update( new Licence() );
-		$this->assertEquals( '2.4.2', $result?->get_version() );
+		$this->assertEquals( '2.4.2', $result?->version );
 	}
 
+	/**
+	 * @covers ::get_remote_product_information
+	 */
 	public function test_plugin_information(): void {
 
 		$http_client     = new \PsrMock\Psr18\Client();
@@ -85,21 +97,21 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		add_filter(
 			'pre_http_request',
-			function ( $pre, $parsed_args, $url ) {
+			function ( $pre, $parsed_args, string $url ) {
 				switch ( $url ) {
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/CHANGELOG.md':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/CHANGELOG.md' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/CHANGELOG.md' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/README.txt':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/README.txt' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/README.txt' ),
 							'response' => array( 'code' => 200 ),
 						);
 					case 'https://raw.githubusercontent.com/BrianHenryIE/bh-wp-autologin-urls/v2.4.2/bh-wp-autologin-urls.php':
 						return array(
-							'body'     => file_get_contents( codecept_root_dir( 'tests/_data/github/bh-wp-autologin-urls.php' ) ),
+							'body'     => $this->get_fixture_as_string( 'tests/_data/github/bh-wp-autologin-urls.php' ),
 							'response' => array( 'code' => 200 ),
 						);
 					default:
@@ -112,9 +124,15 @@ class GitHub_WPUnit_Test extends WPUnit_Testcase {
 
 		$logger = $this->logger;
 
-		$sut = new GitHub( $http_client, $settings, $logger );
+		$sut = new GitHub_Integration(
+			$http_client,
+			new \PsrMock\Psr17\RequestFactory(),
+			new \PsrMock\Psr17\StreamFactory(),
+			$settings,
+			$logger
+		);
 
 		$result = $sut->get_remote_product_information( new Licence() );
-		$this->assertEquals( '2.4.2', $result?->get_version() );
+		$this->assertEquals( '2.4.2', $result?->version );
 	}
 }

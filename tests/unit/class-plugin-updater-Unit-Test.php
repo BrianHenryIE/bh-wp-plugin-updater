@@ -46,6 +46,7 @@ class Plugin_Updater_Unit_Test extends Unit_Testcase {
 		\Patchwork\redefine(
 			array( API::class, '__construct' ),
 			function ( $settings, $logger, $integration_factory = null ) {
+				/** @phpstan-ignore assign.propertyType */
 				$this->logger = new NullLogger();
 			}
 		);
@@ -54,6 +55,6 @@ class Plugin_Updater_Unit_Test extends Unit_Testcase {
 
 		$result = $instance->get_licence_details( false );
 
-		$this->assertEquals( 'unknown', $result->get_status() );
+		$this->assertEquals( 'unknown', $result->status );
 	}
 }

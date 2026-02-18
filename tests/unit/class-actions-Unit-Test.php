@@ -75,7 +75,7 @@ class Actions_Unit_Test extends Unit_Testcase {
 	 */
 	public function test_cron_hooks(): void {
 		WP_Mock::expectActionAdded(
-			'activate_a-plugin',
+			'init',
 			array( \WP_Mock\Functions::type( Cron::class ), 'register_cron_job' )
 		);
 
@@ -113,11 +113,12 @@ class Actions_Unit_Test extends Unit_Testcase {
 
 	/**
 	 * @covers ::add_wordpress_updater_hooks
+	 * @see Actions::add_wordpress_updater_hooks()
 	 */
 	public function test_wordpress_updater_hooks(): void {
 		WP_Mock::expectFilterAdded(
 			'pre_set_site_transient_update_plugins',
-			array( \WP_Mock\Functions::type( WordPress_Updater::class ), 'detect_force_update' ),
+			array( \WP_Mock\Functions::type( WordPress_Updater::class ), 'on_set_transient_update_plugins' ),
 			10,
 			2
 		);

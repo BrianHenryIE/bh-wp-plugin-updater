@@ -40,26 +40,10 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 class Check_Updates_Response {
 
 	public function __construct(
-		protected string $status,
-		protected string $slug,
-		protected string $message,
-		protected Software_Details $software_details
+		public readonly string $status,
+		public readonly string $slug,
+		public readonly string $message,
+		public readonly Software_Details $software_details
 	) {
-	}
-
-	public function get_status(): string {
-		return $this->status;
-	}
-
-	public function get_slug(): string {
-		return $this->slug;
-	}
-
-	public function get_message(): string {
-		return $this->message;
-	}
-
-	public function get_software_details(): Software_Details {
-		return $this->software_details;
 	}
 }

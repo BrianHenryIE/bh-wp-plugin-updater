@@ -12,23 +12,24 @@
 namespace BrianHenryIE\WP_Plugin_Updater;
 
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
-use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
 use Composer\Semver\Comparator;
 use DateTimeImmutable;
-use JsonMapper\Handler\FactoryRegistry;
-use JsonMapper\Handler\PropertyMapper;
-use JsonMapper\JsonMapperBuilder;
+use JsonMapper\JsonMapperInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * @phpstan-import-type Licence_Update_Array from Licence
+ */
 class API implements API_Interface {
 	use LoggerAwareTrait;
 
@@ -39,7 +40,8 @@ class API implements API_Interface {
 	public function __construct(
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
-		?Integration_Factory_Interface $integration_factory = null
+		protected JsonMapperInterface $json_mapper,
+		?Integration_Factory_Interface $integration_factory = null,
 	) {
 		$this->setLogger( $logger );
 
@@ -60,26 +62,23 @@ class API implements API_Interface {
 	 *
 	 * @param string $license_key
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract If failing to deactivate the existing licence.
+	 * @throws Plugin_Updater_Exception If failing to deactivate the existing licence.
 	 */
 	public function set_license_key( string $license_key ): Licence {
 
-		$existing_key = $this->licence->get_licence_key();
+		$existing_key = $this->licence->licence_key;
 		if ( $existing_key === $license_key ) {
 			return $this->licence;
 		}
 		if ( ! empty( $existing_key ) ) {
-			if ( $this->licence->get_status() === 'active' ) {
+			if ( $this->licence->status === 'active' ) {
 				$this->service->deactivate_licence( $this->licence );
 			}
 		}
 
 		// TODO: Set the status to unknown?
 
-		$this->licence->set_licence_key( $license_key );
-		$this->save_licence_information( $this->licence );
-
-		return $this->licence;
+		return $this->save_licence_information( $this->licence, array( 'licence_key' => $license_key ) );
 	}
 
 	/**
@@ -103,43 +102,81 @@ class API implements API_Interface {
 	}
 
 	/**
-	 * Get the licence information from the WordPress options database table. Verifies it is a Licence object.
+	 * Parse the value of `get_option()` to the class requested.
+	 *
+	 * @template T of object
+	 * @param string          $option_name
+	 * @param class-string<T> $class_name
+	 * @return ?T
 	 */
-	protected function get_saved_licence_information(): ?Licence {
-		// TODO: try / catch a malformed serialized object.
-		// TODO: serialize to an array, not to a serialized object, so the class can be changed in future.
-		$value = get_option(
-			$this->settings->get_licence_data_option_name(),
-			null
-		);
-		if ( is_null( $value ) ) {
-			$this->logger->debug( 'No licence information found in wp-options.' );
+	protected function get_option( string $option_name, string $class_name ): ?object {
+
+		$value = get_option( $option_name );
+
+		if ( empty( $value ) ) {
+			$this->logger->debug( "No data saved in wp-options for {$option_name} ($class_name)." );
 			return null;
 		}
+
+		if ( ! is_string( $value ) ) {
+			$invalid_raw_value = function ( string $option_name ): string {
+				$all_options = wp_load_alloptions();
+				return $all_options[ $option_name ] ?? 'error finding value for log message';
+			};
+			$this->logger->warning(
+				"Invalid data saved in wp-options for {$option_name} ($class_name): " . $invalid_raw_value( $option_name )
+			);
+			return null;
+		}
+
 		try {
-			$licence = new Licence();
-			$licence->__unserialize( $value );
-			return $licence;
+			return $this->json_mapper->mapToClassFromString( $value, $class_name );
 		} catch ( Throwable $e ) {
-			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
+			$this->logger->error(
+				"Failed to unserialize wp-options data for {$option_name} ($class_name) : " . $e->getMessage(),
+				array(
+					'exception'        => $e,
+					'wp_options_value' => $value,
+				)
+			);
 			return null;
 		}
 	}
 
 	/**
-	 *
-	 *
-	 * @param Licence $licence
-	 *
-	 * @return void
+	 * Get the licence information from the WordPress options database table. Verifies it is a Licence object.
 	 */
-	protected function save_licence_information( Licence $licence ): void {
-		$licence->set_last_updated( new DateTimeImmutable() );
+	protected function get_saved_licence_information(): ?Licence {
+		return $this->get_option(
+			$this->settings->get_licence_data_option_name(),
+			Licence::class
+		);
+	}
+
+	/**
+	 *
+	 *
+	 * @param Licence              $licence
+	 * @param Licence_Update_Array $updates
+	 */
+	protected function save_licence_information( Licence $licence, array $updates = array() ): Licence {
+
+		// TODO: test does the order of the array keys matter.
+		/** @phpstan-ignore-next-line argument.type */
+		$updated_licence = new Licence(
+			...( array_merge(
+				(array) $licence,
+				$updates,
+				array( 'last_updated' => new DateTimeImmutable() )
+			) )
+		);
 
 		update_option(
 			$this->settings->get_licence_data_option_name(),
-			$licence->__serialize()
+			wp_json_encode( $updated_licence )
 		);
+
+		return $updated_licence;
 	}
 
 	/**
@@ -149,30 +186,28 @@ class API implements API_Interface {
 	 *
 	 * https://updatestest.bhwp.ie/wp-json/slswc/v1/deactivate?slug=a-plugin
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function deactivate_licence(): Licence {
 
-		if ( is_null( $this->licence->get_licence_key() ) ) {
+		if ( is_null( $this->licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
 		$licence = $this->service->deactivate_licence( $this->licence );
 
-		// TODO: save
-		$licence->set_last_updated( new DateTimeImmutable() );
-
-		return $licence;
+		// Set last updated.
+		return $this->save_licence_information( $licence );
 	}
 
 	/**
 	 * Activate the licence on this site.
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function activate_licence(): Licence {
 
-		if ( is_null( $this->licence->get_licence_key() ) ) {
+		if ( is_null( $this->licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -192,41 +227,45 @@ class API implements API_Interface {
 	 *
 	 * null when first run and no cached product information.
 	 */
-	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info_Interface {
+	public function get_plugin_information( ?bool $refresh = null ): ?Plugin_Info {
 
 		if ( true !== $refresh ) {
 			// TODO: Add a background task to refresh the product information.
 			// TODO: Check the last time it was refreshed and rate limit the refreshing.
 		}
 
-		return match ( $refresh ) {
+		$result = match ( $refresh ) {
 			true => $this->get_remote_product_information(),
 			false => $this->get_cached_product_information(),
 			default => $this->get_cached_product_information() ?? $this->get_remote_product_information(),
 		};
+
+		if ( is_null( $result ) && $refresh === false ) {
+			$this->logger->info( 'Cache was empty, scheduling an immediate update' );
+			$this->schedule_immediate_background_update();
+		}
+
+		return $result;
 	}
 
-	protected function get_remote_product_information(): ?Plugin_Info_Interface {
+	protected function get_remote_product_information(): ?Plugin_Info {
 
 		$product = $this->service->get_remote_product_information( $this->licence );
 
-		update_option( $this->settings->get_plugin_information_option_name(), $product );
+		update_option(
+			$this->settings->get_plugin_information_option_name(),
+			wp_json_encode( $product )
+		);
 
 		return $product;
 	}
 
-	protected function get_cached_product_information(): ?Plugin_Info_Interface {
-		$cached_product_information = get_option(
-			// plugin_slug_plugin_information
+	protected function get_cached_product_information(): ?Plugin_Info {
+
+		return $this->get_option(
 			$this->settings->get_plugin_information_option_name(),
-			null
+			Plugin_Info::class
 		);
-		if ( $cached_product_information instanceof Plugin_Info_Interface ) {
-			$this->logger->debug( 'returning cached product information for ' . $cached_product_information->get_software_slug() );
-			return $cached_product_information;
-		}
-		$this->logger->debug( 'product not found in cache: ' . $this->settings->get_plugin_slug() );
-		return null;
 	}
 
 	/**
@@ -236,7 +275,7 @@ class API implements API_Interface {
 	 *
 	 * null when first run and no cached information.
 	 */
-	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update_Interface {
+	public function get_check_update( ?bool $refresh = null ): ?Plugin_Update {
 
 		if ( true !== $refresh ) {
 			// TODO: Add a background task to refresh the product information.
@@ -256,16 +295,19 @@ class API implements API_Interface {
 	 * TODO: rate limit this.
 	 */
 	public function schedule_immediate_background_update(): void {
-		$cron          = new Cron( $this, $this->settings );
+		$cron          = new Cron( $this, $this->settings, $this->logger );
 		$cron_job_name = $cron->get_immediate_update_check_cron_job_name();
 		wp_schedule_single_event( time(), $cron_job_name );
 	}
 
-	protected function get_remote_check_update(): ?Plugin_Update_Interface {
+	protected function get_remote_check_update(): ?Plugin_Update {
 
 		try {
 			$check_update = $this->service->get_remote_check_update( $this->licence );
-			update_option( $this->settings->get_check_update_option_name(), $check_update->__serialize() );
+			update_option(
+				$this->settings->get_check_update_option_name(),
+				wp_json_encode( $check_update )
+			);
 		} catch ( \Exception $e ) {
 			$this->logger->error( $e->getMessage(), array( 'exception' => $e ) );
 			return null;
@@ -274,45 +316,11 @@ class API implements API_Interface {
 		return $check_update;
 	}
 
-	protected function get_cached_check_update(): ?Plugin_Update_Interface {
-		$cached_check_update = get_option(
+	protected function get_cached_check_update(): ?Plugin_Update {
+		return $this->get_option(
 			$this->settings->get_check_update_option_name(),
-			null
+			Plugin_Update::class
 		);
-
-		if ( is_null( $cached_check_update ) ) {
-			$this->logger->debug( 'check_update Plugin_Update_Interface not found in cache: ' . $this->settings->get_plugin_slug() );
-			return null;
-		}
-
-		$factory_registry = new FactoryRegistry();
-		$mapper           = JsonMapperBuilder::new()
-											->withObjectConstructorMiddleware( $factory_registry )
-											->withPropertyMapper( new PropertyMapper( $factory_registry ) )
-											->build();
-
-		try {
-			$mapped_product_updated = $mapper->mapToClassFromString(
-				wp_json_encode( $cached_check_update ),
-				Plugin_Update::class
-			);
-		} catch ( \Exception $e ) {
-			$this->logger->error(
-				'Failed to map cached check_update: ' . $e->getMessage(),
-				array(
-					'exception'   => $e,
-					'cache_value' => $cached_check_update,
-				)
-			);
-			return null;
-		}
-
-		if ( ! ( $mapped_product_updated instanceof Plugin_Update_Interface ) ) {
-			return null;
-		}
-
-		$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
-		return $mapped_product_updated;
 	}
 
 	/**
@@ -326,10 +334,12 @@ class API implements API_Interface {
 	}
 
 	protected function get_available_version( ?bool $refresh = null ): ?string {
-		return $this->get_check_update( $refresh )?->get_version() ?? null;
+		return $this->get_check_update( $refresh )?->version;
 	}
 
 	protected function get_current_version(): ?string {
-		return get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? null;
+		$headers = Plugin_Headers::from_file( constant( 'WP_PLUGIN_DIR' ) . '/' . $this->settings->get_plugin_basename() );
+
+		return $headers->version;
 	}
 }

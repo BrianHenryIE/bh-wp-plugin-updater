@@ -10,12 +10,15 @@ namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
 use BrianHenryIE\WP_Plugin_Updater\API_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use function BrianHenryIE\WP_Plugin_Updater\str_dash_to_underscore;
 
 /**
  * Manage actions related to wp-cron scheduled and background tasks.
  */
 class Cron {
+	use LoggerAwareTrait;
 
 	/**
 	 * Constructor.
@@ -26,7 +29,9 @@ class Cron {
 	public function __construct(
 		protected API_Interface $api,
 		protected Settings_Interface $settings,
+		LoggerInterface $logger,
 	) {
+		$this->setLogger( $logger );
 	}
 
 	/**
@@ -64,15 +69,27 @@ class Cron {
 	 * @hooked activate_{plugin_slug}
 	 */
 	public function register_cron_job(): void {
-		if ( wp_next_scheduled( $this->get_update_check_cron_job_name() ) ) {
+		$update_check_cron_job_name = $this->get_update_check_cron_job_name();
+
+		if ( wp_next_scheduled( $update_check_cron_job_name ) ) {
 			return;
 		}
 
-		wp_schedule_event(
+		$recurrence = 'daily';
+
+		$result = wp_schedule_event(
 			time(),
-			'daily',
-			$this->get_update_check_cron_job_name()
+			$recurrence,
+			$update_check_cron_job_name
 		);
+
+		if ( is_wp_error( $result ) ) {
+			$this->logger->error( "Failed to schedule {$update_check_cron_job_name}: " . $result->get_error_message() );
+		} elseif ( false === $result ) {
+			$this->logger->error( "Failed to schedule {$update_check_cron_job_name}" );
+		} else {
+			$this->logger->info( "Scheduled {$update_check_cron_job_name} to run {$recurrence}." );
+		}
 	}
 
 	/**
@@ -82,6 +99,9 @@ class Cron {
 	 * @hooked {plugin_slug}_update_check
 	 */
 	public function handle_update_check_cron_job(): void {
+
+		$this->logger->info( 'Running handle_update_check_cron_job cron job' );
+
 		$this->api->get_licence_details( true );
 		$this->api->get_plugin_information( true );
 		$this->api->get_check_update( true );

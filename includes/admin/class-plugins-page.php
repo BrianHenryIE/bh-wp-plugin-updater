@@ -49,8 +49,8 @@ class Plugins_Page {
 			return $html;
 		}
 
-		$licence_status = $this->api->get_licence_details( false )->get_status();
-		$expires        = $this->api->get_licence_details( false )->get_expiry_date();
+		$licence_status = $this->api->get_licence_details( false )->status;
+		$expires        = $this->api->get_licence_details( false )->expiry_date;
 
 		if ( in_array( $licence_status, array( 'valid', 'expired' ), true )
 				&& ! is_null( $expires ) ) {

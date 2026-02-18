@@ -1,6 +1,8 @@
 <?php
 /**
  * @see $data = rest_get_server()->get_data_for_routes( $routes, 'help' );
+ *
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater\WP_Includes;
@@ -10,6 +12,7 @@ use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use lucatume\WPBrowser\TestCase\WPRestApiTestCase;
 use Mockery;
+use stdClass;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\WP_Includes\Rest
@@ -18,6 +21,7 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 	/**
 	 * @var \WpunitTester
+	 * @phpstan-ignore property.phpDocType
 	 */
 	protected $tester;
 
@@ -41,8 +45,9 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123'
+		);
 
 		wp_set_current_user( 1 );
 
@@ -52,11 +57,16 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$response = rest_get_server()->dispatch( $request );
 
-		// We need to encode->decode to get the data as an array in tests rather than the original object.
-		$result = json_decode( wp_json_encode( $response->get_data() ) );
+		/**
+		 * We need to encode->decode to get the data as an array in tests rather than the original object.
+		 *
+		 * @var object{success?:bool, message?:string, data?:object{status?:string}}|object $result
+		 */
+		$result = json_decode( wp_json_encode( $response->get_data() ) ?: '' );
 
-		// {success:bool, message:string, data:object}
-
+		$this->assertObjectHasProperty( 'data', $result );
+		$this->assertInstanceOf( stdClass::class, $result->data );
+		$this->assertObjectHasProperty( 'licence_key', $result->data );
 		$this->assertSame( 'abc123', $result->data->licence_key );
 	}
 
@@ -73,9 +83,10 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'inactive' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'inactive',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -88,11 +99,16 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$response = rest_get_server()->dispatch( $request );
 
-		// We need to encode->decode to get the data as an array in tests rather than the original object.
-		$result = json_decode( wp_json_encode( $response->get_data() ) );
+		/**
+		 * We need to encode->decode to get the data as an array in tests rather than the original object.
+		 *
+		 * @var object{success?:bool, message?:string, data?:object{status?:string}}|object $result
+		 */
+		$result = json_decode( wp_json_encode( $response->get_data() ) ?: '' );
 
-		// {success:bool, message:string, data:object}
-
+		$this->assertObjectHasProperty( 'data', $result );
+		$this->assertInstanceOf( stdClass::class, $result->data );
+		$this->assertObjectHasProperty( 'status', $result->data );
 		$this->assertSame( 'inactive', $result->data->status );
 	}
 
@@ -109,9 +125,10 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -129,11 +146,16 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$response = rest_get_server()->dispatch( $request );
 
-		// We need to encode->decode to get the data as an array in tests rather than the original object.
-		$result = json_decode( wp_json_encode( $response->get_data() ) );
+		/**
+		 * We need to encode->decode to get the data as an array in tests rather than the original object.
+		 *
+		 * @var object{success?:bool, message?:string, data?:object{status?:string}}|object $result
+		 */
+		$result = json_decode( wp_json_encode( $response->get_data() ) ?: '' );
 
-		// {success:bool, message:string, data:object}
-
+		$this->assertObjectHasProperty( 'data', $result );
+		$this->assertInstanceOf( stdClass::class, $result->data );
+		$this->assertObjectHasProperty( 'status', $result->data );
 		$this->assertSame( 'active', $result->data->status );
 	}
 
@@ -151,8 +173,9 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -162,11 +185,14 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$response = rest_get_server()->dispatch( $request );
 
-		// We need to encode->decode to get the data as an array in tests rather than the original object.
-		$result = json_decode( wp_json_encode( $response->get_data() ) );
+		/**
+		 * We need to encode->decode to get the data as an array in tests rather than the original object.
+		 *
+		 * @var object{success?:bool, message?:string, data?:object{status?:string}} $result
+		 */
+		$result = json_decode( wp_json_encode( $response->get_data() ) ?: '' );
 
-		// {success:bool, message:string, data:object}
-
+		$this->assertObjectHasProperty( 'message', $result );
 		$this->assertSame( 'Licence activated.', $result->message );
 	}
 
@@ -184,8 +210,9 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$licence = new Licence( $settings );
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		wp_set_current_user( 1 );
 
@@ -195,11 +222,14 @@ class Rest_WPUnit_Test extends WPRestApiTestCase {
 
 		$response = rest_get_server()->dispatch( $request );
 
-		// We need to encode->decode to get the data as an array in tests rather than the original object.
-		$result = json_decode( wp_json_encode( $response->get_data() ) );
+		/**
+		 * We need to encode->decode to get the data as an array in tests rather than the original object.
+		 *
+		 * @var object{success?:bool, message?:string, data?:object{status?:string}}|object $result
+		 */
+		$result = json_decode( wp_json_encode( $response->get_data() ) ?: '' );
 
-		// {success:bool, message:string, data:object}
-
+		$this->assertObjectHasProperty( 'message', $result );
 		$this->assertSame( 'Licence deactivated.', $result->message );
 	}
 }

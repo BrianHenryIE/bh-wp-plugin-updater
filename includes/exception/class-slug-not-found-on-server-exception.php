@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_Plugin_Updater\Exception;
 
 use Throwable;
 
-class Slug_Not_Found_On_Server_Exception extends Plugin_Updater_Exception_Abstract {
+class Slug_Not_Found_On_Server_Exception extends Plugin_Updater_Exception {
 
 	const MESSAGE = 'The plugin slug was not found on the server.';
 

@@ -9,6 +9,7 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\WordPress_Updater;
 
 /**
@@ -38,13 +39,16 @@ trait Settings_Trait {
 	 * NB: Heading must be `Update URI` not `UpdateURI`.
 	 * This heading is required because WordPress uses it in the filter to fetch update information.
 	 *
+	 * @see Settings_Interface::get_licence_server_host()
+	 *
 	 * @see WordPress_Updater::add_update_information()
 	 */
 	public function get_licence_server_host(): string {
 		require_once constant( 'ABSPATH' ) . '/wp-admin/includes/plugin.php';
-		// `get_plugins()` is cached.
-		$plugin_data = get_plugins()[ $this->get_plugin_basename() ];
-		return $plugin_data['UpdateURI'];
+
+		$headers = Plugin_Headers::from_file( WP_PLUGIN_DIR . '/' . $this->get_plugin_basename() );
+
+		return $headers->update_uri;
 	}
 
 	/**
@@ -53,7 +57,7 @@ trait Settings_Trait {
 	 * E.g. `bh-wp-autologin-urls` -> `bh_wp_autologin_urls_licence`
 	 */
 	public function get_licence_data_option_name(): string {
-		return str_dash_to_underscore( $this->get_plugin_slug() ) . '_licence';
+		return str_dash_to_underscore( $this->get_plugin_slug() ) . '_bh_wp_plugin_updater_licence';
 	}
 
 	/**
@@ -64,11 +68,11 @@ trait Settings_Trait {
 	 * E.g. `bh-wp-autologin-urls` -> `bh_wp_autologin_urls_plugin_information`
 	 */
 	public function get_plugin_information_option_name(): string {
-		return str_dash_to_underscore( "{$this->get_plugin_slug()}_plugin_information" );
+		return str_dash_to_underscore( "{$this->get_plugin_slug()}_bh_wp_plugin_updater_plugin_information" );
 	}
 
 	public function get_check_update_option_name(): string {
-		return str_dash_to_underscore( "{$this->get_plugin_slug()}_update" );
+		return str_dash_to_underscore( "{$this->get_plugin_slug()}_bh_wp_plugin_updater_update" );
 	}
 
 	/**

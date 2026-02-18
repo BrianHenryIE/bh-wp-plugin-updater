@@ -4,7 +4,7 @@ namespace BrianHenryIE\WP_Plugin_Updater\Exception;
 
 use Throwable;
 
-class Licence_Does_Not_Exist_Exception extends Plugin_Updater_Exception_Abstract {
+class Licence_Does_Not_Exist_Exception extends Plugin_Updater_Exception {
 
 	const MESSAGE = 'Licence does not exist. Please check your licence key.';
 

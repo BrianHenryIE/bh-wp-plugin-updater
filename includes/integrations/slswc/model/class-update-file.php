@@ -10,31 +10,30 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model;
 
 class Update_File {
 
+	/**
+	 * @param string $id
+	 * @param string $file
+	 * @param string $name
+	 */
 	public function __construct(
-		protected string $id,
-		protected string $file,
-		protected string $name
+		/**
+		 * UUID
+		 *
+		 * @var string $id
+		 */
+		public readonly string $id,
+		/**
+		 * Download URL in the woocommerce_uploads directory.
+		 *
+		 * @var string $id
+		 */
+		public readonly string $file,
+		/**
+		 * Filename alone. I.e. the last part of the URL.
+		 *
+		 * @var string $id
+		 */
+		public readonly string $name
 	) {
-	}
-
-	/**
-	 * UUID
-	 */
-	public function get_id(): string {
-		return $this->id;
-	}
-
-	/**
-	 * Download URL in the woocommerce_uploads directory.
-	 */
-	public function get_file(): string {
-		return $this->file;
-	}
-
-	/**
-	 * Filename alone. I.e. the last part of the URL.
-	 */
-	public function get_name(): string {
-		return $this->name;
 	}
 }

@@ -11,13 +11,12 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Key_Not_Set_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Max_Activations_Exception;
-use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception_Abstract;
+use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Exception\Slug_Not_Found_On_Server_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
-use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Check_Updates_Response;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\License_Response;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\SLSWC\Model\Product_Response;
@@ -52,11 +51,11 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @used-by Cron::handle_update_check_cron_job()
 	 * @used-by CLI
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function refresh_licence_details( Licence $licence ): Licence {
 
-		if ( is_null( $licence->get_licence_key() ) ) {
+		if ( is_null( $licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
@@ -64,12 +63,18 @@ class SLSWC implements Integration_Interface {
 
 		// TODO: Do not continuously retry.
 
+		/** @var License_Response $response */
 		$response = $this->server_request( $licence, 'check_update' ); // ?? "check update"? I think maybe this should be "activate".
 
-		$licence->set_status( $response->get_status() );
-		$licence->set_last_updated( new DateTimeImmutable() );
-
-		return $licence;
+		return new Licence(
+			...array_merge(
+				(array) $licence,
+				array(
+					'status'       => $response->status,
+					'last_updated' => new DateTimeImmutable(),
+				)
+			)
+		);
 	}
 
 	/**
@@ -81,20 +86,26 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence The licence to deactivate.
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function deactivate_licence( Licence $licence ): Licence {
 
-		if ( is_null( $licence->get_licence_key() ) ) {
+		if ( is_null( $licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
+		/** @var License_Response $response */
 		$response = $this->server_request( $licence, 'deactivate' );
 
-		$licence->set_status( $response->get_status() );
-		$licence->set_expiry_date( $response->get_expires() );
-
-		return $licence;
+		return new Licence(
+			...array_merge(
+				(array) $licence,
+				array(
+					'status'      => $response->status,
+					'expiry_date' => $response->get_expires(),
+				)
+			),
+		);
 	}
 
 	/**
@@ -104,17 +115,20 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence The licence to activate.
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	public function activate_licence( Licence $licence ): Licence {
 
-		if ( is_null( $licence->get_licence_key() ) ) {
+		if ( is_null( $licence->licence_key ) ) {
 			throw new Licence_Key_Not_Set_Exception();
 		}
 
+		/** @var License_Response $response */
 		$response = $this->server_request( $licence, 'activate', License_Response::class );
 
-		$licence->set_status( $response->get_status() );
+		$licence = new Licence(
+			...array_merge( (array) $licence, array( 'status' => $response->status ) ),
+		);
 
 		// TODO: string -> DateTime
 		// $licence->set_expires( $response_body->expires );
@@ -125,15 +139,17 @@ class SLSWC implements Integration_Interface {
 	/**
 	 * Returns null when it could not fetch the product information.
 	 *
+	 * @see Integration_Interface::get_remote_product_information()
+	 *
 	 * @param Licence $licence
 	 */
-	public function get_remote_product_information( Licence $licence ): ?Plugin_Info_Interface {
+	public function get_remote_product_information( Licence $licence ): ?Plugin_Info {
 
 		// I think maybe the difference between check_update and product is one expects a valid licence
 		/** @var Product_Response $response */
 		$response = $this->server_request( $licence, 'product', Product_Response::class );
 
-		return $response->get_product();
+		return SLSWC_Plugin_Info::from_product( $this->settings, $response->product );
 	}
 
 	/**
@@ -141,7 +157,7 @@ class SLSWC implements Integration_Interface {
 	 *
 	 * @param Licence $licence
 	 */
-	public function get_remote_check_update( Licence $licence ): ?Plugin_Update_Interface {
+	public function get_remote_check_update( Licence $licence ): ?Plugin_Update {
 
 		// I think maybe the difference between check_update and product is one expects a valid licence.
 		/** @var Check_Updates_Response $response */
@@ -151,29 +167,29 @@ class SLSWC implements Integration_Interface {
 		// $this->logger->debug( 'Updated check_update option with `Software_Details` object' );
 		// }
 
-		return $this->software_details_to_plugin_update( $response->get_software_details() );
+		return $this->software_details_to_plugin_update( $response->software_details );
 	}
 
 	/**
-	 * Convert a Software_Details object to a Plugin_Update_Interface object.
+	 * Convert a Software_Details object to a Plugin_Update object.
 	 *
 	 * @param Software_Details $software_details
 	 */
-	protected function software_details_to_plugin_update( Software_Details $software_details ): Plugin_Update_Interface {
+	protected function software_details_to_plugin_update( Software_Details $software_details ): Plugin_Update {
 
 		return new Plugin_Update(
-			id: $software_details->get_id(),
-			slug: $software_details->get_slug(),
-			version: $software_details->get_version(),
-			url: $software_details->get_homepage(),
-			package: $software_details->get_package(),
-			tested: $software_details->get_tested(),
-			requires_php: $software_details->get_requires(),
+			id: $software_details->id,
+			slug: $software_details->slug,
+			version: $software_details->version,
+			url: $software_details->homepage,
+			package: $software_details->package,
+			tested: $software_details->tested,
+			requires_php: $software_details->requires,
 			autoupdate: null,
-			icons: null, // $software_details->get_icons(),
+			icons: null, // $software_details->icons,
 			banners: null,
-			banners_rtl: null, // $software_details->get_banners_rtl(),
-			translations: null, // $software_details->get_translations(),
+			banners_rtl: null, // $software_details->banners_rtl,
+			translations: null, // $software_details->translations,
 		);
 	}
 
@@ -200,14 +216,14 @@ class SLSWC implements Integration_Interface {
 	 * @param Licence      $licence
 	 * @param string       $action activate|deactivate|check_update|product.
 	 * @param class-string $type The class to map the response to.
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 * @throws \JsonMapper\Exception\BuilderException
 	 */
 	protected function server_request( Licence $licence, string $action, string $type = License_Response::class ) {
 
 		$request_info = array(
 			'slug'        => $this->settings->get_plugin_slug(),
-			'license_key' => $licence->get_licence_key(),
+			'license_key' => $licence->licence_key,
 			'domain'      => get_home_url(), // Ideally, the server would use the HTTP user agent header, which contains the URL.
 		);
 
@@ -261,7 +277,7 @@ class SLSWC implements Integration_Interface {
 	 * @param array           $request
 	 * @param \WP_Error|array $response
 	 *
-	 * @throws Plugin_Updater_Exception_Abstract
+	 * @throws Plugin_Updater_Exception
 	 */
 	protected function validate_response( array $request, $response ): void {
 

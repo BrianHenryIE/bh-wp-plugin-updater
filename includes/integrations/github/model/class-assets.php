@@ -1,6 +1,8 @@
 <?php
 /**
- * @see https://jacobdekeizer.github.io/json-to-php-generator/
+ *
+ *
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model;
@@ -8,71 +10,19 @@ namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model;
 class Assets {
 
 	public function __construct(
-		protected string $url,
-		protected int $id,
-		protected string $node_id,
-		protected string $name,
-		protected string $label,
-		protected User $uploader,
-		protected string $content_type,
-		protected string $state,
-		protected int $size,
-		protected int $download_count,
-		protected string $created_at,
-		protected string $updated_at,
-		protected string $browser_download_url
+		public readonly string $url,
+		public readonly int $id,
+		public readonly string $node_id,
+		public readonly string $name,
+		public readonly string $label,
+		public readonly User $uploader,
+		public readonly string $content_type,
+		public readonly string $state,
+		public readonly int $size,
+		public readonly int $download_count,
+		public readonly string $created_at,
+		public readonly string $updated_at,
+		public readonly string $browser_download_url
 	) {
-	}
-
-	public function get_url(): string {
-		return $this->url;
-	}
-
-	public function get_id(): int {
-		return $this->id;
-	}
-
-	public function get_node_id(): string {
-		return $this->node_id;
-	}
-
-	public function get_name(): string {
-		return $this->name;
-	}
-
-	public function get_label(): string {
-		return $this->label;
-	}
-
-	public function get_uploader(): User {
-		return $this->uploader;
-	}
-
-	public function get_content_type(): string {
-		return $this->content_type;
-	}
-
-	public function get_state(): string {
-		return $this->state;
-	}
-
-	public function get_size(): int {
-		return $this->size;
-	}
-
-	public function get_download_count(): int {
-		return $this->download_count;
-	}
-
-	public function get_created_at(): string {
-		return $this->created_at;
-	}
-
-	public function get_updated_at(): string {
-		return $this->updated_at;
-	}
-
-	public function get_browser_download_url(): string {
-		return $this->browser_download_url;
 	}
 }

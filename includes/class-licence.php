@@ -10,24 +10,72 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 
-class Licence implements \Serializable, \JsonSerializable {
+/**
+ * @phpstan-type Licence_Update_Array array{licence_key?:string|null, status?:string, expiry_date?:DateTimeInterface|null, last_updated?:DateTimeInterface|null, purchase_date?:DateTimeInterface|null, order_link?:string|null, auto_renews?:bool|null, renewal_link?:string|null}
+ */
+class Licence {
 
 	/**
-	 * The licence key itself. Will be null until set.
+	 * Constructor.
+	 *
+	 * @param ?string            $licence_key
+	 * @param string             $status
+	 * @param ?DateTimeInterface $expiry_date
+	 * @param ?DateTimeInterface $last_updated
+	 * @param ?DateTimeInterface $purchase_date
+	 * @param ?string            $order_link
+	 * @param ?bool              $auto_renews
+	 * @param ?string            $renewal_link
 	 */
-	protected ?string $licence_key = null;
+	public function __construct(
+		/**
+		 * The licence key itself. Will be null until set.
+		 *
+		 * @var string $licence_key
+		 */
+		public readonly ?string $licence_key = null,
+		/**
+		 * The status. Enum TBD. TODO.
+		 *
+		 * @var string $status
+		 */
+		public readonly string $status = 'unknown',// 'empty'
+		/**
+		 * The date the licence did or will expire
+		 *
+		 * @var DateTimeInterface|null
+		 */
+		public readonly ?DateTimeInterface $expiry_date = null,
+		/**
+		 * The last time the license server was successfully contacted.
+		 *
+		 * @var DateTimeInterface|null
+		 */
+		public readonly ?DateTimeInterface $last_updated = null,
+		public readonly ?DateTimeInterface $purchase_date = null,
+		/**
+		 * A link to the original order domain.com/my-account/orders/123
+		 *
+		 * @var string|null
+		 */
+		public readonly ?string $order_link = null,
+		/**
+		 * Will the licence auto-renew?
+		 *
+		 * @var bool|null
+		 */
+		public readonly ?bool $auto_renews = null,
+		/**
+		 * A link to domain.com to renew the licence.
+		 *
+		 * @var string|null
+		 */
+		public readonly ?string $renewal_link = null,
+	) {
+	}
 
-	/**
-	 * The status. Enum TBD. TODO.
-	 */
-	protected string $status = 'unknown'; // 'empty'
-
-	protected ?DateTimeInterface $expiry_date = null;
-
-	protected ?DateTimeInterface $last_updated = null;
 
 	/**
 	 * The available license status types.
@@ -43,122 +91,6 @@ class Licence implements \Serializable, \JsonSerializable {
 			'expiring'        => __( 'Expiring', 'bh-wp-plugin-updater' ),
 			'expired'         => __( 'Expired', 'bh-wp-plugin-updater' ),
 		);
-	}
-
-	/**
-	 * Get the licence key itself.
-	 */
-	public function get_licence_key() {
-		return $this->licence_key;
-	}
-
-	/**
-	 * Set the licence key
-	 *
-	 * @param string $licence_key licence key.
-	 */
-	public function set_licence_key( string $licence_key ): void {
-		$this->licence_key = $licence_key;
-	}
-
-	/**
-	 * Get the licence status.
-	 */
-	public function get_status(): string {
-		return $this->status;
-	}
-
-	/**
-	 * Set the licence status
-	 *
-	 * @param string $status licence status.
-	 */
-	public function set_status( string $status ): void {
-		$this->status = $status;
-	}
-
-	/**
-	 * Get the licence expiry date.
-	 */
-	public function get_expiry_date(): ?DateTimeInterface {
-		return $this->expiry_date;
-	}
-
-	/**
-	 * Set the licence expires date.
-	 *
-	 * @param DateTimeInterface $expiry_date licence expiry date.
-	 */
-	public function set_expiry_date( DateTimeInterface $expiry_date ): void {
-		$this->expiry_date = $expiry_date;
-	}
-
-	public function get_last_updated(): ?DateTimeInterface {
-		return $this->last_updated;
-	}
-
-	public function set_last_updated( ?DateTimeInterface $last_updated ): void {
-		$this->last_updated = $last_updated;
-	}
-
-	/**
-	 * Serialize the object to an array.
-	 *
-	 * @used-by serialize()
-	 */
-	public function __serialize(): array {
-
-		$arr         = get_object_vars( $this );
-		$ordered_arr = array();
-		foreach ( self::get_licence_object_schema_properties() as $property_name => $property_schema ) {
-			if ( isset( $arr[ $property_name ] ) && $arr[ $property_name ] instanceof DateTimeInterface ) {
-				$ordered_arr[ $property_name ] = $arr[ $property_name ]->format( \DateTimeInterface::ATOM );
-				continue;
-			}
-			if ( isset( $arr[ $property_name ] ) ) {
-				$ordered_arr[ $property_name ] = $arr[ $property_name ];
-				continue;
-			}
-			if ( isset( $property_schema['type'] ) && is_array( $property_schema['type'] ) && in_array( 'null', $property_schema['type'], true ) ) {
-				$ordered_arr[ $property_name ] = null;
-			}
-		}
-
-		return $ordered_arr;
-	}
-
-	/**
-	 * Given an array of the object's properties, set them.
-	 *
-	 * @used-by unserialize()
-	 */
-	public function __unserialize( array $data ): void {
-		$this->licence_key  = $data['licence_key'];
-		$this->status       = $data['status'] ?? $this->status;
-		$this->expiry_date  = new DateTimeImmutable( $data['expiry_date'] );
-		$this->last_updated = new DateTimeImmutable( $data['last_updated'] );
-	}
-
-
-	/**
-	 * @see Serializable::serialize()
-	 */
-	public function serialize() {
-		return $this->jsonSerialize();
-	}
-
-	/**
-	 * @see Serializable::unserialize()
-	 */
-	public function unserialize( string $data ) {
-		$this->__unserialize( json_decode( $data, true ) );
-	}
-
-	/**
-	 * @see \JsonSerializable::jsonSerialize()
-	 */
-	public function jsonSerialize() {
-		return $this->__serialize();
 	}
 
 	public function is_active() {

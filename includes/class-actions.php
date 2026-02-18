@@ -47,12 +47,13 @@ class Actions {
 	protected function add_cron_hooks(): void {
 		$cron = new Cron(
 			$this->api,
-			$this->settings
+			$this->settings,
+			$this->logger,
 		);
 
-		// Is this enough? If it's deleted once, it will be deleted forever.
+		// if(DOING_CRON)
 		add_action(
-			"activate_{$this->settings->get_plugin_slug()}",
+			'init',
 			array( $cron, 'register_cron_job' )
 		);
 
@@ -67,7 +68,7 @@ class Actions {
 	 */
 	protected function add_wordpress_updater_hooks(): void {
 
-		$hostname = wp_parse_url( sanitize_url( $this->settings->get_licence_server_host() ), PHP_URL_HOST );
+		$hostname = wp_parse_url( esc_url_raw( $this->settings->get_licence_server_host() ), PHP_URL_HOST );
 
 		$plugin_update = new WordPress_Updater(
 			$this->api,
@@ -77,7 +78,7 @@ class Actions {
 
 		add_filter(
 			'pre_set_site_transient_update_plugins',
-			array( $plugin_update, 'detect_force_update' ),
+			array( $plugin_update, 'on_set_transient_update_plugins' ),
 			10,
 			2
 		);
@@ -96,6 +97,11 @@ class Actions {
 	 * TODO: check the use of `plugins_api` vs `plugins_api_result` filters, which is correct?
 	 */
 	protected function add_plugins_page_modal_hooks(): void {
+
+		global $pagenow;
+		// if( 'plugin-install.php' !== $pagenow ) {
+		// return;
+		// }
 
 		$view_details = new Plugins_Page_View_Details( $this->api, $this->settings );
 		add_filter( 'plugins_api', array( $view_details, 'add_plugin_modal_data' ), 10, 3 );
@@ -119,6 +125,10 @@ class Actions {
 
 	/**
 	 * Enqueue the JavaScript to handle the licence tab on the plugins.php page.
+	 *
+	 * No nonce available here. No saving data here.
+	 *
+	 * phpcs:disable WordPress.Security.NonceVerification.Recommended
 	 */
 	protected function add_assets_hooks(): void {
 
@@ -126,7 +136,8 @@ class Actions {
 		global $pagenow;
 		if ( 'plugin-install.php' !== $pagenow
 			|| ! isset( $_GET['plugin'] )
-			|| sanitize_key( wp_unslash( $_GET['plugin'] ) !== $this->settings->get_plugin_slug() )
+			|| ! is_string( $_GET['plugin'] )
+			|| sanitize_key( wp_unslash( $_GET['plugin'] ) ) !== $this->settings->get_plugin_slug()
 		) {
 			return;
 		}

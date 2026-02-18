@@ -5,15 +5,14 @@ parameters:
         - tests
     excludePaths:
         - tests/_support
+        - tests/_data
     scanFiles:
         - vendor/lucatume/wp-browser/includes/core-phpunit/includes/testcase-rest-api.php
         - vendor/antecedent/patchwork/Patchwork.php
     ignoreErrors:
         # LoggerAwareTrait allows for null $logger, but we set it in the constructor.
-        - '#LoggerInterface\|null#'
-        # Mockery methods are not defined in the code, but are created dynamically.
-        - '/Call to an undefined method Mockery.*/'
-        - '/Parameter .* Mockery.* given/'
+        - message: '#LoggerInterface\|null#'
+          path: includes/
         - # Parameter #2 $callback of static method WP_Mock::expectActionAdded() expects (callable(): mixed)|Mockery\Matcher\Type|string, array{Mockery\Matcher\Type, 'enqueue_styles'} given.
           identifier: argument.type
           path: tests/unit/class-actions-Unit-Test.php

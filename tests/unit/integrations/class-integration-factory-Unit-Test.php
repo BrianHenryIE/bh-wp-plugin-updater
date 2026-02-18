@@ -23,8 +23,9 @@ class Integration_Factory_Unit_Test extends Unit_Testcase {
 
 		$integration = $sut->get_integration( $settings );
 
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
+		$licence = new Licence(
+			licence_key: 'abc123',
+		);
 
 		try {
 			$integration->activate_licence( $licence );

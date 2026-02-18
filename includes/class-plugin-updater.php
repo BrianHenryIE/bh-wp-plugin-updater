@@ -5,6 +5,7 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
+use BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper\JsonMapper_Helper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -26,8 +27,9 @@ class Plugin_Updater {
 
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new API(
-				$settings,
-				$logger
+				settings: $settings,
+				json_mapper: ( new JsonMapper_Helper() )->build(),
+				logger: $logger
 			);
 			new Actions(
 				self::$instance,

@@ -2,15 +2,33 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
+use BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper\JsonMapper_Helper;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
+use JsonMapper\JsonMapperInterface;
 use Mockery;
+use Psr\Log\LoggerInterface;
+use WP\MCP\Plugin;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\API
  */
 class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
+
+	protected function get_sut(
+		?Settings_Interface $settings = null,
+		?LoggerInterface $logger = null,
+		?JsonMapperInterface $json_mapper = null,
+		?Integration_Factory_Interface $integration_factory = null,
+	): API {
+		return new API(
+			$settings ?? Mockery::mock( Settings_Interface::class )->makePartial(),
+			$logger ?? $this->logger,
+			$json_mapper ?? ( new JsonMapper_Helper() )->build(),
+			$integration_factory,
+		);
+	}
 
 	protected function get_mock_integration_factory( Integration_Interface $integration_mock ): Integration_Factory_Interface {
 		$mock_integration_factory = Mockery::mock( Integration_Factory_Interface::class )->makePartial();
@@ -27,28 +45,31 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 	 * @covers ::get_saved_licence_information
 	 */
 	public function test_save_licence_information(): void {
-		$licence = new Licence();
-		$licence->set_licence_key( 'abc123' );
-		$licence->set_status( 'active' );
-		$licence->set_last_updated( new \DateTimeImmutable() );
-		$licence->set_expiry_date( new \DateTimeImmutable() );
+		$licence = new Licence(
+			licence_key: 'abc123',
+			status: 'active',
+			expiry_date: new \DateTimeImmutable(),
+			last_updated: new \DateTimeImmutable(),
+		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		update_option( 'a_plugin_licence', $licence->__serialize() );
+		update_option( 'a_plugin_licence', wp_json_encode( $licence ) );
 
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'activate_licence' )->once()->andReturn( $licence );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory( $integration )
+		);
 
 		$result = $sut->activate_licence();
 
-		$saved_licence = get_option( 'a_plugin_licence' );
+		$saved_licence = json_decode( get_option( 'a_plugin_licence' ), true );
 
-		$this->assertEquals( $result->get_status(), $saved_licence['status'] );
+		$this->assertEquals( $result->status, $saved_licence['status'] );
 	}
 
 	/**
@@ -57,18 +78,18 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 	 */
 	public function test_plugin_update_cache_set(): void {
 		$plugin_update = new Plugin_Update(
-			'id',
-			'slug',
-			'version',
-			'url',
-			'package',
-			'tested',
-			'8.0.0',
-			true,
-			array( 'icons' ),
-			array( 'banners' ),
-			array( 'banners_rtl' ),
-			array( 'translations' )
+			id: 'id',
+			slug: 'slug',
+			version: 'version',
+			url: 'url',
+			package: 'package',
+			tested: 'tested',
+			requires_php: '8.0.0',
+			autoupdate: true,
+			icons: array( 'icons' ),
+			banners: array( 'banners' ),
+			banners_rtl: array( 'banners_rtl' ),
+			translations: null,
 		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
@@ -78,14 +99,19 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'get_remote_check_update' )->once()->andReturn( $plugin_update );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory( $integration )
+		);
 
 		$result = $sut->get_check_update( true );
 
-		$saved_plugin_update = get_option( 'a_plugin_update' );
+		$this->assertNotEmpty( get_option( 'a_plugin_update' ) );
 
-		$this->assertEquals( $result?->get_version(), $saved_plugin_update['version'] );
+		/** @var Plugin_Update $saved_plugin_update */
+		$saved_plugin_update = $sut->get_check_update( false );
+
+		$this->assertEquals( $result?->version, $saved_plugin_update->version );
 	}
 
 	/**
@@ -94,18 +120,18 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 	 */
 	public function test_plugin_update_cache_get(): void {
 		$plugin_update = new Plugin_Update(
-			'id',
-			'slug',
-			'version',
-			'url',
-			'package',
-			'tested',
-			'8.0.0',
-			true,
-			array( 'icons' ),
-			array( 'banners' ),
-			array( 'banners_rtl' ),
-			array( 'translations' )
+			id: 'id',
+			slug: 'slug',
+			version: 'version',
+			url: 'url',
+			package: 'package',
+			tested: 'tested',
+			requires_php: '8.0.0',
+			autoupdate: true,
+			icons: array( 'icons' ),
+			banners: array( 'banners' ),
+			banners_rtl: array( 'banners_rtl' ),
+			translations: null,
 		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
@@ -116,13 +142,15 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'get_remote_check_update' )->once()->andReturn( $plugin_update );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory( $integration )
+		);
 
 		$sut->get_check_update( true );
 
 		$result = $sut->get_check_update( false );
 
-		$this->assertEquals( $result?->get_version(), $plugin_update->get_version() );
+		$this->assertEquals( $plugin_update->version, $result?->version );
 	}
 }

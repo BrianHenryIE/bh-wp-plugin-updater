@@ -51,4 +51,16 @@ class WPUnit_Testcase extends WPTestCase {
 		}
 		return $stream_factory->createStream( $json_string_encoded_fixture );
 	}
+
+	protected function get_fixture_as_string( string $fixture_relative_file_path ): string {
+		$absolute_path = codecept_root_dir( $fixture_relative_file_path );
+		if ( ! is_string( $absolute_path ) ) {
+			$this->fail( 'Failed to read fixture at: ' . $fixture_relative_file_path );
+		}
+		$file_contents = file_get_contents( $absolute_path );
+		if ( false === $file_contents ) {
+			$this->fail( 'Failed to read fixture at: ' . $fixture_relative_file_path );
+		}
+		return $file_contents;
+	}
 }

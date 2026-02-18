@@ -51,7 +51,7 @@ class Plugins_Page_View_Details {
 	 * @param string             $action The type of information being requested from the Plugin Installation API.
 	 * @param object             $args Plugin API arguments.
 	 */
-	public function add_plugin_modal_data( $res, $action, $args ): object {
+	public function add_plugin_modal_data( $res, $action, $args ): object|false {
 
 		if ( $this->settings->get_plugin_slug() !== $args->slug ) {
 			return $res;
@@ -73,7 +73,10 @@ class Plugins_Page_View_Details {
 			}
 		}
 
-		if ( isset( $_GET['section'] ) && 'changelog' === $_GET['section'] && ! isset( $sections['changelog'] ) ) {
+		/**
+		 * phpcs:disable WordPress.Security.NonceVerification.Recommended We are not writing this data.
+		 */
+		if ( isset( $_GET['section'] ) && 'changelog' === sanitize_key( wp_unslash( $_GET['section'] ) ) ) {
 			$res->sections['changelog'] = 'No changelog available.';
 		}
 
@@ -84,7 +87,7 @@ class Plugins_Page_View_Details {
 		}
 
 		// Check sections have content before adding any.
-		$sections = $update_information->get_sections();
+		$sections = $update_information->sections;
 
 		foreach ( $sections as $name => $section ) {
 			$res->sections[ $name ] = $section;
