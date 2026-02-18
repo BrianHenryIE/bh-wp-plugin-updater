@@ -7,7 +7,7 @@ use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 
 class SLSWC_Plugin_Info {
-	public static function from_product( Settings_Interface $settings, Product $product ) {
+	public static function from_product( Settings_Interface $settings, Product $product ): Plugin_Info {
 		return new Plugin_Info(
 			sections: array(),
 			name: $settings->get_plugin_name(),

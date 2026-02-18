@@ -84,7 +84,7 @@ class GitHub_Integration implements Integration_Interface {
 
 		$readme = $this->github_api->get_readme();
 
-		// If not assets are attached to the GitHub release!
+		// If no assets are attached to the GitHub release!
 		if ( empty( $release->assets ) ) {
 			$this->logger->info( 'No GitHub release assets' );
 			return null;
@@ -132,12 +132,12 @@ class GitHub_Integration implements Integration_Interface {
 	}
 
 
-	public function activate_licence( Licence $licence ) {
+	public function activate_licence( Licence $licence ): Licence {
 		// TODO: Implement activate_licence() method.
 		return new Licence();
 	}
 
-	public function deactivate_licence( Licence $licence ) {
+	public function deactivate_licence( Licence $licence ): Licence {
 		// TODO: Implement deactivate_licence() method.
 		return new Licence();
 	}

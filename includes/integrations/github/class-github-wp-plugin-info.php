@@ -18,7 +18,7 @@ class GitHub_WP_Plugin_Info {
 		// TODO: add a filter here.
 
 		return new Plugin_Info(
-			sections: !empty( $changelog ) ? array( 'changelog' => $changelog ) : array(),
+			sections: ! empty( $changelog ) ? array( 'changelog' => $changelog ) : array(),
 			name: $headers->name,
 			slug: $slug,
 			version: ltrim( $release->tag_name, 'v' ),
@@ -45,7 +45,7 @@ class GitHub_WP_Plugin_Info {
 			description: '',
 			download_link: $release->assets[0]->browser_download_url,
 			upgrade_notice: '',
-			screenshots: array(), // TODO: look for/in the .wordpress directory in the repo.
+			screenshots: array(), // TODO: look for/in the `/.wordpress` directory in the repo.
 			tags: array(),
 			stable_tag: $release->tag_name,
 			versions: array(),

@@ -24,7 +24,7 @@ class GitHub_Plugin_Update {
 			package: $release->assets[0]->browser_download_url, // TODO: what if there are multiple attached assets?
 			new_version: $release->tag_name,
 			tested: $readme?->tested ?? '',
-			requires_php: !empty($readme->requires_php) ? $readme->requires_php : $plugin_headers->requires_php ?? null,
+			requires_php: ! empty( $readme->requires_php ) ? $readme->requires_php : $plugin_headers->requires_php ?? null,
 			autoupdate: null,
 			icons: null,
 			banners: null,

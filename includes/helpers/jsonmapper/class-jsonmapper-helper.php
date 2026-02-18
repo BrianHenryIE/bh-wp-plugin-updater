@@ -2,7 +2,7 @@
 /**
  * Get a JsonMapper instance that can decode Money and DateTimeInterface.
  *
- * @package brianhenryie/bh-wp-bitcoin-gateway
+ * @package brianhenryie/bh-wp-plugin-updater
  */
 
 namespace BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper;

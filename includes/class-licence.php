@@ -12,6 +12,9 @@ namespace BrianHenryIE\WP_Plugin_Updater;
 
 use DateTimeInterface;
 
+/**
+ * @phpstan-type Licence_Update_Array array{licence_key?:string|null, status?:string, expiry_date?:DateTimeInterface|null, last_updated?:DateTimeInterface|null, purchase_date?:DateTimeInterface|null, order_link?:string|null, auto_renews?:bool|null, renewal_link?:string|null}
+ */
 class Licence {
 
 	/**

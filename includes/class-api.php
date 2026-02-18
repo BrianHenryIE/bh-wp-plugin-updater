@@ -16,6 +16,7 @@ use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Info;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
@@ -26,6 +27,9 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+/**
+ * @phpstan-import-type Licence_Update_Array from Licence
+ */
 class API implements API_Interface {
 	use LoggerAwareTrait;
 
@@ -115,9 +119,9 @@ class API implements API_Interface {
 		}
 
 		if ( ! is_string( $value ) ) {
-			$invalid_raw_value = function ( string $option_name ) {
-				$alloptions = wp_load_alloptions();
-				return $alloptions[ $option_name ] ?? null;
+			$invalid_raw_value = function ( string $option_name ): string {
+				$all_options = wp_load_alloptions();
+				return $all_options[ $option_name ] ?? 'error finding value for log message';
 			};
 			$this->logger->warning(
 				"Invalid data saved in wp-options for {$option_name} ($class_name): " . $invalid_raw_value( $option_name )
@@ -152,11 +156,13 @@ class API implements API_Interface {
 	/**
 	 *
 	 *
-	 * @param Licence $licence
+	 * @param Licence              $licence
+	 * @param Licence_Update_Array $updates
 	 */
 	protected function save_licence_information( Licence $licence, array $updates = array() ): Licence {
 
 		// TODO: test does the order of the array keys matter.
+		/** @phpstan-ignore-next-line argument.type */
 		$updated_licence = new Licence(
 			...( array_merge(
 				(array) $licence,
@@ -190,10 +196,8 @@ class API implements API_Interface {
 
 		$licence = $this->service->deactivate_licence( $this->licence );
 
-		// TODO: save
-		$licence->set_last_updated( new DateTimeImmutable() );
-
-		return $licence;
+		// Set last updated. (should do that in
+		return $this->save_licence_information( $licence );
 	}
 
 	/**
@@ -330,15 +334,12 @@ class API implements API_Interface {
 	}
 
 	protected function get_available_version( ?bool $refresh = null ): ?string {
-		return $this->get_check_update( $refresh )?->version ?? null;
+		return $this->get_check_update( $refresh )->version ?? null;
 	}
 
 	protected function get_current_version(): ?string {
+		$headers = Plugin_Headers::from_file( WP_PLUGIN_DIR . '/' . $this->settings->get_plugin_basename() );
 
-		// $a = get_plugins( $this->settings->get_plugin_slug() )['Version'] ?? null;
-
-		$b = get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? null;
-
-		return $b;
+		return $headers->version;
 	}
 }

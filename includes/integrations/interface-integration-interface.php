@@ -9,9 +9,9 @@ use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 
 interface Integration_Interface {
 
-	public function activate_licence( Licence $licence );
+	public function activate_licence( Licence $licence ): Licence;
 
-	public function deactivate_licence( Licence $licence );
+	public function deactivate_licence( Licence $licence ): Licence;
 
 	public function refresh_licence_details( Licence $licence ): Licence;
 

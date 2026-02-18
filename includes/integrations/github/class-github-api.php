@@ -50,13 +50,14 @@ class GitHub_API {
 
 	protected function init(): void {
 
-		/** @var array{user?:string, repo?:string} $output_array */
-		if (
-			1 !== preg_match( '/github.com\/(?<user>.*?)\/(?<repo>[^\/]*)/', $this->settings->get_licence_server_host(), $output_array )
-			|| ! isset( $output_array['user'], $output_array['repo'] )
-		) {
+		if ( 1 !== preg_match(
+			'/github.com\/(?<user>.*?)\/(?<repo>[^\/]*)/',
+			$this->settings->get_licence_server_host(),
+			$output_array
+		) ) {
 			throw new Plugin_Updater_Exception( 'Failed to parse GitHub URI user and repo from ' . $this->settings->get_licence_server_host() );
 		}
+		/** @var array{0: non-falsy-string, user: string, 1: string, repo: string, 2: string} $output_array */
 
 		$this->github_username   = $output_array['user'];
 		$this->github_repository = $output_array['repo'];
@@ -119,7 +120,7 @@ class GitHub_API {
 		 * @see \Github\Api\Repo::releases()
 		 * @see \Github\Api\Repository\Releases::all()
 		 */
-		$response = $this->client->api( 'repo' )->releases()->all( $user, $repo );
+		$response = $this->client->api( 'repo' )->releases()->all( $user, $repo ); /** @phpstan-ignore method.notFound, method.nonObject */
 
 		$json_string_response = wp_json_encode( $response );
 
@@ -142,7 +143,13 @@ class GitHub_API {
 	 */
 	protected function fetch_raw_file( string $user, string $repo, string $tag_name, string $path ): string {
 
-		$url              = "https://raw.githubusercontent.com/{$user}/{$repo}/{$tag_name}/{$path}";
+		$url              = sprintf(
+			'https://raw.githubusercontent.com/%s/%s/%s/%s' .
+			sanitize_key( $user ),
+			sanitize_key( $repo ),
+			sanitize_key( $tag_name ),
+			sanitize_key( $path ),
+		);
 		$request_response = wp_remote_get( $url );
 		if ( 200 === wp_remote_retrieve_response_code( $request_response ) ) {
 			return wp_remote_retrieve_body( $request_response );
@@ -152,8 +159,8 @@ class GitHub_API {
 	}
 
 	/**
-	 * @param array $releases
-	 * @param bool  $allow_beta
+	 * @param Release[] $releases
+	 * @param bool      $allow_beta
 	 * @return Release[]
 	 */
 	protected function filter_releases( array $releases, bool $allow_beta ): array {
@@ -203,6 +210,13 @@ class GitHub_API {
 		$allow_beta = false;
 
 		$this->release = $this->filter_releases( $releases, $allow_beta )[0] ?? null;
+
+		if ( is_null( $this->release ) ) {
+			$this->changelog_text = null;
+			$this->readme         = null;
+			$this->plugin_headers = null;
+			return;
+		}
 
 		$this->changelog_text = $this->fetch_raw_file( $this->github_username, $this->github_repository, $this->release->tag_name, 'CHANGELOG.md' );
 

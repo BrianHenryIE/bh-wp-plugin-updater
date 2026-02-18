@@ -68,7 +68,7 @@ class Actions {
 	 */
 	protected function add_wordpress_updater_hooks(): void {
 
-		$hostname = wp_parse_url( sanitize_url( $this->settings->get_licence_server_host() ), PHP_URL_HOST );
+		$hostname = wp_parse_url( esc_url_raw( $this->settings->get_licence_server_host() ), PHP_URL_HOST );
 
 		$plugin_update = new WordPress_Updater(
 			$this->api,
@@ -136,7 +136,7 @@ class Actions {
 		global $pagenow;
 		if ( 'plugin-install.php' !== $pagenow
 			|| ! isset( $_GET['plugin'] )
-			|| sanitize_key( wp_unslash( $_GET['plugin'] ) ) !== $this->settings->get_plugin_slug()
+			|| ( is_string( $_GET['plugin'] ) && sanitize_key( wp_unslash( $_GET['plugin'] ) ) !== $this->settings->get_plugin_slug() )
 		) {
 			return;
 		}
