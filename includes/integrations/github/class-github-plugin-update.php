@@ -13,18 +13,18 @@ class GitHub_Plugin_Update {
 		Settings_Interface $settings,
 		Release $release,
 		Plugin_Headers $plugin_headers,
-		Readme_Parser $readme,
+		?Readme_Parser $readme,
 	): Plugin_Update {
 
 		return new Plugin_Update(
 			id: null,
 			slug: $settings->get_plugin_slug(),
 			version: ltrim( $release->tag_name, 'v' ),
-			url: $plugin_headers->plugin_uri,
-			package: $release->assets[0]->browser_download_url,
+			url: $plugin_headers->plugin_uri ?? '',
+			package: $release->assets[0]->browser_download_url, // TODO: what if there are multiple attached assets?
 			new_version: $release->tag_name,
-			tested: $readme->tested,
-			requires_php: $readme->requires_php ?? $plugin_headers->requires_php ?? null,
+			tested: $readme?->tested ?? '',
+			requires_php: !empty($readme->requires_php) ? $readme->requires_php : $plugin_headers->requires_php ?? null,
 			autoupdate: null,
 			icons: null,
 			banners: null,

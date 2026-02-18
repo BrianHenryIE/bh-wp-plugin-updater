@@ -71,7 +71,7 @@ class Plugin_Headers {
 	public static function from_file_string( string $plugin_php_file ): Plugin_Headers {
 
 		$plugin_filename      = 'plugin_headers';
-		$tmp_plugin_file_path = get_temp_dir() . $plugin_filename;
+		$tmp_plugin_file_path = tempnam( get_temp_dir(), $plugin_filename );
 		file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
 		$plugin_headers = self::from_file( $tmp_plugin_file_path );
 		wp_delete_file( $tmp_plugin_file_path );

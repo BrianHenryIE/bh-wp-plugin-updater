@@ -156,8 +156,13 @@ class API implements API_Interface {
 	 */
 	protected function save_licence_information( Licence $licence, array $updates = array() ): Licence {
 
+		// TODO: test does the order of the array keys matter.
 		$updated_licence = new Licence(
-			...( array_merge( (array) $licence, $updates ) )
+			...( array_merge(
+				(array) $licence,
+				$updates,
+				array( 'last_updated' => new DateTimeImmutable() )
+			) )
 		);
 
 		update_option(

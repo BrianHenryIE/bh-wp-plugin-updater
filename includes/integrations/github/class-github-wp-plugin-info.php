@@ -15,8 +15,10 @@ class GitHub_WP_Plugin_Info {
 		string $changelog
 	): Plugin_Info {
 
+		// TODO: add a filter here.
+
 		return new Plugin_Info(
-			sections: array( 'changelog' => $changelog ),
+			sections: !empty( $changelog ) ? array( 'changelog' => $changelog ) : array(),
 			name: $headers->name,
 			slug: $slug,
 			version: ltrim( $release->tag_name, 'v' ),
@@ -37,20 +39,20 @@ class GitHub_WP_Plugin_Info {
 			active_installs: 0,
 			downloaded: 0,
 			last_updated: $release->created_at,
-			added: 'added string',
-			homepage: 'homepage string',
-			short_description: 'short_description string',
-			description: 'description string',
+			added: '',
+			homepage: $headers->plugin_uri ?? '',
+			short_description: $headers->description ?? '',
+			description: '',
 			download_link: $release->assets[0]->browser_download_url,
-			upgrade_notice: 'upgrade_notice string',
-			screenshots: array(),
+			upgrade_notice: '',
+			screenshots: array(), // TODO: look for/in the .wordpress directory in the repo.
 			tags: array(),
 			stable_tag: $release->tag_name,
 			versions: array(),
 			business_model: false,
 			repository_url: $repository_url,
-			commercial_support_url: 'commercial_support_url string',
-			donate_link: 'donate_link string',
+			commercial_support_url: '',
+			donate_link: $headers->author_uri ?? '',
 			banners: array(),
 			icons: array(),
 			blocks: array(),

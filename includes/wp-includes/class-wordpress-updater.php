@@ -158,7 +158,7 @@ class WordPress_Updater {
 			/** @var ?Plugin_Update $plugin_information */
 			$plugin_information = $this->api->get_check_update( $this->force_refresh );
 		} catch ( \BrianHenryIE\WP_Plugin_Updater\Exception\Licence_Does_Not_Exist_Exception ) {
-			$this->logger->debug( 'Licence does not exist no server.' );
+			$this->logger->debug( 'Licence does not exist on server.' );
 			return $plugin_update_object;
 		}
 

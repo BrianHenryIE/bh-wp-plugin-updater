@@ -39,6 +39,8 @@ trait Settings_Trait {
 	 * NB: Heading must be `Update URI` not `UpdateURI`.
 	 * This heading is required because WordPress uses it in the filter to fetch update information.
 	 *
+	 * @see Settings_Interface::get_licence_server_host()
+	 *
 	 * @see WordPress_Updater::add_update_information()
 	 */
 	public function get_licence_server_host(): string {

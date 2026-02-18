@@ -75,8 +75,6 @@ class SLSWC implements Integration_Interface {
 				)
 			)
 		);
-
-		return $licence;
 	}
 
 	/**

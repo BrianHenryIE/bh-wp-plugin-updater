@@ -4,6 +4,8 @@
  *
  * If a plugin's header contains a GitHub URI, this class will be used to fetch the latest release from GitHub.
  *
+ * TODO: authentication. Claude says "GitHub's unauthenticated REST API rate-limit is 60 requests/hour per IP, which is very easy to exhaust on busy shared hosts."
+ *
  * @package brianhenryie/bh-wp-plugin-updater
  */
 
@@ -200,7 +202,7 @@ class GitHub_API {
 
 		$allow_beta = false;
 
-		$this->release = $this->filter_releases( $releases, $allow_beta )[0];
+		$this->release = $this->filter_releases( $releases, $allow_beta )[0] ?? null;
 
 		$this->changelog_text = $this->fetch_raw_file( $this->github_username, $this->github_repository, $this->release->tag_name, 'CHANGELOG.md' );
 

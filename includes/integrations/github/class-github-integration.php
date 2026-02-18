@@ -31,12 +31,6 @@ class GitHub_Integration implements Integration_Interface {
 
 	protected GitHub_API $github_api;
 
-	protected ?Release $release;
-	protected ?string $changelog_text = null;
-
-	protected ?Readme_Parser $readme;
-	protected ?Plugin_Headers $plugin_headers;
-
 	/**
 	 * Constructor.
 	 *
@@ -72,6 +66,12 @@ class GitHub_Integration implements Integration_Interface {
 	}
 
 
+	/**
+	 * @see Integration_Interface::get_remote_check_update()
+	 *
+	 * @param Licence $licence
+	 * @return Plugin_Update|null
+	 */
 	public function get_remote_check_update( Licence $licence ): ?Plugin_Update {
 
 		$release = $this->github_api->get_release();
@@ -111,10 +111,13 @@ class GitHub_Integration implements Integration_Interface {
 	 */
 	public function get_remote_product_information( Licence $licence ): ?Plugin_Info {
 
-		$plugin_headers = $this->github_api->get_plugin_headers();
 		$release        = $this->github_api->get_release();
-		$changelog_text = $this->github_api->get_changelog_text();
+		$plugin_headers = $this->github_api->get_plugin_headers();
+		$changelog_text = $this->github_api->get_changelog_text() ?? '';
 
+		if ( is_null( $release ) ) {
+			throw new Plugin_Updater_Exception( 'Failed to fetch release information from GitHub repo' );
+		}
 		if ( is_null( $plugin_headers ) ) {
 			throw new Plugin_Updater_Exception( 'Failed to update product information from GitHub' );
 		}
