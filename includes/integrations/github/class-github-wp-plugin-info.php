@@ -11,11 +11,12 @@ class GitHub_WP_Plugin_Info {
 		string $slug,
 		string $repository_url,
 		Release $release,
-		Plugin_Headers $headers
+		Plugin_Headers $headers,
+		string $changelog
 	): Plugin_Info {
 
 		return new Plugin_Info(
-			sections: array(),
+			sections: array( 'changelog' => $changelog ),
 			name: $headers->name,
 			slug: $slug,
 			version: ltrim( $release->tag_name, 'v' ),
