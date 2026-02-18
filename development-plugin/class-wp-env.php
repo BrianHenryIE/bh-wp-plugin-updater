@@ -72,7 +72,7 @@ class WP_Env {
 			return $maybe_url === sanitize_url( $maybe_url );
 		};
 
-		if ( !$is_url( $parameters ) ) {
+		if ( ! $is_url( $parameters ) ) {
 			return;
 		}
 
