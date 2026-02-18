@@ -41,9 +41,9 @@ class WordPress_Updater_Unit_Test extends Unit_Testcase {
 		/**
 		 * @see https://github.com/10up/wp_mock/issues/157
 		 */
-		\WP_Mock::userFunction( 'remove_filter' )
-				->once()
-				->with( 'pre_set_site_transient_update_plugins', array( $sut, 'on_set_transient_update_plugins' ) );
+		// \WP_Mock::userFunction( 'remove_filter' )
+		// ->once()
+		// ->with( 'pre_set_site_transient_update_plugins', array( $sut, 'on_set_transient_update_plugins' ) );
 
 		$sut->on_set_transient_update_plugins( $value, 'update_plugins' );
 
@@ -80,9 +80,9 @@ class WordPress_Updater_Unit_Test extends Unit_Testcase {
 		/**
 		 * @see https://github.com/10up/wp_mock/issues/157
 		 */
-		\WP_Mock::userFunction( 'remove_filter' )
-				->once()
-				->with( 'pre_set_site_transient_update_plugins', array( $sut, 'on_set_transient_update_plugins' ) );
+		// \WP_Mock::userFunction( 'remove_filter' )
+		// ->once()
+		// ->with( 'pre_set_site_transient_update_plugins', array( $sut, 'on_set_transient_update_plugins' ) );
 
 		\WP_Mock::userFunction( 'is_admin' )
 				->once()

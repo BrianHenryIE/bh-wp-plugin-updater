@@ -1,6 +1,10 @@
 <?php
 /**
+ * When WordPress checks for updates, so does this.
+ *
  * @see wp_update_plugins()
+ *
+ * TODO: Check WP CLI.
  *
  * @package brianhenryie/bh-wp-plugin-updater
  */
@@ -132,25 +136,15 @@ class WordPress_Updater {
 		$force_refresh = ! isset( $value->response[ $this->settings->get_plugin_basename() ] )
 							&& ! isset( $value->no_update[ $this->settings->get_plugin_basename() ] );
 
-		// If we're in the admin area and haven't got plugin update information, schedule an immediate background job.
+		/**
+		 * If we're in the admin area and haven't got plugin update information, schedule an immediate background job,
+		 * to avoid possible timeouts (e.g. a 10 second pause loading plugins.php because the update server is offline).
+		 */
 		if ( $force_refresh && is_admin() ) {
 			$force_refresh = false;
 			$this->api->schedule_immediate_background_update();
 		}
 		$this->force_refresh = $force_refresh;
-
-		/**
-		 * The `pre_set_site_transient_update_plugins` filter gets called twice in {@see wp_update_plugins()}.
-		 *
-		 * If we have a non-WordPress.org hosted plugin, {@see self::add_update_information()} will handle adding
-		 * the plugin information, and we don't need to run on the filter.
-		 *
-		 * If it is a WordPress.org hosted plugin, the `update_plugins_{$hostname}` filter will not fire and we
-		 * will use the second run of `pre_set_site_transient_update_plugins` to add the data.
-		 */
-		if ( ! $this->is_dot_org_plugin ) {
-			remove_filter( 'pre_set_site_transient_update_plugins', array( $this, 'on_set_transient_update_plugins' ) );
-		}
 
 		return $value;
 	}
@@ -168,6 +162,10 @@ class WordPress_Updater {
 			return $plugin_update_object;
 		}
 
+		if ( is_null( $plugin_information ) ) {
+			return $plugin_update_object;
+		}
+
 		if ( Comparator::greaterThan(
 			$plugin_information->new_version ?? '0.0.0',
 			$plugin_update_object->checked[ $this->settings->get_plugin_basename() ] ?? '0.0.0',
@@ -182,6 +180,10 @@ class WordPress_Updater {
 
 	/**
 	 * Add the plugin's update information to the `update_plugins` transient. To be used later on plugins.php.
+	 *
+	 * This will work when the library is installed in the plugin directory, but will not work if it is installed as
+	 * a second plugin, e.g. for beta installs, which would need to modify the cache of `get_plugins()` to set the
+	 * update uri of the targeted plugin, ~`wp_cache_set( 'plugins', $cache_plugins, 'plugins' )`.
 	 *
 	 * @hooked update_plugins_{$hostname}
 	 * @see wp-includes/update.php:513
