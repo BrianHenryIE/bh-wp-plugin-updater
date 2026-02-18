@@ -86,23 +86,17 @@ class GitHub_Integration implements Integration_Interface {
 
 		// If not assets are attached to the GitHub release!
 		if ( empty( $release->assets ) ) {
+			$this->logger->info( 'No GitHub release assets' );
 			return null;
 		}
 
-		return new Plugin_Update(
-			id: null,
-			slug: $this->settings->get_plugin_slug(),
-			version: ltrim( $release->tag_name, 'v' ),
-			url: $plugin_headers->plugin_uri,
-			package: $release->assets[0]->browser_download_url,
-			new_version: $release->tag_name,
-			tested: $readme->tested,
-			requires_php: $readme->requires_php ?? $plugin_headers->requires_php ?? null,
-			autoupdate: null,
-			icons: null,
-			banners: null,
-			banners_rtl: null,
-			translations: null,
+		$this->logger->debug( 'Returning new Plugin_Update' );
+
+		return GitHub_Plugin_Update::from_release(
+			$this->settings,
+			$release,
+			$plugin_headers,
+			$readme,
 		);
 	}
 
@@ -119,8 +113,9 @@ class GitHub_Integration implements Integration_Interface {
 
 		$plugin_headers = $this->github_api->get_plugin_headers();
 		$release        = $this->github_api->get_release();
+		$changelog_text = $this->github_api->get_changelog_text();
 
-		if ( is_null( $this->plugin_headers ) ) {
+		if ( is_null( $plugin_headers ) ) {
 			throw new Plugin_Updater_Exception( 'Failed to update product information from GitHub' );
 		}
 
@@ -129,6 +124,7 @@ class GitHub_Integration implements Integration_Interface {
 			$this->settings->get_licence_server_host(),
 			$release,
 			$plugin_headers,
+			$changelog_text
 		);
 	}
 
