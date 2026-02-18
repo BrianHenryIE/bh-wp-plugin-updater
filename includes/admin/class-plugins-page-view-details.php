@@ -84,7 +84,7 @@ class Plugins_Page_View_Details {
 		}
 
 		// Check sections have content before adding any.
-		$sections = $update_information->get_sections();
+		$sections = $update_information->sections;
 
 		foreach ( $sections as $name => $section ) {
 			$res->sections[ $name ] = $section;
