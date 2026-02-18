@@ -21,9 +21,7 @@ use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
 use BrianHenryIE\WP_Plugin_Updater\WP_Includes\Cron;
 use Composer\Semver\Comparator;
 use DateTimeImmutable;
-use JsonMapper\Handler\FactoryRegistry;
-use JsonMapper\Handler\PropertyMapper;
-use JsonMapper\JsonMapperBuilder;
+use JsonMapper\JsonMapperInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -38,7 +36,8 @@ class API implements API_Interface {
 	public function __construct(
 		protected Settings_Interface $settings,
 		LoggerInterface $logger,
-		?Integration_Factory_Interface $integration_factory = null
+		protected JsonMapperInterface $json_mapper,
+		?Integration_Factory_Interface $integration_factory = null,
 	) {
 		$this->setLogger( $logger );
 
@@ -99,45 +98,74 @@ class API implements API_Interface {
 	}
 
 	/**
+	 * Parse the value of `get_option()` to the class requested.
+	 *
+	 * @template T of object
+	 * @param string          $option_name
+	 * @param class-string<T> $class_name
+	 * @return ?T
+	 */
+	protected function get_option( string $option_name, string $class_name ): ?object {
+
+		$value = get_option( $option_name );
+
+		if ( empty( $value ) ) {
+			$this->logger->debug( "No data saved in wp-options for {$option_name} ($class_name)." );
+			return null;
+		}
+
+		if ( ! is_string( $value ) ) {
+			$invalid_raw_value = function ( string $option_name ) {
+				$alloptions = wp_load_alloptions();
+				return $alloptions[ $option_name ] ?? null;
+			};
+			$this->logger->warning(
+				"Invalid data saved in wp-options for {$option_name} ($class_name): " . $invalid_raw_value( $option_name )
+			);
+			return null;
+		}
+
+		try {
+			return $this->json_mapper->mapToClassFromString( $value, $class_name );
+		} catch ( Throwable $e ) {
+			$this->logger->error(
+				"Failed to unserialize wp-options data for {$option_name} ($class_name) : " . $e->getMessage(),
+				array(
+					'exception'        => $e,
+					'wp_options_value' => $value,
+				)
+			);
+			return null;
+		}
+	}
+
+	/**
 	 * Get the licence information from the WordPress options database table. Verifies it is a Licence object.
 	 */
 	protected function get_saved_licence_information(): ?Licence {
-		// TODO: try / catch a malformed serialized object.
-		// TODO: serialize to an array, not to a serialized object, so the class can be changed in future.
-		$value = get_option(
+		return $this->get_option(
 			$this->settings->get_licence_data_option_name(),
-			null
+			Licence::class
 		);
-		if ( is_null( $value ) ) {
-			$this->logger->debug( 'No licence information found in wp-options.' );
-			return null;
-		}
-		try {
-			$licence = new Licence( ...$value );
-			return $licence;
-		} catch ( Throwable $e ) {
-			$this->logger->error( 'Failed to unserialize licence information: ' . $e->getMessage(), array( 'value' => $value ) );
-			return null;
-		}
 	}
 
 	/**
 	 *
 	 *
 	 * @param Licence $licence
-	 *
-	 * @return void
 	 */
 	protected function save_licence_information( Licence $licence, array $updates = array() ): Licence {
 
-		update_option(
-			$this->settings->get_licence_data_option_name(),
-			array_merge( (array) $licence, $updates )
-		);
-
-		return new Licence(
+		$updated_licence = new Licence(
 			...( array_merge( (array) $licence, $updates ) )
 		);
+
+		update_option(
+			$this->settings->get_licence_data_option_name(),
+			wp_json_encode( $updated_licence )
+		);
+
+		return $updated_licence;
 	}
 
 	/**
@@ -197,34 +225,38 @@ class API implements API_Interface {
 			// TODO: Check the last time it was refreshed and rate limit the refreshing.
 		}
 
-		return match ( $refresh ) {
+		$result = match ( $refresh ) {
 			true => $this->get_remote_product_information(),
 			false => $this->get_cached_product_information(),
 			default => $this->get_cached_product_information() ?? $this->get_remote_product_information(),
 		};
+
+		if ( is_null( $result ) && $refresh === false ) {
+			$this->logger->info( 'Cache was empty, scheduling an immediate update' );
+			$this->schedule_immediate_background_update();
+		}
+
+		return $result;
 	}
 
 	protected function get_remote_product_information(): ?Plugin_Info {
 
 		$product = $this->service->get_remote_product_information( $this->licence );
 
-		update_option( $this->settings->get_plugin_information_option_name(), $product );
+		update_option(
+			$this->settings->get_plugin_information_option_name(),
+			wp_json_encode( $product )
+		);
 
 		return $product;
 	}
 
 	protected function get_cached_product_information(): ?Plugin_Info {
-		$cached_product_information = get_option(
-			// plugin_slug_plugin_information
+
+		return $this->get_option(
 			$this->settings->get_plugin_information_option_name(),
-			null
+			Plugin_Info::class
 		);
-		if ( $cached_product_information instanceof Plugin_Info ) {
-			$this->logger->debug( 'returning cached product information for ' . $cached_product_information->get_software_slug() );
-			return $cached_product_information;
-		}
-		$this->logger->debug( 'product not found in cache: ' . $this->settings->get_plugin_slug() );
-		return null;
 	}
 
 	/**
@@ -254,7 +286,7 @@ class API implements API_Interface {
 	 * TODO: rate limit this.
 	 */
 	public function schedule_immediate_background_update(): void {
-		$cron          = new Cron( $this, $this->settings );
+		$cron          = new Cron( $this, $this->settings, $this->logger );
 		$cron_job_name = $cron->get_immediate_update_check_cron_job_name();
 		wp_schedule_single_event( time(), $cron_job_name );
 	}
@@ -263,7 +295,10 @@ class API implements API_Interface {
 
 		try {
 			$check_update = $this->service->get_remote_check_update( $this->licence );
-			update_option( $this->settings->get_check_update_option_name(), (array) $check_update );
+			update_option(
+				$this->settings->get_check_update_option_name(),
+				wp_json_encode( $check_update )
+			);
 		} catch ( \Exception $e ) {
 			$this->logger->error( $e->getMessage(), array( 'exception' => $e ) );
 			return null;
@@ -273,44 +308,10 @@ class API implements API_Interface {
 	}
 
 	protected function get_cached_check_update(): ?Plugin_Update {
-		$cached_check_update = get_option(
+		return $this->get_option(
 			$this->settings->get_check_update_option_name(),
-			null
+			Plugin_Update::class
 		);
-
-		if ( is_null( $cached_check_update ) ) {
-			$this->logger->debug( 'check_update Plugin_Update not found in cache: ' . $this->settings->get_plugin_slug() );
-			return null;
-		}
-
-		$factory_registry = new FactoryRegistry();
-		$mapper           = JsonMapperBuilder::new()
-											->withObjectConstructorMiddleware( $factory_registry )
-											->withPropertyMapper( new PropertyMapper( $factory_registry ) )
-											->build();
-
-		try {
-			$mapped_product_updated = $mapper->mapToClassFromString(
-				wp_json_encode( $cached_check_update ),
-				Plugin_Update::class
-			);
-		} catch ( \Exception $e ) {
-			$this->logger->error(
-				'Failed to map cached check_update: ' . $e->getMessage(),
-				array(
-					'exception'   => $e,
-					'cache_value' => $cached_check_update,
-				)
-			);
-			return null;
-		}
-
-		if ( ! ( $mapped_product_updated instanceof Plugin_Update ) ) {
-			return null;
-		}
-
-		$this->logger->debug( 'returning cached check_update for ' . $this->settings->get_plugin_slug() );
-		return $mapped_product_updated;
 	}
 
 	/**
@@ -324,10 +325,15 @@ class API implements API_Interface {
 	}
 
 	protected function get_available_version( ?bool $refresh = null ): ?string {
-		return $this->get_check_update( $refresh )?->get_version() ?? null;
+		return $this->get_check_update( $refresh )?->version ?? null;
 	}
 
 	protected function get_current_version(): ?string {
-		return get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? null;
+
+		// $a = get_plugins( $this->settings->get_plugin_slug() )['Version'] ?? null;
+
+		$b = get_plugins()[ $this->settings->get_plugin_basename() ]['Version'] ?? null;
+
+		return $b;
 	}
 }

@@ -2,16 +2,33 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
+use BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper\JsonMapper_Helper;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
+use JsonMapper\JsonMapperInterface;
 use Mockery;
 use Mockery\MockInterface;
+use Psr\Log\LoggerInterface;
 use WP_Mock;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\API
  */
 class API_Unit_Test extends Unit_Testcase {
+
+	protected function get_sut(
+		?Settings_Interface $settings = null,
+		?LoggerInterface $logger = null,
+		?JsonMapperInterface $json_mapper = null,
+		?Integration_Factory_Interface $integration_factory = null,
+	): API {
+		return new API(
+			$settings ?? Mockery::mock( Settings_Interface::class )->makePartial(),
+			$logger ?? $this->logger,
+			$json_mapper ?? ( new JsonMapper_Helper() )->build(),
+			$integration_factory ?? $this->get_mock_integration_factory()
+		);
+	}
 
 	protected function get_mock_integration_factory( ?Integration_Interface $integration_mock = null ): Integration_Factory_Interface {
 		/** @var Integration_Factory_Interface&MockInterface $mock_integration_factory */
@@ -67,12 +84,14 @@ class API_Unit_Test extends Unit_Testcase {
 
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 		WP_Mock::userFunction( 'get_option' )
-				->with( 'a_plugin_licence', null )
+				->with( 'a_plugin_licence' )
 				->once()
 				->andReturnFalse();
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory()
+		);
 
 		$settings->shouldReceive( 'get_check_update_option_name' )
 			->once()
@@ -85,8 +104,8 @@ class API_Unit_Test extends Unit_Testcase {
 
 		WP_Mock::userFunction( 'get_option' )
 				->once()
-				->with( 'plugin_slug_check_update', null )
-				->andReturnUsing( fn() => ! $cached_version ? null : array( 'version' => $cached_version ) );
+				->with( 'plugin_slug_check_update' )
+				->andReturnUsing( fn() => ! $cached_version ? null : json_encode( array( 'version' => $cached_version ) ) );
 
 		$new_version_array = array(
 			'plugin-slug/plugin-slug.php' => array(
@@ -125,14 +144,15 @@ class API_Unit_Test extends Unit_Testcase {
 		);
 
 		\WP_Mock::userFunction( 'get_option' )
-				->with( 'a_plugin_licence', null )
-				->andReturn( (array) $licence );
+				->with( 'a_plugin_licence' )
+				->andReturn( json_encode( $licence ) );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
+		$sut = $this->get_sut(
+			settings:$settings,
+		);
 
 		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->licence_key );
 	}
@@ -146,8 +166,8 @@ class API_Unit_Test extends Unit_Testcase {
 		);
 
 		\WP_Mock::userFunction( 'get_option' )
-				->with( 'a_plugin_licence', null )
-				->andReturn( (array) $licence );
+				->with( 'a_plugin_licence' )
+				->andReturn( json_encode( $licence ) );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
@@ -158,13 +178,15 @@ class API_Unit_Test extends Unit_Testcase {
 
 		\WP_Mock::userFunction( 'update_option' )->once()
 				->withArgs(
-					fn( $option_name, $value ) => is_array( $value )
-						&& 'qwerty' === $value['licence_key']
+					fn( $option_name, $value ) => is_string( $value )
+									&& str_contains( $value, 'qwerty' )
 				)
 				->andReturnTrue();
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
+		$sut = $this->get_sut(
+			settings:$settings,
+			integration_factory: $this->get_mock_integration_factory( $mock_integration )
+		);
 
 		$sut->set_license_key( 'qwerty' );
 	}
@@ -179,8 +201,8 @@ class API_Unit_Test extends Unit_Testcase {
 		);
 
 		\WP_Mock::userFunction( 'get_option' )
-				->with( 'a_plugin_licence', null )
-				->andReturn( (array) $licence );
+				->with( 'a_plugin_licence' )
+				->andReturn( json_encode( $licence ) );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
@@ -194,13 +216,15 @@ class API_Unit_Test extends Unit_Testcase {
 
 		\WP_Mock::userFunction( 'update_option' )->once()
 				->withArgs(
-					fn( $option_name, $value ) => is_array( $value )
-							&& 'abc123' === $value['licence_key']
+					fn( $option_name, $value ) => is_string( $value )
+							&& str_contains( $value, 'abc123' )
 				)
 				->andReturnTrue();
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
+		$sut = $this->get_sut(
+			settings:$settings,
+			integration_factory: $this->get_mock_integration_factory( $mock_integration )
+		);
 
 		$sut->set_license_key( 'abc123' );
 	}
@@ -216,8 +240,8 @@ class API_Unit_Test extends Unit_Testcase {
 		 * @see API::__construct
 		 */
 		\WP_Mock::userFunction( 'get_option' )
-				->with( 'a_plugin_licence', null )
-				->andReturn( (array) $licence );
+				->with( 'a_plugin_licence' )
+				->andReturn( json_encode( $licence ) );
 
 		/**
 		 * @see API::get_licence_details()
@@ -232,8 +256,10 @@ class API_Unit_Test extends Unit_Testcase {
 
 		\WP_Mock::userFunction( 'update_option' )->never();
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $mock_integration ) );
+		$sut = $this->get_sut(
+			settings:$settings,
+			integration_factory: $this->get_mock_integration_factory( $mock_integration )
+		);
 
 		$sut->set_license_key( 'abc123' );
 	}
@@ -250,15 +276,16 @@ class API_Unit_Test extends Unit_Testcase {
 		 * @see API::__construct
 		 */
 		\WP_Mock::userFunction( 'get_option' )
-				->with( 'a_plugin_licence', null )
-				->andReturn( (array) $licence );
+				->with( 'a_plugin_licence' )
+				->andReturn( json_encode( $licence ) );
 
 		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->once()->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_plugin_slug' )->once()->andReturn( 'test-plugin' );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory() );
+		$sut = $this->get_sut(
+			settings: $settings,
+		);
 
 		\WP_Mock::userFunction( 'wp_schedule_single_event' )
 				->once()

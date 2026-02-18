@@ -2,16 +2,33 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater;
 
+use BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper\JsonMapper_Helper;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Update;
+use JsonMapper\JsonMapperInterface;
 use Mockery;
+use Psr\Log\LoggerInterface;
 use WP\MCP\Plugin;
 
 /**
  * @coversDefaultClass \BrianHenryIE\WP_Plugin_Updater\API
  */
 class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
+
+	protected function get_sut(
+		?Settings_Interface $settings = null,
+		?LoggerInterface $logger = null,
+		?JsonMapperInterface $json_mapper = null,
+		?Integration_Factory_Interface $integration_factory = null,
+	): API {
+		return new API(
+			$settings ?? Mockery::mock( Settings_Interface::class )->makePartial(),
+			$logger ?? $this->logger,
+			$json_mapper ?? ( new JsonMapper_Helper() )->build(),
+			$integration_factory,
+		);
+	}
 
 	protected function get_mock_integration_factory( Integration_Interface $integration_mock ): Integration_Factory_Interface {
 		$mock_integration_factory = Mockery::mock( Integration_Factory_Interface::class )->makePartial();
@@ -38,17 +55,19 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		update_option( 'a_plugin_licence', (array) $licence );
+		update_option( 'a_plugin_licence', wp_json_encode( $licence ) );
 
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'activate_licence' )->once()->andReturn( $licence );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory( $integration )
+		);
 
 		$result = $sut->activate_licence();
 
-		$saved_licence = get_option( 'a_plugin_licence' );
+		$saved_licence = json_decode( get_option( 'a_plugin_licence' ), true );
 
 		$this->assertEquals( $result->status, $saved_licence['status'] );
 	}
@@ -70,7 +89,7 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 			icons: array( 'icons' ),
 			banners: array( 'banners' ),
 			banners_rtl: array( 'banners_rtl' ),
-			translations: array( 'translations' ),
+			translations: null,
 		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
@@ -80,13 +99,17 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'get_remote_check_update' )->once()->andReturn( $plugin_update );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory( $integration )
+		);
 
 		$result = $sut->get_check_update( true );
 
+		$this->assertNotEmpty( get_option( 'a_plugin_update' ) );
+
 		/** @var Plugin_Update $saved_plugin_update */
-		$saved_plugin_update = new Plugin_Update( ...get_option( 'a_plugin_update' ) );
+		$saved_plugin_update = $sut->get_check_update( false );
 
 		$this->assertEquals( $result?->version, $saved_plugin_update->version );
 	}
@@ -108,7 +131,7 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 			icons: array( 'icons' ),
 			banners: array( 'banners' ),
 			banners_rtl: array( 'banners_rtl' ),
-			translations: array( 'translations' ),
+			translations: null,
 		);
 
 		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
@@ -119,8 +142,10 @@ class API_WPUnit_Test extends \BrianHenryIE\WP_Plugin_Updater\WPUnit_Testcase {
 		$integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$integration->expects( 'get_remote_check_update' )->once()->andReturn( $plugin_update );
 
-		$logger = $this->logger;
-		$sut    = new API( $settings, $logger, $this->get_mock_integration_factory( $integration ) );
+		$sut = $this->get_sut(
+			settings: $settings,
+			integration_factory: $this->get_mock_integration_factory( $integration )
+		);
 
 		$sut->get_check_update( true );
 

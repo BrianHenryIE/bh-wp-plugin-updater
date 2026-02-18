@@ -21,7 +21,14 @@ class Unit_Testcase extends Unit {
 		parent::setUp();
 		WP_Mock::setUp();
 
-		WP_Mock::userFunction( 'wp_json_encode' )->andReturnSelf();
+		WP_Mock::userFunction(
+			'wp_json_encode',
+			array(
+				'return' => function ( $value ) {
+					return json_encode( $value );
+				},
+			)
+		);
 
 		$this->logger = new ColorLogger();
 	}

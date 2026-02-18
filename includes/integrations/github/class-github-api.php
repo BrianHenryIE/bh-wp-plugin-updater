@@ -10,13 +10,11 @@
 namespace BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub;
 
 use BrianHenryIE\WP_Plugin_Updater\Exception\Plugin_Updater_Exception;
+use BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper\JsonMapper_Helper;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\GitHub\Model\Release;
 use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
 use Github\Client as GitHub_Client;
-use JsonMapper\Handler\FactoryRegistry;
-use JsonMapper\Handler\PropertyMapper;
-use JsonMapper\JsonMapperBuilder;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Syntatis\WPPluginReadMeParser\Parser as Readme_Parser;
@@ -97,15 +95,7 @@ class GitHub_API {
 			throw new Plugin_Updater_Exception( 'Unable to parse JSON response.' );
 		}
 
-		// TODO: remove '->with' that are not needed.
-		$factory_registry = new FactoryRegistry();
-		$mapper           = JsonMapperBuilder::new()
-			->withDocBlockAnnotationsMiddleware()
-			->withObjectConstructorMiddleware( $factory_registry )
-			->withPropertyMapper( new PropertyMapper( $factory_registry ) )
-			->withTypedPropertiesMiddleware()
-			->withNamespaceResolverMiddleware()
-			->build();
+		$mapper = ( new JsonMapper_Helper() )->build();
 
 		return $mapper->mapToClassArrayFromString( $json_string_response, Release::class );
 	}
