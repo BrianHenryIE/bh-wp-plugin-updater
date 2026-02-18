@@ -145,10 +145,10 @@ class GitHub_API {
 
 		$url              = sprintf(
 			'https://raw.githubusercontent.com/%s/%s/%s/%s',
-			sanitize_key( $user ),
-			sanitize_key( $repo ),
-			sanitize_key( $tag_name ),
-			sanitize_key( $path ),
+			sanitize_text_field( $user ),
+			sanitize_text_field( $repo ),
+			sanitize_text_field( $tag_name ),
+			sanitize_text_field( $path ),
 		);
 		$request_response = wp_remote_get( $url );
 		if ( 200 === wp_remote_retrieve_response_code( $request_response ) ) {

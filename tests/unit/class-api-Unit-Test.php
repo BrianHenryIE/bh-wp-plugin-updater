@@ -5,6 +5,7 @@ namespace BrianHenryIE\WP_Plugin_Updater;
 use BrianHenryIE\WP_Plugin_Updater\Helpers\JsonMapper\JsonMapper_Helper;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Factory_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Integrations\Integration_Interface;
+use BrianHenryIE\WP_Plugin_Updater\Model\Plugin_Headers;
 use JsonMapper\JsonMapperInterface;
 use Mockery;
 use Mockery\MockInterface;
@@ -107,15 +108,24 @@ class API_Unit_Test extends Unit_Testcase {
 				->with( 'plugin_slug_check_update' )
 				->andReturnUsing( fn() => ! $cached_version ? null : json_encode( array( 'version' => $cached_version ) ) );
 
-		$new_version_array = array(
-			'plugin-slug/plugin-slug.php' => array(
-				'Version' => $local_version,
-			),
+		\Patchwork\redefine(
+			'constant',
+			function ( string $constant_name ) {
+				return 'WP_PLUGIN_DIR' === $constant_name
+					? 'irrelevant'
+					: \Patchwork\relay( func_get_args() );
+			}
 		);
 
-		WP_Mock::userFunction( 'get_plugins' )
-			->once()
-			->andReturn( $new_version_array );
+		\Patchwork\redefine(
+			array( Plugin_Headers::class, 'from_file' ),
+			function ( string $file_path ) use ( $local_version ) {
+				return new Plugin_Headers(
+					name: '',
+					version: $local_version,
+				);
+			}
+		);
 
 		$result = $sut->is_update_available( false );
 
@@ -147,11 +157,15 @@ class API_Unit_Test extends Unit_Testcase {
 				->with( 'a_plugin_licence' )
 				->andReturn( json_encode( $licence ) );
 
-		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
+		$json_mapper = Mockery::mock( JsonMapperInterface::class );
+		$json_mapper->expects( 'mapToClassFromString' )->andReturn( $licence )->twice();
+
 		$sut = $this->get_sut(
-			settings:$settings,
+			settings: $settings,
+			json_mapper: $json_mapper
 		);
 
 		$this->assertEquals( 'abc123', $sut->get_licence_details( false )->licence_key );
@@ -169,10 +183,10 @@ class API_Unit_Test extends Unit_Testcase {
 				->with( 'a_plugin_licence' )
 				->andReturn( json_encode( $licence ) );
 
-		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$mock_integration = \Mockery::mock( Integration_Interface::class )->makePartial();
+		$mock_integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$mock_integration->shouldReceive( 'activate_licence' )->never();
 		$mock_integration->shouldReceive( 'deactivate_licence' )->never();
 
@@ -204,10 +218,13 @@ class API_Unit_Test extends Unit_Testcase {
 				->with( 'a_plugin_licence' )
 				->andReturn( json_encode( $licence ) );
 
-		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$json_mapper = Mockery::mock( JsonMapperInterface::class );
+		$json_mapper->expects( 'mapToClassFromString' )->andReturn( $licence )->once();
+
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$mock_integration = \Mockery::mock( Integration_Interface::class )->makePartial();
+		$mock_integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$mock_integration->shouldReceive( 'activate_licence' )->never();
 		$mock_integration->shouldReceive( 'deactivate_licence' )->once()
 			->withArgs(
@@ -222,7 +239,8 @@ class API_Unit_Test extends Unit_Testcase {
 				->andReturnTrue();
 
 		$sut = $this->get_sut(
-			settings:$settings,
+			settings: $settings,
+			json_mapper: $json_mapper,
 			integration_factory: $this->get_mock_integration_factory( $mock_integration )
 		);
 
@@ -243,21 +261,25 @@ class API_Unit_Test extends Unit_Testcase {
 				->with( 'a_plugin_licence' )
 				->andReturn( json_encode( $licence ) );
 
+		$json_mapper = Mockery::mock( JsonMapperInterface::class );
+		$json_mapper->expects( 'mapToClassFromString' )->andReturn( $licence )->once();
+
 		/**
 		 * @see API::get_licence_details()
 		 * @see API::get_saved_licence_information()
 		 */
-		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->andReturn( 'a_plugin_licence' );
 
-		$mock_integration = \Mockery::mock( Integration_Interface::class )->makePartial();
+		$mock_integration = Mockery::mock( Integration_Interface::class )->makePartial();
 		$mock_integration->shouldReceive( 'activate_licence' )->never();
 		$mock_integration->shouldReceive( 'deactivate_licence' )->never();
 
 		\WP_Mock::userFunction( 'update_option' )->never();
 
 		$sut = $this->get_sut(
-			settings:$settings,
+			settings: $settings,
+			json_mapper: $json_mapper,
 			integration_factory: $this->get_mock_integration_factory( $mock_integration )
 		);
 
@@ -279,7 +301,7 @@ class API_Unit_Test extends Unit_Testcase {
 				->with( 'a_plugin_licence' )
 				->andReturn( json_encode( $licence ) );
 
-		$settings = \Mockery::mock( Settings_Interface::class )->makePartial();
+		$settings = Mockery::mock( Settings_Interface::class )->makePartial();
 		$settings->shouldReceive( 'get_licence_data_option_name' )->once()->andReturn( 'a_plugin_licence' );
 		$settings->expects( 'get_plugin_slug' )->once()->andReturn( 'test-plugin' );
 

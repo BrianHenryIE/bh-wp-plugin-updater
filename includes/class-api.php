@@ -338,7 +338,7 @@ class API implements API_Interface {
 	}
 
 	protected function get_current_version(): ?string {
-		$headers = Plugin_Headers::from_file( WP_PLUGIN_DIR . '/' . $this->settings->get_plugin_basename() );
+		$headers = Plugin_Headers::from_file( constant( 'WP_PLUGIN_DIR' ) . '/' . $this->settings->get_plugin_basename() );
 
 		return $headers->version;
 	}
