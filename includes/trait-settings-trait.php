@@ -55,7 +55,7 @@ trait Settings_Trait {
 	 * E.g. `bh-wp-autologin-urls` -> `bh_wp_autologin_urls_licence`
 	 */
 	public function get_licence_data_option_name(): string {
-		return str_dash_to_underscore( $this->get_plugin_slug() ) . '_licence';
+		return str_dash_to_underscore( $this->get_plugin_slug() ) . '_bh_wp_plugin_updater_licence';
 	}
 
 	/**
@@ -66,11 +66,11 @@ trait Settings_Trait {
 	 * E.g. `bh-wp-autologin-urls` -> `bh_wp_autologin_urls_plugin_information`
 	 */
 	public function get_plugin_information_option_name(): string {
-		return str_dash_to_underscore( "{$this->get_plugin_slug()}_plugin_information" );
+		return str_dash_to_underscore( "{$this->get_plugin_slug()}_bh_wp_plugin_updater_plugin_information" );
 	}
 
 	public function get_check_update_option_name(): string {
-		return str_dash_to_underscore( "{$this->get_plugin_slug()}_update" );
+		return str_dash_to_underscore( "{$this->get_plugin_slug()}_bh_wp_plugin_updater_update" );
 	}
 
 	/**
