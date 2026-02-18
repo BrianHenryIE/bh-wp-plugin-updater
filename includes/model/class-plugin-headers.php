@@ -70,13 +70,13 @@ class Plugin_Headers {
 	 */
 	public static function from_file_string( string $plugin_php_file ): Plugin_Headers {
 		try {
-			$plugin_filename = 'plugin_headers';
-			$tmp_plugin_file_path = tempnam(get_temp_dir(), $plugin_filename);
-			file_put_contents($tmp_plugin_file_path, $plugin_php_file);
-			return self::from_file($tmp_plugin_file_path);
+			$plugin_filename      = 'plugin_headers';
+			$tmp_plugin_file_path = tempnam( get_temp_dir(), $plugin_filename );
+			file_put_contents( $tmp_plugin_file_path, $plugin_php_file );
+			return self::from_file( $tmp_plugin_file_path );
 		} finally {
-			if(file_exists($tmp_plugin_file_path)) {
-				wp_delete_file($tmp_plugin_file_path);
+			if ( isset( $tmp_plugin_file_path ) && file_exists( $tmp_plugin_file_path ) ) {
+				wp_delete_file( $tmp_plugin_file_path );
 			}
 		}
 	}

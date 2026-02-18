@@ -145,10 +145,10 @@ class GitHub_API {
 
 		$url              = sprintf(
 			'https://raw.githubusercontent.com/%s/%s/%s/%s',
-			sanitize_text_field( $user ),
-			sanitize_text_field( $repo ),
-			sanitize_text_field( $tag_name ),
-			sanitize_text_field( $path ),
+			rawurlencode( $user ),
+			rawurlencode( $repo ),
+			rawurlencode( $tag_name ),
+			rawurlencode( $path ),
 		);
 		$request_response = wp_remote_get( $url );
 		if ( 200 === wp_remote_retrieve_response_code( $request_response ) ) {
@@ -209,7 +209,12 @@ class GitHub_API {
 
 		$allow_beta = false;
 
-		$this->release = $this->filter_releases( $releases, $allow_beta )[0] ?? null;
+		$get_first_release = function ( $releases, $allow_beta ): ?Release {
+				$allowed_releases = $this->filter_releases( $releases, $allow_beta );
+				return empty( $allowed_releases ) ? null : array_first( $allowed_releases );
+		};
+
+		$this->release = $get_first_release( $releases, $allow_beta );
 
 		if ( is_null( $this->release ) ) {
 			$this->changelog_text = null;
@@ -218,9 +223,17 @@ class GitHub_API {
 			return;
 		}
 
-		$this->changelog_text = $this->fetch_raw_file( $this->github_username, $this->github_repository, $this->release->tag_name, 'CHANGELOG.md' );
+		try {
+			$this->changelog_text = $this->fetch_raw_file( $this->github_username, $this->github_repository, $this->release->tag_name, 'CHANGELOG.md' );
+		} catch ( \Exception ) {
+			$this->changelog_text = null;
+		}
 
-		$this->readme = $this->fetch_readme( $this->github_username, $this->github_repository, $this->release->tag_name );
+		try {
+			$this->readme = $this->fetch_readme( $this->github_username, $this->github_repository, $this->release->tag_name );
+		} catch ( \Exception ) {
+			$this->readme = null;
+		}
 
 		$plugin_file_name     = explode( '/', $this->settings->get_plugin_basename() )[1];
 		$this->plugin_headers = $this->fetch_plugin_headers( $this->github_username, $this->github_repository, $this->release->tag_name, $plugin_file_name );
