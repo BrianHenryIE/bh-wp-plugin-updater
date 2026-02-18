@@ -73,7 +73,10 @@ class Plugins_Page_View_Details {
 			}
 		}
 
-		if ( isset( $_GET['section'] ) && 'changelog' === $_GET['section'] && ! isset( $sections['changelog'] ) ) {
+		/**
+		 * phpcs:disable WordPress.Security.NonceVerification.Recommended We are not writing this data.
+		 */
+		if ( isset( $_GET['section'] ) && 'changelog' === sanitize_key( wp_unslash( $_GET['section'] ) ) ) {
 			$res->sections['changelog'] = 'No changelog available.';
 		}
 
