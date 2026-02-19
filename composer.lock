@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29345701ce7564d06d5d56a13f256382",
+    "content-hash": "1bcd1e38ef0ff936d809c6179cbd4542",
     "packages": [
         {
             "name": "art4/requests-psr18-adapter",
@@ -5878,16 +5878,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "4.5.11",
+            "version": "4.5.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "ed294eebf327e5b941e49f33d25dd7bc87e005b3"
+                "reference": "b4cd300d2f2578a5bc85a0a1ef52ae656c2c6875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/ed294eebf327e5b941e49f33d25dd7bc87e005b3",
-                "reference": "ed294eebf327e5b941e49f33d25dd7bc87e005b3",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/b4cd300d2f2578a5bc85a0a1ef52ae656c2c6875",
+                "reference": "b4cd300d2f2578a5bc85a0a1ef52ae656c2c6875",
                 "shasum": ""
             },
             "require": {
@@ -5968,7 +5968,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lucatume/wp-browser/issues",
-                "source": "https://github.com/lucatume/wp-browser/tree/4.5.11"
+                "source": "https://github.com/lucatume/wp-browser/tree/4.5.13"
             },
             "funding": [
                 {
@@ -5976,7 +5976,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-20T09:51:26+00:00"
+            "time": "2026-02-18T16:39:07+00:00"
         },
         {
             "name": "marc-mabe/php-enum",
@@ -14738,5 +14738,5 @@
     "platform-overrides": {
         "php": "8.1"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
