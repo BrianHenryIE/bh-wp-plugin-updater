@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29345701ce7564d06d5d56a13f256382",
+    "content-hash": "d492cf7760454915b9e8448b533395fd",
     "packages": [
         {
             "name": "art4/requests-psr18-adapter",
@@ -8135,20 +8135,20 @@
         },
         {
             "name": "psr-mock/http-client-implementation",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/psr-mock/http-client-implementation.git",
-                "reference": "9fc75ccd396f009b8dee289886071eee94c231b5"
+                "reference": "3afdff33b27283890e8ce533cca48aec89eaf5de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/psr-mock/http-client-implementation/zipball/9fc75ccd396f009b8dee289886071eee94c231b5",
-                "reference": "9fc75ccd396f009b8dee289886071eee94c231b5",
+                "url": "https://api.github.com/repos/psr-mock/http-client-implementation/zipball/3afdff33b27283890e8ce533cca48aec89eaf5de",
+                "reference": "3afdff33b27283890e8ce533cca48aec89eaf5de",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0",
+                "php": "^8.1",
                 "psr/http-client": "^1.0",
                 "psr/http-message": "^1.0"
             },
@@ -8208,9 +8208,9 @@
             ],
             "support": {
                 "issues": "https://github.com/psr-mock/http-client-implementation/issues",
-                "source": "https://github.com/psr-mock/http-client-implementation/tree/1.0.0"
+                "source": "https://github.com/psr-mock/http-client-implementation/tree/1.0.1"
             },
-            "time": "2023-03-27T18:04:14+00:00"
+            "time": "2024-03-04T21:48:32+00:00"
         },
         {
             "name": "psr-mock/http-factory-implementation",
@@ -14738,5 +14738,5 @@
     "platform-overrides": {
         "php": "8.1"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
