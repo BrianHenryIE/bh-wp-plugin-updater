@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: install more-utils for sponge
         run: sudo apt-get install moreutils
@@ -52,7 +52,7 @@ jobs:
           commit_message: "🤖 Creating gh-pages branch"
 
       - name: Checkout GitHub Pages branch for code coverage report
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           ref: gh-pages
           path: gh-pages
