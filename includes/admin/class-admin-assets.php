@@ -7,6 +7,7 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Admin;
 
+use BrianHenryIE\WP_Plugin_Updater\Actions;
 use BrianHenryIE\WP_Plugin_Updater\API_Interface;
 use BrianHenryIE\WP_Plugin_Updater\Licence;
 use BrianHenryIE\WP_Plugin_Updater\Settings_Interface;
@@ -32,6 +33,9 @@ class Admin_Assets {
 	) {
 	}
 
+	/**
+	 * @see Actions::add_assets_hooks()
+	 */
 	public function enqueue_script(): void {
 
 		$script_handle = "{$this->settings->get_plugin_slug()}-licence";
