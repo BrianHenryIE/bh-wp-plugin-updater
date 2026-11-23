@@ -65,3 +65,5 @@ Feature: Test the licence management WP-CLI commands.
       """
       Success: active
       """
+
+    # TODO: wp plugin list does not show the available update, although the UI does.

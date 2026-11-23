@@ -23,7 +23,7 @@ class Plugin_Info {
 		public readonly string $slug,
 		public readonly string $version,
 		/**
-		 * author name, or author name in HTML href
+		 * Author name, or author name in HTML href.
 		 *
 		 * @var ?string $author
 		 */

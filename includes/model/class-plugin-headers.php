@@ -7,6 +7,8 @@
 
 namespace BrianHenryIE\WP_Plugin_Updater\Model;
 
+use WP_Filesystem_Direct;
+
 /**
  * The only required header is 'Name', so all others are nullable.
  *
@@ -81,7 +83,7 @@ class Plugin_Headers {
 			}
 			return self::from_file( $tmp_plugin_file_path );
 		} finally {
-			if ( isset( $tmp_plugin_file_path ) && file_exists( $tmp_plugin_file_path ) ) {
+			if ( isset( $tmp_plugin_file_path ) && is_string( $tmp_plugin_file_path ) && file_exists( $tmp_plugin_file_path ) ) {
 				wp_delete_file( $tmp_plugin_file_path );
 			}
 		}

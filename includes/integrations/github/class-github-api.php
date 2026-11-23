@@ -148,7 +148,7 @@ class GitHub_API {
 			rawurlencode( $user ),
 			rawurlencode( $repo ),
 			rawurlencode( $tag_name ),
-			rawurlencode( $path ),
+			$path,
 		);
 		$request_response = wp_remote_get( $url );
 		if ( 200 === wp_remote_retrieve_response_code( $request_response ) ) {
