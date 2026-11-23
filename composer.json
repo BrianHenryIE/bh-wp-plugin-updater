@@ -98,7 +98,7 @@
         "phpstan/phpstan-mockery": "^2.0",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpcov": "*",
-        "psr-mock/http-client-implementation": "1.0.0",
+        "psr-mock/http-client-implementation": "1.0.1",
         "psr-mock/http-factory-implementation": "*",
         "psr/simple-cache": "^2.0",
         "rector/rector": "*",
